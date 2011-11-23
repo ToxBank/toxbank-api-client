@@ -4,7 +4,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 
-public class Template {
+public class Template extends AbstractToxBankResource {
 
 	public Template() {}
 	
@@ -27,8 +27,9 @@ public class Template {
 	 * Returns an {@link OutputStream} to which the template can be written.
 	 * @return
 	 */
-	public OutputStream upload() {
+	public OutputStream upload(String server) {
 		// FIXME: does this approach even work??
 		return null;
 	}
+
 }

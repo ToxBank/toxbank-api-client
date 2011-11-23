@@ -4,9 +4,14 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 
-public class Protocol {
+public class Protocol extends AbstractToxBankResource {
 
 	private URL organisation;
+	private User author;
+	private List<String> keywords;
+	private String title;
+	private String identifier;
+	private String abstrakt;
 
 	public Protocol() {}
 	
@@ -18,6 +23,26 @@ public class Protocol {
 		this.organisation = null;
 	}
 	
+	// bean methods
+	
+	public void addKeyword(String keyword) {
+	}
+
+	public void removeKeyword(String keyword) {
+	}
+
+	public List<String> getKeywords() {
+		return keywords;
+	}
+
+	public void setAuthor(User author) {
+		this.author = author;
+	}
+
+	public User getAuthor() {
+		return author;
+	}
+
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/API_Protocol:RetrieveList">API documentation</a>.
 	 */
@@ -80,5 +105,29 @@ public class Protocol {
 
 	public URL getOrganisation() {
 		return this.organisation;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setIdentifier(String identifier) {
+		this.identifier = identifier;
+	}
+
+	public String getIdentifier() {
+		return identifier;
+	}
+
+	public void setAbstract(String abstrakt) {
+		this.abstrakt = abstrakt;
+	}
+
+	public String getAbstract() {
+		return abstrakt;
 	}
 }

@@ -5,11 +5,17 @@ import java.net.URL;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
-public class ProtocolTest {
+public class ProtocolTest extends AbstractToxBankResourceTest {
 
 	private final static String TEST_SERVER = "http://demo.toxbank.net/";
+
+	@Before
+	public void setup() {
+		setToxBankResource(new Protocol());
+	}
 
 	@Test
 	public void testConstructor() {
@@ -80,5 +86,89 @@ public class ProtocolTest {
 		List<ProtocolVersion> versions = protocol.getVersions();
 		Assert.assertNotNull(versions);
 		Assert.assertNotSame(0, versions.size());
+	}
+
+	@Test
+	public void testUploadingAndRetrieving() {
+		Protocol protocol = new Protocol();
+		protocol.addKeyword("cytotoxicity");
+		URL identifier = protocol.upload(TEST_SERVER);
+		
+		// now download it again, and compare
+		Protocol dlProtocol = new Protocol(identifier);
+		Assert.assertTrue(dlProtocol.getKeywords().contains("cytotoxicity"));
+	}
+
+	@Test
+	public void testGetSetKeywords() {
+		Protocol protocol = new Protocol();
+		Assert.assertEquals(0, protocol.getKeywords().size());
+		protocol.addKeyword("foo");
+		Assert.assertEquals(1, protocol.getKeywords().size());
+		Assert.assertTrue(protocol.getKeywords().contains("foo"));
+		protocol.removeKeyword("foo");
+		Assert.assertEquals(0, protocol.getKeywords().size());
+		Assert.assertFalse(protocol.getKeywords().contains("foo"));
+	}
+
+	@Test
+	public void testGetSetTitle() {
+		Protocol protocol = new Protocol();
+		protocol.setTitle("Title");
+		Assert.assertEquals("Title", protocol.getTitle());
+	}
+
+	@Test
+	public void testRoundtripTitle() {
+		Protocol protocol = new Protocol();
+		protocol.setTitle("Title");
+		URL resource = protocol.upload(TEST_SERVER);
+
+		Protocol roundtripped = new Protocol(resource);
+		Assert.assertEquals("Title", roundtripped.getTitle());
+	}
+
+	@Test
+	public void testGetSetIdentifier() {
+		Protocol protocol = new Protocol();
+		protocol.setIdentifier("Title");
+		Assert.assertEquals("Title", protocol.getIdentifier());
+	}
+
+	@Test
+	public void testRoundtripIdentifier() {
+		Protocol protocol = new Protocol();
+		protocol.setIdentifier("Title");
+		URL resource = protocol.upload(TEST_SERVER);
+
+		Protocol roundtripped = new Protocol(resource);
+		Assert.assertEquals("Title", roundtripped.getIdentifier());
+	}
+
+	@Test
+	public void testGetSetAbstract() {
+		Protocol protocol = new Protocol();
+		protocol.setAbstract("This is the funniest abstract ever!");
+		Assert.assertEquals("This is the funniest abstract ever!", protocol.getAbstract());
+	}
+
+	@Test
+	public void testRoundtripAbstract() {
+		Protocol protocol = new Protocol();
+		protocol.setAbstract("This is the funniest abstract ever!");
+		URL resource = protocol.upload(TEST_SERVER);
+
+		Protocol roundtripped = new Protocol(resource);
+		Assert.assertEquals("This is the funniest abstract ever!", roundtripped.getAbstract());
+	}
+
+	@Test
+	public void testGetSetAuthor() {
+		Protocol protocol = new Protocol();
+		Assert.assertNull(protocol.getAuthor());
+		User user = new User();
+		protocol.setAuthor(user);
+		Assert.assertNotNull(protocol.getAuthor());
+		Assert.assertEquals(user, protocol.getAuthor());
 	}
 }
