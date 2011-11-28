@@ -1,16 +1,10 @@
 package net.toxbank.client.resource;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
-public class OrganisationTest extends AbstractToxBankResourceTest {
+public class OrganisationTest {
 	
-	@Before
-	public void setup() {
-		setToxBankResource(new Organisation());
-	}
-
 	@Test
 	public void testConstructor() {
 		Organisation clazz = new Organisation();

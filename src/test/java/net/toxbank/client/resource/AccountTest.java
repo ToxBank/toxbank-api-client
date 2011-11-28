@@ -11,19 +11,4 @@ public class AccountTest {
 		Assert.assertNotNull(account);
 	}
 
-	@Test
-	public void testGetSetService() {
-		Account account = new Account();
-		Assert.assertNull(account.getService());
-		account.setService("Twitter");
-		Assert.assertEquals("Twitter", account.getService());
-	}
-
-	@Test
-	public void testGetSetAccountName() {
-		Account account = new Account();
-		Assert.assertNull(account.getAccountName());
-		account.setAccountName("egonwillighagen");
-		Assert.assertEquals("egonwillighagen", account.getAccountName());
-	}
 }
