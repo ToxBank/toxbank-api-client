@@ -3,12 +3,12 @@ package net.toxbank.client.resource;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class AccountTest {
+public class OrganisationClientTest {
 	
 	@Test
 	public void testConstructor() {
-		Account account = new Account();
-		Assert.assertNotNull(account);
+		OrganisationClient clazz = new OrganisationClient();
+		Assert.assertNotNull(clazz);
 	}
 
 }

@@ -9,14 +9,14 @@ import java.util.List;
  * 
  * @author egonw
  */
-public class User {
+public class UserClient {
 
-	public User() {}
+	public UserClient() {}
 
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/User:RetrieveList">API documentation</a>.
 	 */
-	public User(URL identifier) {
+	public UserClient(URL identifier) {
 		// FIXME: implement retrieving metadata from the URL and set the below fields
 	}
 	
@@ -38,10 +38,10 @@ public class User {
 
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/User:RetrieveProtocols">API documentation</a>.
-	 * Equivalent to {@link #listProtocols()} but returns {@link Protocol}s
+	 * Equivalent to {@link #listProtocols()} but returns {@link ProtocolClient}s
 	 * already populated with metadata from the database.
 	 */
-	public List<Protocol> getProtocols() {
+	public List<ProtocolClient> getProtocols() {
 		// FIXME: implement uploading this protocol to the server
 		return null;
 	}
@@ -56,10 +56,10 @@ public class User {
 
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/User:RetrieveStudies">API documentation</a>.
-	 * Equivalent to {@link #listStudies()} but returns {@link Study}s
+	 * Equivalent to {@link #listStudies()} but returns {@link StudyClient}s
 	 * already populated with metadata from the database.
 	 */
-	public List<Study> getStudies() {
+	public List<StudyClient> getStudies() {
 		// FIXME: implement uploading this protocol to the server
 		return null;
 	}
@@ -74,10 +74,10 @@ public class User {
 
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/User:RetrieveAlerts">API documentation</a>.
-	 * Equivalent to {@link #listAlerts()} but returns {@link Alert}s
+	 * Equivalent to {@link #listAlerts()} but returns {@link AlertClient}s
 	 * already populated with metadata from the database.
 	 */
-	public List<Alert> getAlerts() {
+	public List<AlertClient> getAlerts() {
 		// FIXME: implement uploading this protocol to the server
 		return null;
 	}

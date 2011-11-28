@@ -3,11 +3,11 @@ package net.toxbank.client.resource;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class DocumentTest {
+public class DocumentClientTest {
 	
 	@Test
 	public void testConstructor() {
-		Document clazz = new Document();
+		DocumentClient clazz = new DocumentClient();
 		Assert.assertNotNull(clazz);
 	}
 

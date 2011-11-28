@@ -1,5 +1,5 @@
 package net.toxbank.client.resource;
 
-public class Assay {
+public class ProjectClient {
 
 }

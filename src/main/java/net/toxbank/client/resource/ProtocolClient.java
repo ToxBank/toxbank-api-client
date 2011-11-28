@@ -4,10 +4,17 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 
-public class Protocol {
+public class ProtocolClient {
 
-	public Protocol() {}
+	public ProtocolClient() {}
 	
+	/**
+	 * Described in this <a href="http://api.toxbank.net/index.php/API_Protocol:Upload">API documentation</a>.
+	 */
+	public ProtocolClient(URL identifier) {
+		// FIXME: implement retrieving metadata from the URL and set the below fields
+	}
+
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/API_Protocol:RetrieveList">API documentation</a>.
 	 */
@@ -42,10 +49,10 @@ public class Protocol {
 
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/API_Protocol:RetrieveVersions">API documentation</a>.
-	 * Equivalent to {@link #listVersions()} but returns {@link ProtocolVersion}s
+	 * Equivalent to {@link #listVersions()} but returns {@link ProtocolVersionClient}s
 	 * already populated with metadata from the database.
 	 */
-	public List<ProtocolVersion> getVersions() {
+	public List<ProtocolVersionClient> getVersions() {
 		// FIXME: implement uploading this protocol to the server
 		return null;
 	}
@@ -60,10 +67,10 @@ public class Protocol {
 
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/API_Protocol:RetrieveTemplates">API documentation</a>.
-	 * Equivalent to {@link #listTempaltes()} but returns {@link Template}s
+	 * Equivalent to {@link #listTempaltes()} but returns {@link TemplateClient}s
 	 * already populated with metadata from the database.
 	 */
-	public List<Template> getTemplates() {
+	public List<TemplateClient> getTemplates() {
 		// FIXME: implement uploading this protocol to the server
 		return null;
 	}

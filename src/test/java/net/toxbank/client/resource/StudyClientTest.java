@@ -8,19 +8,19 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class StudyTest {
+public class StudyClientTest {
 	
 	private final static String TEST_SERVER = "http://demo.toxbank.net/";
 
 	@Test
 	public void testConstructor() {
-		Study clazz = new Study();
+		StudyClient clazz = new StudyClient();
 		Assert.assertNotNull(clazz);
 	}
 
 	@Test
 	public void testRetrieveMetadata() throws MalformedURLException {
-		Study study = new Study(new URL(TEST_SERVER + "protocol/1"));
+		StudyClient study = new StudyClient(new URL(TEST_SERVER + "protocol/1"));
 		Assert.assertNotNull(study);
 		Assert.assertEquals(
 			TEST_SERVER + "organization/1",
@@ -30,14 +30,14 @@ public class StudyTest {
 
 	@Test
 	public void testList() {
-		List<URL> studies = Study.list(TEST_SERVER);
+		List<URL> studies = StudyClient.list(TEST_SERVER);
 		Assert.assertNotNull(studies);
 		Assert.assertNotSame(0, studies.size());
 	}
 
 	@Test
 	public void testUpload() {
-		Study study = new Study();
+		StudyClient study = new StudyClient();
 		URL url = study.upload(TEST_SERVER);
 		Assert.assertNotNull(url);
 		Assert.assertTrue(url.toExternalForm().startsWith(TEST_SERVER));
@@ -45,7 +45,7 @@ public class StudyTest {
 
 	@Test
 	public void testListVersions() throws MalformedURLException {
-		Study study = new Study(new URL(TEST_SERVER + "protocol/1"));
+		StudyClient study = new StudyClient(new URL(TEST_SERVER + "protocol/1"));
 		List<URL> versions = study.listVersions();
 		Assert.assertNotNull(versions);
 		Assert.assertNotSame(0, versions.size());
@@ -53,8 +53,8 @@ public class StudyTest {
 	
 	@Test
 	public void testGetVersions() throws MalformedURLException {
-		Study study = new Study(new URL(TEST_SERVER + "protocol/1"));
-		List<Study> versions = study.getVersions();
+		StudyClient study = new StudyClient(new URL(TEST_SERVER + "protocol/1"));
+		List<StudyClient> versions = study.getVersions();
 		Assert.assertNotNull(versions);
 		Assert.assertNotSame(0, versions.size());
 		Assert.assertTrue(versions.contains(study));
@@ -62,10 +62,10 @@ public class StudyTest {
 
 	@Test
 	public void testRoundtripVersions() throws MalformedURLException {
-		Study study = new Study(new URL(TEST_SERVER + "protocol/1"));
+		StudyClient study = new StudyClient(new URL(TEST_SERVER + "protocol/1"));
 		URL resource = study.upload(TEST_SERVER);
 
-		Study roundtripped = new Study(resource);
+		StudyClient roundtripped = new StudyClient(resource);
 		Assert.assertNotNull(roundtripped);
 		Assert.assertNotSame(0, roundtripped.getVersions().size());
 		Assert.assertTrue(roundtripped.getVersions().contains(study));
@@ -73,36 +73,36 @@ public class StudyTest {
 
 	@Test
 	public void testRoundtripKeywords() {
-		Study study = new Study();
+		StudyClient study = new StudyClient();
 		Assert.assertEquals(0, study.getKeywords().size());
 		study.addKeyword("foo");
 		URL resource = study.upload(TEST_SERVER);
 
-		Study roundtripped = new Study(resource);
+		StudyClient roundtripped = new StudyClient(resource);
 		Assert.assertEquals(1, roundtripped.getKeywords().size());
 		Assert.assertTrue(roundtripped.getKeywords().contains("foo"));
 	}
 
 	@Test
 	public void testRoundtripAbstract() {
-		Study study = new Study();
+		StudyClient study = new StudyClient();
 		Assert.assertNull(study.getAbstract());
 		study.setAbstract("This is an abstract");
 		URL resource = study.upload(TEST_SERVER);
 
-		Study roundtripped = new Study(resource);
+		StudyClient roundtripped = new StudyClient(resource);
 		Assert.assertNotNull(roundtripped.getAbstract());
 		Assert.assertEquals(19, roundtripped.getAbstract().length());
 	}
 
 	@Test
 	public void testRoundtripVersionInfo() {
-		Study study = new Study();
+		StudyClient study = new StudyClient();
 		Assert.assertNull(study.getVersionInfo());
 		study.setVersionInfo("1");
 		URL resource = study.upload(TEST_SERVER);
 
-		Study roundtripped = new Study(resource);
+		StudyClient roundtripped = new StudyClient(resource);
 		Assert.assertNotNull(roundtripped.getVersionInfo());
 		Assert.assertEquals("1", roundtripped.getVersionInfo());
 	}

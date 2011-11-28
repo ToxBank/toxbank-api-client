@@ -2,7 +2,7 @@ package net.toxbank.client.resource;
 
 import java.net.URL;
 
-public class ProtocolVersion {
+public class ProtocolVersionClient {
 
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/API_Protocol:Uploadt">API documentation</a>.

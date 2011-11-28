@@ -4,14 +4,14 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 
-public class Study {
+public class StudyClient {
 
-	public Study() {}
+	public StudyClient() {}
 	
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/API_Study:Retrieve">API documentation</a>.
 	 */
-	public Study(URL identifier) {
+	public StudyClient(URL identifier) {
 		// FIXME: implement retrieving metadata from the URL and set the below fields
 	}
 
@@ -47,10 +47,10 @@ public class Study {
 
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/API_Study:RetrieveVersions">API documentation</a>.
-	 * Equivalent to {@link #listVersions()} but returns {@link Study}s
+	 * Equivalent to {@link #listVersions()} but returns {@link StudyClient}s
 	 * already populated with metadata from the database.
 	 */
-	public List<Study> getVersions() {
+	public List<StudyClient> getVersions() {
 		// FIXME: implement uploading this protocol to the server
 		return null;
 	}

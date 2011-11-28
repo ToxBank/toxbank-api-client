@@ -8,26 +8,26 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ProtocolTest {
+public class ProtocolClientTest {
 
 	private final static String TEST_SERVER = "http://demo.toxbank.net/";
 
 	@Test
 	public void testConstructor() {
-		Protocol clazz = new Protocol();
+		ProtocolClient clazz = new ProtocolClient();
 		Assert.assertNotNull(clazz);
 	}
 
 	@Test
 	public void testListProtocols() {
-		List<URL> protocols = Protocol.listProtocols(TEST_SERVER);
+		List<URL> protocols = ProtocolClient.listProtocols(TEST_SERVER);
 		Assert.assertNotNull(protocols);
 		Assert.assertNotSame(0, protocols.size());
 	}
 	
 	@Test
 	public void testUpload() {
-		Protocol protocol = new Protocol();
+		ProtocolClient protocol = new ProtocolClient();
 		URL url = protocol.upload(TEST_SERVER);
 		Assert.assertNotNull(url);
 		Assert.assertTrue(url.toExternalForm().startsWith(TEST_SERVER));
@@ -35,7 +35,7 @@ public class ProtocolTest {
 	
 	@Test
 	public void testRetrieveMetadata() throws MalformedURLException {
-		Protocol protocol = new Protocol(new URL(TEST_SERVER + "protocol/1"));
+		ProtocolClient protocol = new ProtocolClient(new URL(TEST_SERVER + "protocol/1"));
 		Assert.assertNotNull(protocol);
 		Assert.assertEquals(
 			TEST_SERVER + "organization/1",
@@ -45,7 +45,7 @@ public class ProtocolTest {
 	
 	@Test
 	public void testListFiles() throws MalformedURLException {
-		Protocol protocol = new Protocol(new URL(TEST_SERVER + "protocol/1"));
+		ProtocolClient protocol = new ProtocolClient(new URL(TEST_SERVER + "protocol/1"));
 		List<URL> files = protocol.listFiles();
 		Assert.assertNotNull(files);
 		Assert.assertNotSame(0, files.size());
@@ -53,7 +53,7 @@ public class ProtocolTest {
 	
 	@Test
 	public void testListTemplates() throws MalformedURLException {
-		Protocol protocol = new Protocol(new URL(TEST_SERVER + "protocol/1"));
+		ProtocolClient protocol = new ProtocolClient(new URL(TEST_SERVER + "protocol/1"));
 		List<URL> templates = protocol.listTemplates();
 		Assert.assertNotNull(templates);
 		Assert.assertNotSame(0, templates.size());
@@ -61,15 +61,15 @@ public class ProtocolTest {
 	
 	@Test
 	public void testGetTemplates() throws MalformedURLException {
-		Protocol protocol = new Protocol(new URL(TEST_SERVER + "protocol/1"));
-		List<Template> templates = protocol.getTemplates();
+		ProtocolClient protocol = new ProtocolClient(new URL(TEST_SERVER + "protocol/1"));
+		List<TemplateClient> templates = protocol.getTemplates();
 		Assert.assertNotNull(templates);
 		Assert.assertNotSame(0, templates.size());
 	}
 	
 	@Test
 	public void testListVersions() throws MalformedURLException {
-		Protocol protocol = new Protocol(new URL(TEST_SERVER + "protocol/1"));
+		ProtocolClient protocol = new ProtocolClient(new URL(TEST_SERVER + "protocol/1"));
 		List<URL> versions = protocol.listVersions();
 		Assert.assertNotNull(versions);
 		Assert.assertNotSame(0, versions.size());
@@ -77,50 +77,50 @@ public class ProtocolTest {
 	
 	@Test
 	public void testGetVersions() throws MalformedURLException {
-		Protocol protocol = new Protocol(new URL(TEST_SERVER + "protocol/1"));
-		List<ProtocolVersion> versions = protocol.getVersions();
+		ProtocolClient protocol = new ProtocolClient(new URL(TEST_SERVER + "protocol/1"));
+		List<ProtocolVersionClient> versions = protocol.getVersions();
 		Assert.assertNotNull(versions);
 		Assert.assertNotSame(0, versions.size());
 	}
 
 	@Test
 	public void testUploadingAndRetrieving() {
-		Protocol protocol = new Protocol();
+		ProtocolClient protocol = new ProtocolClient();
 		protocol.addKeyword("cytotoxicity");
 		URL identifier = protocol.upload(TEST_SERVER);
 		
 		// now download it again, and compare
-		Protocol dlProtocol = new Protocol(identifier);
+		ProtocolClient dlProtocol = new ProtocolClient(identifier);
 		Assert.assertTrue(dlProtocol.getKeywords().contains("cytotoxicity"));
 	}
 
 	@Test
 	public void testRoundtripTitle() {
-		Protocol protocol = new Protocol();
+		ProtocolClient protocol = new ProtocolClient();
 		protocol.setTitle("Title");
 		URL resource = protocol.upload(TEST_SERVER);
 
-		Protocol roundtripped = new Protocol(resource);
+		ProtocolClient roundtripped = new ProtocolClient(resource);
 		Assert.assertEquals("Title", roundtripped.getTitle());
 	}
 
 	@Test
 	public void testRoundtripIdentifier() {
-		Protocol protocol = new Protocol();
+		ProtocolClient protocol = new ProtocolClient();
 		protocol.setIdentifier("Title");
 		URL resource = protocol.upload(TEST_SERVER);
 
-		Protocol roundtripped = new Protocol(resource);
+		ProtocolClient roundtripped = new ProtocolClient(resource);
 		Assert.assertEquals("Title", roundtripped.getIdentifier());
 	}
 
 	@Test
 	public void testRoundtripAbstract() {
-		Protocol protocol = new Protocol();
+		ProtocolClient protocol = new ProtocolClient();
 		protocol.setAbstract("This is the funniest abstract ever!");
 		URL resource = protocol.upload(TEST_SERVER);
 
-		Protocol roundtripped = new Protocol(resource);
+		ProtocolClient roundtripped = new ProtocolClient(resource);
 		Assert.assertEquals("This is the funniest abstract ever!", roundtripped.getAbstract());
 	}
 

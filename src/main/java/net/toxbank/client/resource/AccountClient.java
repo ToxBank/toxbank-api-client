@@ -5,6 +5,6 @@ package net.toxbank.client.resource;
  * 
  * @author egonw
  */
-public class Account {
+public class AccountClient {
 
 }
