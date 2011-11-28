@@ -1,9 +1,9 @@
 package net.toxbank.client.resource;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 public class ProtocolVersionClientTest {
@@ -11,64 +11,51 @@ public class ProtocolVersionClientTest {
 	private final static String TEST_SERVER = "http://demo.toxbank.net/";
 
 	@Test
-	public void testConstructor() {
-		ProtocolVersionClient clazz = new ProtocolVersionClient();
-		Assert.assertNotNull(clazz);
-	}
-
-	@Test
-	public void testUpload() {
-		ProtocolVersionClient protocol = new ProtocolVersionClient();
-		URL url = protocol.upload(TEST_SERVER);
+	public void testUpload() throws MalformedURLException {
+		ProtocolVersion version = new ProtocolVersion();
+		URL url = ProtocolVersionClient.upload(version, new URL(TEST_SERVER));
 		Assert.assertNotNull(url);
 		Assert.assertTrue(url.toExternalForm().startsWith(TEST_SERVER));
 	}
 
 	@Test
-	public void testGetSetAbstract() {
-		ProtocolVersionClient version = new ProtocolVersionClient();
+	public void testRoundtripAbstract() throws MalformedURLException {
+		ProtocolVersion version = new ProtocolVersion();
 		version.setAbstract("This is the funniest abstract ever!");
-		Assert.assertEquals("This is the funniest abstract ever!", version.getAbstract());
-	}
+		URL resource = ProtocolVersionClient.upload(version, new URL(TEST_SERVER));
 
-	@Test
-	public void testRoundtripAbstract() {
-		ProtocolVersionClient version = new ProtocolVersionClient();
-		version.setAbstract("This is the funniest abstract ever!");
-		URL resource = version.upload(TEST_SERVER);
-
-		ProtocolVersionClient roundtripped = new ProtocolVersionClient(resource);
+		ProtocolVersion roundtripped = ProtocolVersionClient.download(resource);
 		Assert.assertEquals("This is the funniest abstract ever!", roundtripped.getAbstract());
 	}
 
 	@Test
-	public void testRoundtripInfo() {
-		ProtocolVersionClient version = new ProtocolVersionClient();
+	public void testRoundtripInfo() throws MalformedURLException {
+		ProtocolVersion version = new ProtocolVersion();
 		version.setInfo("2011-09-15");
-		URL resource = version.upload(TEST_SERVER);
+		URL resource = ProtocolVersionClient.upload(version, new URL(TEST_SERVER));
 
-		ProtocolVersionClient roundtripped = new ProtocolVersionClient(resource);
+		ProtocolVersion roundtripped = ProtocolVersionClient.download(resource);
 		Assert.assertEquals("2011-09-15", roundtripped.getInfo());
 	}
 
 	@Test
-	public void testRoundtripSubmissionDate() {
-		ProtocolVersionClient version = new ProtocolVersionClient();
+	public void testRoundtripSubmissionDate() throws MalformedURLException {
+		ProtocolVersion version = new ProtocolVersion();
 		version.setSubmissionDate("2011-09-15");
-		URL resource = version.upload(TEST_SERVER);
+		URL resource = ProtocolVersionClient.upload(version, new URL(TEST_SERVER));
 
-		ProtocolVersionClient roundtripped = new ProtocolVersionClient(resource);
+		ProtocolVersion roundtripped = ProtocolVersionClient.download(resource);
 		Assert.assertEquals("2011-09-15", roundtripped.getSubmissionDate());
 	}
 
 	@Test
-	public void testRoundtripSearchable() {
-		ProtocolVersionClient version = new ProtocolVersionClient();
+	public void testRoundtripSearchable() throws MalformedURLException {
+		ProtocolVersion version = new ProtocolVersion();
 		Assert.assertFalse(version.isSearchable());
 		version.setSearchable(true);
-		URL resource = version.upload(TEST_SERVER);
+		URL resource = ProtocolVersionClient.upload(version, new URL(TEST_SERVER));
 
-		ProtocolVersionClient roundtripped = new ProtocolVersionClient(resource);
+		ProtocolVersion roundtripped = ProtocolVersionClient.download(resource);
 		Assert.assertTrue(roundtripped.isSearchable());
 	}
 }
