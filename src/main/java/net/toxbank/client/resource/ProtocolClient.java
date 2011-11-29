@@ -76,4 +76,8 @@ public class ProtocolClient {
 		return null;
 	}
 
+	public static void delete(Protocol protocol) {
+		// FIXME: implement deleting a protocol from the server
+	}
+
 }
