@@ -61,7 +61,7 @@ public class ProtocolClient {
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/API_Protocol:RetrieveTemplates">API documentation</a>.
 	 */
-	public static List<URL> listTemplates(Protocol protocol) {
+	public static URL listTemplate(Protocol protocol) {
 		// FIXME: implement uploading this protocol to the server
 		return null;
 	}

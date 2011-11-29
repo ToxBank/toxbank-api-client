@@ -43,11 +43,10 @@ public class ProtocolClientTest {
 	}
 	
 	@Test
-	public void testListTemplates() throws MalformedURLException {
+	public void testListTemplate() throws MalformedURLException {
 		Protocol protocol = new Protocol(new URL(TEST_SERVER + "protocol/1"));
-		List<URL> templates = ProtocolClient.listTemplates(protocol);
-		Assert.assertNotNull(templates);
-		Assert.assertNotSame(0, templates.size());
+		URL template = ProtocolClient.listTemplate(protocol);
+		Assert.assertNotNull(template);
 	}
 	
 	@Test
