@@ -35,7 +35,7 @@ public class ProtocolClient {
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/API_Protocol:Retrieve">API documentation</a>.
 	 */
-	public static List<URL> listFiles(Protocol protocol) {
+	public static URL listFile(Protocol protocol) {
 		// FIXME: implement uploading this protocol to the server
 		return null;
 	}

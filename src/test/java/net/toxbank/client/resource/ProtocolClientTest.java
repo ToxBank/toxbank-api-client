@@ -38,9 +38,8 @@ public class ProtocolClientTest {
 	@Test
 	public void testListFiles() throws MalformedURLException {
 		Protocol protocol = new Protocol(new URL(TEST_SERVER + "protocol/1"));
-		List<URL> files = ProtocolClient.listFiles(protocol);
-		Assert.assertNotNull(files);
-		Assert.assertNotSame(0, files.size());
+		URL file = ProtocolClient.listFile(protocol);
+		Assert.assertNotNull(file);
 	}
 	
 	@Test
