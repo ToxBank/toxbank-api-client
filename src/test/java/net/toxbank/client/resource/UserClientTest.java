@@ -12,14 +12,8 @@ public class UserClientTest {
 	private final static String TEST_SERVER = "http://demo.toxbank.net/";
 
 	@Test
-	public void testConstructor() {
-		UserClient clazz = new UserClient();
-		Assert.assertNotNull(clazz);
-	}
-
-	@Test
 	public void testRetrieveMetadata() throws MalformedURLException {
-		UserClient user = new UserClient(new URL(TEST_SERVER + "user/ab7f235ccd"));
+		User user = UserClient.download(new URL(TEST_SERVER + "user/ab7f235ccd"));
 		Assert.assertNotNull(user);
 		// FIXME: test loaded metadata
 	}
@@ -33,48 +27,48 @@ public class UserClientTest {
 	
 	@Test
 	public void testListProtocols() throws MalformedURLException {
-		UserClient protocol = new UserClient(new URL(TEST_SERVER + "user/ab7f235ccd"));
-		List<URL> protocols = protocol.listProtocols();
+		User user = new User(new URL(TEST_SERVER + "user/ab7f235ccd"));
+		List<URL> protocols = UserClient.listProtocols(user);
 		Assert.assertNotNull(protocols);
 		Assert.assertNotSame(0, protocols.size());
 	}
 	
 	@Test
 	public void testGetProtocols() throws MalformedURLException {
-		UserClient protocol = new UserClient(new URL(TEST_SERVER + "user/ab7f235ccd"));
-		List<ProtocolClient> protocols = protocol.getProtocols();
+		User user = new User(new URL(TEST_SERVER + "user/ab7f235ccd"));
+		List<Protocol> protocols = UserClient.getProtocols(user);
 		Assert.assertNotNull(protocols);
 		Assert.assertNotSame(0, protocols.size());
 	}
 
 	@Test
 	public void testListStudies() throws MalformedURLException {
-		UserClient protocol = new UserClient(new URL(TEST_SERVER + "user/ab7f235ccd"));
-		List<URL> studies = protocol.listStudies();
+		User user = new User(new URL(TEST_SERVER + "user/ab7f235ccd"));
+		List<URL> studies = UserClient.listStudies(user);
 		Assert.assertNotNull(studies);
 		Assert.assertNotSame(0, studies.size());
 	}
 	
 	@Test
 	public void testGetStudies() throws MalformedURLException {
-		UserClient protocol = new UserClient(new URL(TEST_SERVER + "user/ab7f235ccd"));
-		List<StudyClient> studies = protocol.getStudies();
+		User user = new User(new URL(TEST_SERVER + "user/ab7f235ccd"));
+		List<Study> studies = UserClient.getStudies(user);
 		Assert.assertNotNull(studies);
 		Assert.assertNotSame(0, studies.size());
 	}
 
 	@Test
 	public void testListAlerts() throws MalformedURLException {
-		UserClient protocol = new UserClient(new URL(TEST_SERVER + "user/ab7f235ccd"));
-		List<URL> alerts = protocol.listAlerts();
+		User user = new User(new URL(TEST_SERVER + "user/ab7f235ccd"));
+		List<URL> alerts = UserClient.listAlerts(user);
 		Assert.assertNotNull(alerts);
 		Assert.assertNotSame(0, alerts.size());
 	}
 	
 	@Test
 	public void testGetAlerts() throws MalformedURLException {
-		UserClient protocol = new UserClient(new URL(TEST_SERVER + "user/ab7f235ccd"));
-		List<AlertClient> alerts = protocol.getAlerts();
+		User user = new User(new URL(TEST_SERVER + "user/ab7f235ccd"));
+		List<Alert> alerts = UserClient.getAlerts(user);
 		Assert.assertNotNull(alerts);
 		Assert.assertNotSame(0, alerts.size());
 	}

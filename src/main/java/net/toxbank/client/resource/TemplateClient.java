@@ -6,13 +6,14 @@ import java.net.URL;
 
 public class TemplateClient {
 
-	public TemplateClient() {}
+	private TemplateClient() {}
 	
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/API_Protocol:RetrieveTemplates">API documentation</a>.
 	 */
-	public TemplateClient(URL identifier) {
+	public static Template download(URL identifier) {
 		// FIXME: implement retrieving metadata from the URL and set the below fields
+		return null;
 	}
 
 	/**
