@@ -27,9 +27,8 @@ public class TemplateClient {
 	 * Returns an {@link OutputStream} to which the template can be written.
 	 * @return
 	 */
-	public OutputStream upload(String server) {
+	public void upload(InputStream content, String server) {
 		// FIXME: does this approach even work??
-		return null;
 	}
 
 }
