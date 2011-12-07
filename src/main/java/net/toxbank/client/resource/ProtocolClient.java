@@ -53,7 +53,7 @@ public class ProtocolClient {
 	 * Equivalent to {@link #listVersions()} but returns {@link ProtocolVersionClient}s
 	 * already populated with metadata from the database.
 	 */
-	public static List<ProtocolVersionClient> getVersions(Protocol protocol) {
+	public static List<Protocol> getVersions(Protocol protocol) {
 		// FIXME: implement uploading this protocol to the server
 		return null;
 	}
@@ -71,7 +71,7 @@ public class ProtocolClient {
 	 * Equivalent to {@link #listTempaltes()} but returns {@link TemplateClient}s
 	 * already populated with metadata from the database.
 	 */
-	public static List<TemplateClient> getTemplates(Protocol protocol) {
+	public static List<Template> getTemplates(Protocol protocol) {
 		// FIXME: implement uploading this protocol to the server
 		return null;
 	}

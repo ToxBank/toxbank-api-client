@@ -52,7 +52,7 @@ public class ProtocolClientTest {
 	@Test
 	public void testGetTemplates() throws MalformedURLException {
 		Protocol protocol = new Protocol(new URL(TEST_SERVER + "protocol/1"));
-		List<TemplateClient> templates = ProtocolClient.getTemplates(protocol);
+		List<Template> templates = ProtocolClient.getTemplates(protocol);
 		Assert.assertNotNull(templates);
 		Assert.assertNotSame(0, templates.size());
 	}
@@ -68,7 +68,7 @@ public class ProtocolClientTest {
 	@Test
 	public void testGetVersions() throws MalformedURLException {
 		Protocol protocol = new Protocol(new URL(TEST_SERVER + "protocol/1"));
-		List<ProtocolVersionClient> versions = ProtocolClient.getVersions(protocol);
+		List<Protocol> versions = ProtocolClient.getVersions(protocol);
 		Assert.assertNotNull(versions);
 		Assert.assertNotSame(0, versions.size());
 	}
