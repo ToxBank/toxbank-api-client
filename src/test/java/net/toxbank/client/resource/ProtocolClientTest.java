@@ -149,16 +149,7 @@ public class ProtocolClientTest {
 		//TODO verify whether it can be retrieved
 	}
 	
-	@Test
-	public void testListTemplate() throws Exception {
-		List<URL> url = ProtocolClient.listProtocols(new URL(String.format("%s?page=0&pagesize=1",TEST_SERVER_PROTOCOL)));
-		Assert.assertNotNull(url);
-		Assert.assertEquals(1,url.size());
 
-		Protocol protocol = new Protocol(url.get(0));
-		URL template = ProtocolClient.listTemplate(protocol);
-		Assert.assertNotNull(template);
-	}
 	
 	@Test
 	public void testGetTemplates() throws Exception {

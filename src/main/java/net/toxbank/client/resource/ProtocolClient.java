@@ -60,6 +60,25 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 		
 
 	}
+	/**
+	 * Upload template.
+	 * @param protocol
+	 * @return
+	 * @throws RestException
+	 * @throws UnsupportedEncodingException
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 */
+	public RemoteTask uploadTemplate(Protocol protocol, File template)	
+					throws RestException,UnsupportedEncodingException, IOException, URISyntaxException {
+
+		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+		entity.addPart("template", new FileBody(template));
+		 
+		return new RemoteTask(new URL(String.format("%s%s",protocol.getResourceURL(),Resources.datatemplate)), 
+											"text/uri-list", entity, HTTPClient.POST);
+	}
+	
 	
 	public RemoteTask createNewVersion(Protocol protocol)	
 		throws RestException,UnsupportedEncodingException, IOException, URISyntaxException {
@@ -98,7 +117,6 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 		return p.getResourceURL();
 	}
 
-
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/API_Protocol:Retrieve">API documentation</a>.
 	 */
@@ -113,7 +131,19 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 			c.connect();
 			File temp = File.createTempFile("download_", ".pdf");
 			HTTPClient.download(c.getInputStream(), temp);
-			c.disconnect();
+			return temp;
+		} finally {
+			try {c.disconnect(); } catch (Exception x) {}
+		}
+	}
+	
+	public static File downloadTemplate(Protocol protocol) throws MalformedURLException, IOException {
+		URL url = new URL(String.format("%s%s",protocol.getResourceURL(),Resources.datatemplate));
+		HttpURLConnection c = HTTPClient.getHttpURLConnection(url.toExternalForm(), HTTPClient.GET,"");
+		try {
+			c.connect();
+			File temp = File.createTempFile("download_", ".txt");
+			HTTPClient.download(c.getInputStream(), temp);
 			return temp;
 		} finally {
 			try {c.disconnect(); } catch (Exception x) {}

@@ -1,8 +1,6 @@
 package net.toxbank.client.resource;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -151,32 +149,6 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 		else object.setResourceURL(task.getResult());
 		return object;
 	}
-	
-	//protected abstract Form getWebForm(T object);
-	
-	
-	/*
-	public List<T> readRDF(URL url) throws Exception {
-		if (url==null) throw new Exception("No URL");
-		HTTPClient client = new HTTPClient(url.toString());
-		client.setHeaders(new String[][] {{"Accept","application/rdf+xml"}});
-		client.get();
-		InputStream in = null;
-		try {
-			if (client.getStatus()==200) {
-				in = client.getInputStream();
-				Model model = ModelFactory.createDefaultModel();
-				model.read(new InputStreamReader(in),"");
-				return getIOClass().fromJena(model);
-			} else return null;
-		} catch (Exception x) {
-			throw x;
-		} finally {
-			try {in.close();} catch (Exception x) {}
-			try {client.release();} catch (Exception x) {}
-		}
-	}
-	*/
 	
 	abstract IOClass<T> getIOClass();
 	
