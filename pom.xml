@@ -13,14 +13,13 @@
     </license>
   </licenses>
    <distributionManagement>
-	<!-- to be replaced with Toxbank Maven repository -->
     <snapshotRepository>
-  		<id>ambit-plovdiv-snapshots</id>
-  		<url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/snapshots</url>
+  		<id>toxbank-snapshots</id>
+  		<url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/toxbank-snapshots</url>
 	 </snapshotRepository>
 	<repository>
-        <id>ambit-plovdiv-releases</id>
-        <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/releases</url>
+        <id>toxbank-releases</id>
+        <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/toxbank-releases</url>
     </repository>
   </distributionManagement>
   <repositories>
@@ -28,6 +27,25 @@
       <id>ambit-plovdiv</id>
       <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/thirdparty</url>
       <snapshots><enabled>false</enabled></snapshots>
+    </repository>
+    <repository>
+      <id>ambit-plovdiv-releases</id>
+      <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/releases</url>
+      <snapshots><enabled>false</enabled></snapshots>
+    </repository>    
+    <repository>
+      <id>ambit-plovdiv-snapshots</id>
+      <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/snapshots</url>
+      <snapshots><enabled>true</enabled></snapshots>
+    </repository>    
+	<repository>
+        <id>toxbank-releases</id>
+        <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/toxbank-releases</url>
+    </repository>
+    <repository>
+        <id>toxbank-snapshots</id>
+        <url>http://ambit.uni-plovdiv.bg:8083/nexus/content/repositories/toxbank-snapshots</url>
+         <snapshots><enabled>true</enabled></snapshots>
     </repository>
     <repository>
       <id>mvnrepository</id>
@@ -60,9 +78,14 @@
   		<type>jar</type>
   		<scope>compile</scope>
   	</dependency>
+	<dependency>
+	  <groupId>ambit</groupId>
+	  <artifactId>opentox-opensso</artifactId>
+	  <version>1.0.2-SNAPSHOT</version>
+	</dependency>
+
   </dependencies>
   <properties>
-    <cdk.version>1.3.8</cdk.version>
     <junit.version>4.8.1</junit.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
@@ -84,6 +107,17 @@
             <target>1.6</target>
           </configuration>  
         </plugin>
+        <plugin>
+       	<groupId>org.apache.maven.plugins</groupId>
+       	<artifactId>maven-resources-plugin</artifactId>
+      	 <version>2.5</version>
+       	<configuration>
+        	<nonFilteredFileExtensions>
+           	<nonFilteredFileExtension></nonFilteredFileExtension>
+		   <nonFilteredFileExtension>pdf</nonFilteredFileExtension>
+          	</nonFilteredFileExtensions>
+        </configuration>
+      	</plugin>
       </plugins>
     </pluginManagement>
   </build>

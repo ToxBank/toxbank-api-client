@@ -1,32 +1,60 @@
 package net.toxbank.client.resource;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Collections;
 import java.util.List;
+
+import net.toxbank.client.io.rdf.IOClass;
+import net.toxbank.client.io.rdf.UserIO;
+import net.toxbank.client.task.RemoteTask;
+
+import org.opentox.rest.HTTPClient;
+import org.opentox.rest.RestException;
 
 /**
  * Modeled after FOAF where possible.
  * 
  * @author egonw
  */
-public class UserClient {
+public class UserClient extends AbstractClient<User> {
 
-	private UserClient() {}
+	protected UserClient() {}
 
+	@Override
+	protected RemoteTask createAsync(User user, URL collection)
+			throws RestException, UnsupportedEncodingException, URISyntaxException {
+		String[][] form = new String[][] {
+				{"username",user.getUserName()},
+				{"title",user.getTitle()},
+				{"firstname",user.getFirstname()},
+				{"lastname",user.getLastname()},
+				{"weblog",user.getWeblog()==null?null:user.getWeblog().toString()},
+				{"homepage",user.getHomepage()==null?null:user.getHomepage().toString()},
+
+				};
+		return new RemoteTask(collection, "text/uri-list", form, HTTPClient.POST);
+	}
+	@Override
+	IOClass<User> getIOClass() {
+		return new UserIO();
+	}
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/User:RetrieveList">API documentation</a>.
 	 */
-	public static User download(URL identifier) {
-		// FIXME: implement retrieving metadata from the URL and set the below fields
-		return null;
+	public static User download(URL identifier) throws IOException, RestException {
+		UserClient cli = new UserClient();
+		List<User> users = cli.read(identifier, "application/rdf+xml");
+		return users.size()>0?users.get(0):null;
 	}
 	
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/User:RetrieveList">API documentation</a>.
 	 */
-	public static List<URL> list(String server) {
-		// FIXME: retrieve a list of all registered protocols
-		return Collections.emptyList();
+	public static List<URL> list(URL server)  throws IOException, RestException  {
+		UserClient cli = new UserClient();
+		return cli.readURI(server);
 	}
 
 	/**
