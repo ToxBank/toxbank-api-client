@@ -92,7 +92,8 @@ public class UserClientTest {
 		user.setTitle("Dr.");
 		user.setFirstname("Test");
 		user.setLastname("Tester");
-		user.setUserName("guest");
+		//user.setUserName("guest");
+		user.setInstitute(new Organisation(new URL(String.format("%s%s/G1",AbstractClientTest.TEST_SERVER,Resources.organisation))));
 		user.setWeblog(new URL("http://example.org/blog"));
 		user.setHomepage(new URL("http://example.org/home"));
 		

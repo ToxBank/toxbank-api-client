@@ -57,5 +57,8 @@ public class OrganisationClientTest extends AbstractClientTest<Organisation,Orga
 		//should not be 0 ! http://toxbanktest1.opentox.org:8080/toxbank/project/G0 
 		tbClient.delete(task.getResult());
 	}
-	
+	@Override
+	public void testDelete() throws Exception {
+		Assert.assertTrue("Delete is tested with testCreate(), the object is deleted upon creation",true);
+	}
 }

@@ -6,6 +6,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public abstract class AbstractClientTest<T extends IToxBankResource, C extends AbstractClient<T>> {
+	//public final static String TEST_SERVER = "http://localhost:8080/toxbank";
 	public final static String TEST_SERVER = "http://toxbanktest1.opentox.org:8080/toxbank";
 
 	@BeforeClass

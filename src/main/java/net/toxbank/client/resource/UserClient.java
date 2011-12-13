@@ -30,6 +30,7 @@ public class UserClient extends AbstractClient<User> {
 				{"title",user.getTitle()},
 				{"firstname",user.getFirstname()},
 				{"lastname",user.getLastname()},
+				{"institute",user.getInstitute().getResourceURL().toString()},
 				{"weblog",user.getWeblog()==null?null:user.getWeblog().toString()},
 				{"homepage",user.getHomepage()==null?null:user.getHomepage().toString()},
 
