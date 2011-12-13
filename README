@@ -1,1 +1,7 @@
 The Java ToxBank API client software.
+
+Use: 
+mvn clean install -P toxbank-test to run tests against a remote test server
+mvn clean install -P toxbank-local to run tests against a server running at localhost.
+
+Or customize <toxbank.test.server> in .m2/settings.xml 

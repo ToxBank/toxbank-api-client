@@ -96,6 +96,12 @@
         <filtering>true</filtering>
       </resource>
     </resources>
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>true</filtering>        
+      </testResource>
+    </testResources>
     <pluginManagement>
       <plugins>
         <plugin>
@@ -121,5 +127,57 @@
       </plugins>
     </pluginManagement>
   </build>
+  
+  <profiles>
+	<profile>
+		<id>development</id>
+		<build>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+					<debug>true</debug>
+					<optimize>false</optimize>
+					</configuration>
+				</plugin>
+			</plugins>
+		</build>
+	</profile>
+	
+	<profile>
+		<id>production</id>
+		<build>
+			<plugins>
+				<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+				<debug>false</debug>
+				<optimize>true</optimize>
+				</configuration>
+				</plugin>
+			</plugins>
+		</build>
+	</profile>
+	<profile>
+		<id>toxbank-local</id>
+		<activation>
+		<activeByDefault>false</activeByDefault>
+		</activation>
+		<properties>
+			<toxbank.test.server>http://localhost:8080/toxbank</toxbank.test.server>
+		</properties>
+	</profile>	
+	<profile>
+		<id>toxbank-test</id>
+		<activation>
+		<activeByDefault>false</activeByDefault>
+		</activation>
+		<properties>
+			<toxbank.test.server>http://toxbanktest1.opentox.org:8080/toxbank</toxbank.test.server>
+		</properties>
+	</profile>
+</profiles>
   
 </project>
