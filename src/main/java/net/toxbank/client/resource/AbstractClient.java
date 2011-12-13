@@ -13,7 +13,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.toxbank.client.Resources;
 import net.toxbank.client.io.rdf.IOClass;
 import net.toxbank.client.task.RemoteTask;
 
@@ -25,7 +24,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
 
 
 public abstract class AbstractClient<T extends IToxBankResource> {
-
+	
 	public AbstractClient() {
 	}
 	
@@ -181,58 +180,5 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 	
 	abstract IOClass<T> getIOClass();
 	
-	protected String[] getMultipartWebFormRepresentation(
-					String[][] form, 
-					String fileFieldName, 
-					File file, 
-					String mediaType) throws IOException {
-		String docPath = file.getAbsolutePath();
-		StringBuffer str_b = new StringBuffer();
-		final String bndry ="XCVBGFDS";
-		String paramName = fileFieldName;
-		String fileName = file.getName();
-		final String type = new String(String.format("multipart/form-data; boundary=%s",bndry));
-	    file = new File(docPath);
-	    
-	    /**
-	     * WRITE THE fields
-	     */
-	    for (int i=0;i< form.length;i++ ) {
-		    
-		    String disptn = String.format("--%s\r\nContent-Disposition: form-data; name=\"%s\"\r\n\r\n%s\r\n",
-	    			bndry,form[i][0],form[i][1]);
-		    str_b.append(disptn);
-	    }
-	      
-	    /**
-	     * WRITE THE FIRST/START BOUNDARY
-	     */
-	    String disptn = String.format("--%s\r\nContent-Disposition: form-data; name=\"%s\"; filename=\"%s\"\r\nContent-Type: %s\r\n\r\n",
-	    			bndry,paramName,fileName,mediaType);
-	    str_b.append(disptn);
-	    /**
-	     * WRITE THE FILE CONTENT
-	     */
-	    FileInputStream is;
-	    byte[] buffer = new byte[4096];
-	    int bytes_read;
-	    try {
-	        	is = new FileInputStream(file);
-				while((bytes_read = is.read(buffer)) != -1) {
-				    
-				    str_b.append(new String(buffer, 0, bytes_read));
-				}
-				is.close();
-		} catch (IOException e) {
-			throw e;
-		}
-		/**
-		 * WRITE THE CLOSING BOUNDARY
-		 */
-	    String boundar = String.format("\r\n--%s--",bndry);
-	    str_b.append(boundar); // another 2 new lines
-	        //PUT
-	    return new String[] {str_b.toString(),type};
-        
-	}	
+
 }

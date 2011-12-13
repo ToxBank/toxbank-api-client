@@ -5,12 +5,16 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import net.toxbank.client.io.rdf.IOClass;
 import net.toxbank.client.io.rdf.UserIO;
 import net.toxbank.client.task.RemoteTask;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.message.BasicNameValuePair;
 import org.opentox.rest.HTTPClient;
 import org.opentox.rest.RestException;
 
@@ -26,17 +30,18 @@ public class UserClient extends AbstractClient<User> {
 	@Override
 	protected RemoteTask createAsync(User user, URL collection)
 			throws RestException, UnsupportedEncodingException, URISyntaxException {
-		String[][] form = new String[][] {
-				{"username",user.getUserName()},
-				{"title",user.getTitle()},
-				{"firstname",user.getFirstname()},
-				{"lastname",user.getLastname()},
-				{"institute",user.getInstitute().getResourceURL().toString()},
-				{"weblog",user.getWeblog()==null?null:user.getWeblog().toString()},
-				{"homepage",user.getHomepage()==null?null:user.getHomepage().toString()},
 
-				};
-		return new RemoteTask(collection, "text/uri-list", form, HTTPClient.POST);
+		List<NameValuePair> formparams = new ArrayList<NameValuePair>();
+		formparams.add(new BasicNameValuePair("username", user.getUserName()));
+		formparams.add(new BasicNameValuePair("title", user.getTitle()));
+		formparams.add(new BasicNameValuePair("firstname", user.getFirstname()));
+		formparams.add(new BasicNameValuePair("lastname", user.getLastname()));
+		formparams.add(new BasicNameValuePair("institute", user.getInstitute().getResourceURL().toString()));
+		formparams.add(new BasicNameValuePair("weblog", user.getWeblog()==null?null:user.getWeblog().toString()));
+		formparams.add(new BasicNameValuePair("homepage", user.getHomepage()==null?null:user.getHomepage().toString()));
+		
+		UrlEncodedFormEntity entity = new UrlEncodedFormEntity(formparams, "UTF-8");
+		return new RemoteTask(collection, "text/uri-list", entity, HTTPClient.POST);		
 	}
 	@Override
 	IOClass<User> getIOClass() {

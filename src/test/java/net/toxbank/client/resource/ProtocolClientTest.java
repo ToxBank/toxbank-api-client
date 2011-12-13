@@ -1,6 +1,9 @@
 package net.toxbank.client.resource;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -13,6 +16,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.opentox.rest.RestException;
 
+import com.itextpdf.text.pdf.PdfReader;
+
 public class ProtocolClientTest {
 
 	private final static String TEST_SERVER_PROTOCOL = String.format("%s%s",AbstractClientTest.TEST_SERVER,Resources.protocol);
@@ -24,6 +29,31 @@ public class ProtocolClientTest {
 		Assert.assertNotSame(0, protocols.size());
 	}
 	
+	public static void compare(File f1,File f2) throws IOException {
+		InputStream in1 = new FileInputStream(f1);
+		InputStream in2 = new FileInputStream(f2);
+		
+		byte[] bytes1 = new byte[490];
+		byte[] bytes2 = new byte[490];
+		int len1;
+		int len2;
+		long count1 = 0;
+		long count2 = 0;
+		while ((len1 = in1.read(bytes1, 0, bytes1.length)) != -1) {
+			
+			len2 = in2.read(bytes2, 0, bytes2.length);
+			
+			System.out.println("1-------->>\n"+new String(bytes1));
+			System.out.println("2-------->>\n"+new String(bytes2));
+			
+			Assert.assertArrayEquals(bytes1,bytes2);
+			count1 += len1;
+			count2 += len2;
+		}
+		Assert.assertEquals(count1,count2);
+		in1.close();
+		in2.close();
+	}		
 	@Test
 	public void testUpload() throws Exception {
 		//TODO get the user from the token
@@ -38,15 +68,25 @@ public class ProtocolClientTest {
 		protocol.addKeyword("one");
 		protocol.addKeyword("two");
 		protocol.addKeyword("three");
+		//this is the file to upload
 		URL file = getClass().getClassLoader().getResource("net/toxbank/client/test/protocol-sample.pdf");
 		protocol.setDocument(new Document(file));
-		URL url = ProtocolClient.upload(protocol, new URL(TEST_SERVER_PROTOCOL));
-		Assert.assertNotNull(url);
-		Assert.assertTrue(url.toExternalForm().startsWith(TEST_SERVER_PROTOCOL));
-		System.out.println(url);
 		
+		URL newProtocol = ProtocolClient.upload(protocol, new URL(TEST_SERVER_PROTOCOL));
+		Assert.assertNotNull(newProtocol);
+		Assert.assertTrue(newProtocol.toExternalForm().startsWith(TEST_SERVER_PROTOCOL));
+		//now let's download the file 
+		File download = ProtocolClient.downloadFile(new Protocol(newProtocol));
+		Assert.assertTrue(download.exists());
+		//verify if the pdf is readable
+		InputStream in = new FileInputStream(download);
+		PdfReader reader = new PdfReader(in);
+		Assert.assertEquals("Slide 1", reader.getInfo().get("Title"));
+		Assert.assertEquals("Nina Jeliazkova", reader.getInfo().get("Author"));
+		in.close();
+		download.delete();
 		ProtocolClient cli = new ProtocolClient();
-		cli.delete(url);
+		cli.delete(newProtocol);
 	}
 	
 	@Test

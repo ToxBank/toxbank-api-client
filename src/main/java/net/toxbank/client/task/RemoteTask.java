@@ -5,10 +5,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.opentox.rest.HTTPClient;
 import org.opentox.rest.RestException;
 
@@ -40,67 +48,83 @@ public class RemoteTask implements Serializable {
 	protected int status = -1;
 	protected URL result = null;
 	protected Exception error = null;
+	protected HttpClient httpclient;
 	
+	public HttpClient getHttpclient() {
+		if (httpclient==null) httpclient = new DefaultHttpClient();
+		return httpclient;
+	}
 	protected void setError(Exception error) {
 		this.error = error;
 	}
 	public Exception getError() {
 		return error;
 	}
+	/*
 	public RemoteTask(URL url,
 			  String acceptMIME, 
 			  String[][] form,
 			  String method) throws RestException, UnsupportedEncodingException {
 		this(url,acceptMIME,form==null?null:HTTPClient.getForm(form),HTTPClient.mime_wwwform,method);
 	}
+	*/
 	public RemoteTask(URL url,
 			  String acceptMIME, 
-			  String content,
-			  String contentMIME,
+			  HttpEntity content,
+			 // String contentMIME,
 			  String method) throws RestException {
 		super();
 		this.url = url;
 
-		HTTPClient client = null;
-		
+		//HTTPClient client = null;
+		InputStream in = null;
 		try {
-			client = new HTTPClient(url.toString());
-			client.setHeaders(new String[][] {{"Accept",acceptMIME},{"Accept-Charset", "utf-8"}});
+			//client = new HTTPClient(url.toString());
+			//client.setHeaders(new String[][] {{"Accept",acceptMIME},{"Accept-Charset", "utf-8"}});
 			//client.setFollowingRedirects(true);
 			//client.setRetryAttempts(1);
 			//client.setRetryOnError(false);
 			
+			HttpRequestBase httpmethod;
 			
-			if (method.equals("POST")) 
-				client.post(content,contentMIME);
-			else if (method.equals("PUT"))
-				client.put(content,contentMIME);
-			else if (method.equals("DELETE"))
-				client.delete();
+			if (method.equals("POST")) {
+				httpmethod = new HttpPost(url.toURI());
+				((HttpPost)httpmethod).setEntity(content);
+			} else if (method.equals("PUT")) {
+				httpmethod = new HttpPut(url.toURI());
+				((HttpPut)httpmethod).setEntity(content);
+		    } else if (method.equals("DELETE"))
+				httpmethod = new HttpDelete(url.toURI());
+				//client.delete();
 			else if (method.equals("GET"))
-				client.get();
+				httpmethod = new HttpGet(url.toURI());
+				//client.get();
 			else throw new RestException(HttpURLConnection.HTTP_BAD_METHOD);
-			this.status = client.getStatus();
 			
-			if (client.getInputStream()==null) {
+			httpmethod.addHeader("Accept",acceptMIME);
+			httpmethod.addHeader("Accept-Charset", "utf-8");
+			HttpResponse response = getHttpclient().execute(httpmethod);
+			HttpEntity entity  = response.getEntity();
+			
+			this.status =  response.getStatusLine().getStatusCode();
+			
+			if (entity==null) {
 				throw new RestException(HttpURLConnection.HTTP_BAD_GATEWAY,
 						String.format("[%s] Representation not available %s",this.status,url));
 			}
-			
-			result = handleOutput(client.getInputStream(),status,null);
+			in = entity.getContent();
+			result = handleOutput(in,status,null);
 		} catch (RestException x) {
 			status = x.getStatus();
 			try { 
-				error = new RestException(HttpURLConnection.HTTP_BAD_GATEWAY,
-						String.format("URL=%s [%s] ",url,x.getStatus()),
-						x); 
+				error = new RestException(HttpURLConnection.HTTP_BAD_GATEWAY,String.format("URL=%s [%s] ",url,x.getStatus()),x); 
 			}	catch (Exception xx) { error = x; }
 		} catch (Exception x) {
 			setError(x);
 			status = -1;
 		} finally {
-			try { client.getInputStream().close(); } catch (Exception x) { x.printStackTrace();}
-			try { client.release(); } catch (Exception x) { x.printStackTrace();}
+			try { in.close(); } catch (Exception x) { x.printStackTrace();}
+			//try { respo. } catch (Exception x) { x.printStackTrace();}
 		}
 	}	
 	

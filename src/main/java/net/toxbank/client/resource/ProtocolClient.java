@@ -3,6 +3,7 @@ package net.toxbank.client.resource;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -14,6 +15,10 @@ import net.toxbank.client.io.rdf.IOClass;
 import net.toxbank.client.io.rdf.ProtocolIO;
 import net.toxbank.client.task.RemoteTask;
 
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
 import org.opentox.rest.HTTPClient;
 import org.opentox.rest.RestException;
 
@@ -37,25 +42,23 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 			b.append(keyword);
 			d = ";";
 		}
-		String[][] form = new String[8+(protocol.getAuthors()==null?0:protocol.getAuthors().size())][];
-		
-		form[0] = new String[] {"project_uri",protocol.getProject().getResourceURL().toString()};
-		form[1] = new String[] {"organisation_uri",protocol.getOrganisation().getResourceURL().toString()};
-		form[2] = new String[] {"user_uri",protocol.getOwner().getResourceURL().toString()};
-		form[3] = new String[] {"title",protocol.getTitle()};
-		form[4] = new String[] {"anabstract",protocol.getAbstract()};
-		form[5] = new String[] {"summarySearchable",Boolean.toString(protocol.isSearchable())};
-		form[6] = new String[] {"anabstract",protocol.getAbstract()};
-		form[7] = new String[] {"keywords",b.toString()};
+
+		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+		entity.addPart("project_uri", new StringBody(protocol.getProject().getResourceURL().toString()));
+		entity.addPart("organisation_uri", new StringBody(protocol.getOrganisation().getResourceURL().toString()));
+		entity.addPart("user_uri", new StringBody(protocol.getOwner().getResourceURL().toString()));
+		entity.addPart("title", new StringBody(protocol.getTitle()));
+		entity.addPart("anabstract", new StringBody(protocol.getAbstract()));
+		entity.addPart("summarySearchable", new StringBody(Boolean.toString(protocol.isSearchable())));
+		entity.addPart("keywords", new StringBody(b.toString()));
 		if (protocol.getAuthors()!=null)
-		for (int i=0; i < protocol.getAuthors().size(); i++)
-			form[i+8] = new String[] {"author_uri",protocol.getAuthors().get(i).getResourceURL().toString()};
+			for (int i=0; i < protocol.getAuthors().size(); i++)
+				entity.addPart("author_uri",new StringBody(protocol.getAuthors().get(i).getResourceURL().toString()));
+		entity.addPart("filename", new FileBody(new File(protocol.getDocument().getResourceURL().toURI())));
+		 
+		return new RemoteTask(collection, "text/uri-list", entity, HTTPClient.POST);
 		
-		String[] multipart = getMultipartWebFormRepresentation(
-							form, "filename", 
-							new File(protocol.getDocument().getResourceURL().toURI()), 
-							"application/pdf");
-		return new RemoteTask(collection, "text/uri-list", multipart[0], multipart[1], HTTPClient.POST);
+
 	}
 	
 	public RemoteTask createNewVersion(Protocol protocol)	
@@ -101,6 +104,20 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 	 */
 	public static URL listFile(Protocol protocol) throws MalformedURLException {
 		return new URL(String.format("%s%s",protocol.getResourceURL(),Resources.document));
+	}
+	
+	public static File downloadFile(Protocol protocol) throws MalformedURLException, IOException {
+		URL url = new URL(String.format("%s%s",protocol.getResourceURL(),Resources.document));
+		HttpURLConnection c = HTTPClient.getHttpURLConnection(url.toExternalForm(), HTTPClient.GET,"");
+		try {
+			c.connect();
+			File temp = File.createTempFile("download_", ".pdf");
+			HTTPClient.download(c.getInputStream(), temp);
+			c.disconnect();
+			return temp;
+		} finally {
+			try {c.disconnect(); } catch (Exception x) {}
+		}
 	}
 
 	/**
