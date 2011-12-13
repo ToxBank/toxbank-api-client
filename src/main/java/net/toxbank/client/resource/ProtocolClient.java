@@ -128,7 +128,7 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 		return templates;
 	}
 
-	public static void deleteProtocol(Protocol protocol) throws IOException, RestException {
+	public static void deleteProtocol(Protocol protocol) throws Exception {
 		ProtocolClient cli = new ProtocolClient();
 		cli.delete(protocol);
 	}

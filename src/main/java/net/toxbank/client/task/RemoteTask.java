@@ -51,7 +51,7 @@ public class RemoteTask implements Serializable {
 			  String acceptMIME, 
 			  String[][] form,
 			  String method) throws RestException, UnsupportedEncodingException {
-		this(url,acceptMIME,HTTPClient.getForm(form),HTTPClient.mime_wwwform,method);
+		this(url,acceptMIME,form==null?null:HTTPClient.getForm(form),HTTPClient.mime_wwwform,method);
 	}
 	public RemoteTask(URL url,
 			  String acceptMIME, 
@@ -210,8 +210,11 @@ public class RemoteTask implements Serializable {
 				BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 				String line = null;
 				while ((line = reader.readLine())!=null) {
-					ref = new URL(line.trim());
-					count++;
+					if ("".equals(line.trim())) ref = null;
+					else {
+						ref = new URL(line.trim());
+						count++;
+					}
 				}
 			} catch (Exception x) {
 				throw new RestException(HttpURLConnection.HTTP_BAD_GATEWAY,
@@ -219,7 +222,9 @@ public class RemoteTask implements Serializable {
 			} finally {
 				try { in.close(); } catch (Exception x) {} ;
 			}
-			if (count == 0) return url==null?getUrl():url;
+			if (count == 0) 
+				if (status==HttpURLConnection.HTTP_OK) return null;
+				else return url==null?getUrl():url;
 			/* A hack for the validation service returning empty responses on 200 OK ...
 				throw new ResourceException(Status.SERVER_ERROR_BAD_GATEWAY,
 							String.format("No task status indications from %s",url==null?getUrl():url));

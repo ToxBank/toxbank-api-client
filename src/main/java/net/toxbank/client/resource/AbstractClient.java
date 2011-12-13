@@ -13,6 +13,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.toxbank.client.Resources;
 import net.toxbank.client.io.rdf.IOClass;
 import net.toxbank.client.task.RemoteTask;
 
@@ -86,17 +87,9 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 	 * Delete
 	 * @return
 	 */
-	protected void delete(URL url) throws RestException, IOException {
-		HTTPClient client = new HTTPClient(url.toString());
-		client.setHeaders(new String[][] {{"Accept","text/uri-list"}});
-		client.delete();
-		try {
-			if (client.getStatus()!=200) 
-				throw new RestException(client.getStatus());
-
-		} finally {
-			try {client.release();} catch (Exception x) {}
-		}
+	protected void delete(URL url) throws Exception {
+		RemoteTask task = new RemoteTask(url, "text/uri-list", null, HTTPClient.DELETE);
+		task.waitUntilCompleted(500);
 	}
 	/**
 	 * 
@@ -104,7 +97,7 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 	 * @throws UniformInterfaceException
 	 * @throws URISyntaxException
 	 */
-	protected void delete(T object) throws RestException,IOException {
+	protected void delete(T object) throws Exception {
 		delete(object.getResourceURL());
 	}
 	/**
