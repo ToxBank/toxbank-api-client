@@ -1,10 +1,13 @@
 package net.toxbank.client.resource;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.UUID;
 
 import net.toxbank.client.Resources;
+import net.toxbank.client.task.RemoteTask;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -28,7 +31,7 @@ public class ProtocolClientTest {
 		protocol.setProject(new Project(new URL(String.format("%s%s/G1",AbstractClientTest.TEST_SERVER,Resources.project))));
 		protocol.setOrganisation(new Organisation(new URL(String.format("%s%s/G1",AbstractClientTest.TEST_SERVER,Resources.organisation))));
 		protocol.setOwner(new User(new URL(String.format("%s%s/U1",AbstractClientTest.TEST_SERVER,Resources.user))));
-		protocol.addAuthor(new User(new URL(String.format("%s%s/U2",AbstractClientTest.TEST_SERVER,Resources.user))));
+		protocol.addAuthor(new User(new URL(String.format("%s%s/U1",AbstractClientTest.TEST_SERVER,Resources.user))));
 		protocol.setTitle("title");
 		protocol.setAbstract("abstrakt");
 		protocol.setSearchable(true);
@@ -44,6 +47,34 @@ public class ProtocolClientTest {
 		
 		ProtocolClient cli = new ProtocolClient();
 		cli.delete(url);
+	}
+	
+	@Test
+	public void testUploadNewVersion() throws Exception {
+		
+		Protocol protocol = ProtocolClient.download(new URL(String.format("%s?page=0&pagesize=1",TEST_SERVER_PROTOCOL)));
+		System.out.println(protocol.getIdentifier());
+		List<URL> versions = ProtocolClient.listVersions(protocol);
+		
+		Assert.assertNotNull(protocol.getResourceURL());
+		protocol.addKeyword(UUID.randomUUID().toString());
+		protocol.setAbstract("new "+protocol.getAbstract());
+		URL file = getClass().getClassLoader().getResource("net/toxbank/client/test/protocol-sample.pdf");
+		protocol.setDocument(new Document(file));
+		ProtocolClient cli = new ProtocolClient();
+		RemoteTask task = cli.createNewVersion(protocol);
+		task.waitUntilCompleted(500);
+		Assert.assertNotNull(task.getResult());
+		Assert.assertTrue(task.getResult().toExternalForm().startsWith(TEST_SERVER_PROTOCOL));
+		
+		List<URL> newversions = ProtocolClient.listVersions(protocol);
+		Assert.assertEquals(versions.size()+1,newversions.size());
+		
+		//the new version task doesn't return the new url...
+		Protocol newVersion = ProtocolClient.download(task.getResult());
+		System.out.println(newVersion.getIdentifier());
+		Assert.assertTrue(newVersion.getVersion()>protocol.getVersion());
+		
 	}
 	
 	@Test
@@ -168,5 +199,28 @@ public class ProtocolClientTest {
 		Protocol roundtripped = ProtocolClient.download(resource);
 		Assert.assertEquals("This is the funniest abstract ever!", roundtripped.getAbstract());
 	}
+
+	@Test
+	public void testRoundtripSearchable() throws MalformedURLException {
+		Protocol version = new Protocol();
+		Assert.assertFalse(version.isSearchable());
+		version.setSearchable(true);
+		URL resource = ProtocolVersionClient.upload(version, new URL(TEST_SERVER_PROTOCOL));
+
+		Protocol roundtripped = ProtocolVersionClient.download(resource);
+		Assert.assertTrue(roundtripped.isSearchable());
+	}
+	
+	@Test
+	public void testRoundtripSubmissionDate() throws MalformedURLException {
+		Protocol version = new Protocol();
+		version.setSubmissionDate("2011-09-15");
+		URL resource = ProtocolVersionClient.upload(version, new URL(TEST_SERVER_PROTOCOL));
+
+		Protocol roundtripped = ProtocolVersionClient.download(resource);
+		Assert.assertEquals("2011-09-15", roundtripped.getSubmissionDate());
+	}
+	
+
 
 }

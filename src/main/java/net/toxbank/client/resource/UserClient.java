@@ -2,6 +2,7 @@ package net.toxbank.client.resource;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
@@ -61,9 +62,9 @@ public class UserClient extends AbstractClient<User> {
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/User:RetrieveProtocols">API documentation</a>.
 	 */
-	public static List<URL> listProtocols(User user) {
-		// FIXME: implement uploading this protocol to the server
-		return null;
+	public static List<URL> listProtocols(User user) throws MalformedURLException, IOException, RestException {
+		ProtocolClient cli = new ProtocolClient();
+		return cli.listProtocols(user);
 	}
 
 	/**
@@ -71,9 +72,9 @@ public class UserClient extends AbstractClient<User> {
 	 * Equivalent to {@link #listProtocols()} but returns {@link ProtocolClient}s
 	 * already populated with metadata from the database.
 	 */
-	public static List<Protocol> getProtocols(User user) {
-		// FIXME: implement uploading this protocol to the server
-		return null;
+	public static List<Protocol> getProtocols(User user) throws Exception {
+		ProtocolClient cli = new ProtocolClient();
+		return cli.getProtocols(user);
 	}
 
 	/**

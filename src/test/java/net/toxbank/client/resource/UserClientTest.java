@@ -39,7 +39,8 @@ public class UserClientTest {
 	
 	@Test
 	public void testListProtocols() throws Exception {
-		User user = new User(new URL(TEST_SERVER_USER + "user/ab7f235ccd"));
+		//get the first user available
+		User user = UserClient.download(new URL(String.format("%s?page=%d&pagesize=%d",TEST_SERVER_USER,0,1)));
 		List<URL> protocols = UserClient.listProtocols(user);
 		Assert.assertNotNull(protocols);
 		Assert.assertNotSame(0, protocols.size());
@@ -47,7 +48,8 @@ public class UserClientTest {
 	
 	@Test
 	public void testGetProtocols() throws Exception {
-		User user = new User(new URL(TEST_SERVER_USER + "user/ab7f235ccd"));
+		//get the first user available
+		User user = UserClient.download(new URL(String.format("%s?page=%d&pagesize=%d",TEST_SERVER_USER,0,1)));
 		List<Protocol> protocols = UserClient.getProtocols(user);
 		Assert.assertNotNull(protocols);
 		Assert.assertNotSame(0, protocols.size());

@@ -58,6 +58,10 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 		return new RemoteTask(collection, "text/uri-list", multipart[0], multipart[1], HTTPClient.POST);
 	}
 	
+	public RemoteTask createNewVersion(Protocol protocol)	
+		throws RestException,UnsupportedEncodingException, IOException, URISyntaxException {
+		return createAsync(protocol,new URL(String.format("%s%s", protocol.getResourceURL(),Resources.versions)));
+	}
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/API_Protocol:Upload">API documentation</a>.
 	 */
@@ -75,6 +79,13 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 		return cli.readURI(server);
 	}
 
+	public List<URL> listProtocols(User user) throws IOException, RestException {
+		return readURI(new URL(String.format("%s%s", user.getResourceURL(),Resources.protocol)));
+	}
+	
+	public List<Protocol> getProtocols(User user) throws Exception {
+		return readRDF_XML(new URL(String.format("%s%s", user.getResourceURL(),Resources.protocol)));
+	}	
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/API_Protocol:Upload">API documentation</a>.
 	 */
@@ -83,6 +94,7 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 		Protocol p = cli.createSync(protocol,server);
 		return p.getResourceURL();
 	}
+
 
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/API_Protocol:Retrieve">API documentation</a>.
