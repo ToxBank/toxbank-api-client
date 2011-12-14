@@ -99,7 +99,7 @@ public class UserClientTest {
 		user.setWeblog(new URL("http://example.org/blog"));
 		user.setHomepage(new URL("http://example.org/home"));
 		
-		RemoteTask task = tbClient.createAsync(user,new URL(TEST_SERVER_USER));
+		RemoteTask task = tbClient.postAsync(user,new URL(TEST_SERVER_USER));
 		task.waitUntilCompleted(500);
 		//verify if ok
 		Assert.assertEquals(HttpURLConnection.HTTP_OK,task.getStatus());

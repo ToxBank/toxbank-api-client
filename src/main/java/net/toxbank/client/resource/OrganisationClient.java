@@ -1,20 +1,17 @@
 package net.toxbank.client.resource;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.toxbank.client.exceptions.InvalidInputException;
 import net.toxbank.client.io.rdf.IOClass;
 import net.toxbank.client.io.rdf.OrganisationIO;
-import net.toxbank.client.task.RemoteTask;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.message.BasicNameValuePair;
-import org.opentox.rest.HTTPClient;
-import org.opentox.rest.RestException;
 
 /**
  * REST operations on {@link Organisation}
@@ -22,20 +19,33 @@ import org.opentox.rest.RestException;
  *
  */
 public class OrganisationClient extends AbstractClient<Organisation> {
-
+	protected enum webform {
+		name,ldapgroup
+	}
 	@Override
 	IOClass<Organisation> getIOClass() {
 		return new OrganisationIO();
 	}
-
-	@Override
-	protected RemoteTask createAsync(Organisation object, URL collection) 
-			throws RestException, UnsupportedEncodingException, URISyntaxException {
-		List<NameValuePair> formparams = new ArrayList<NameValuePair>();
-		formparams.add(new BasicNameValuePair("name", object.getTitle()));
-		formparams.add(new BasicNameValuePair("ldapgroup", object.getGroupName()));
-		UrlEncodedFormEntity entity = new UrlEncodedFormEntity(formparams, "UTF-8");
-		return new RemoteTask(collection, "text/uri-list", entity, HTTPClient.POST);
-	}	
 	
+	@Override
+	protected HttpEntity createPOSTEntity(Organisation object) throws InvalidInputException,Exception {
+		List<NameValuePair> formparams = new ArrayList<NameValuePair>();
+		if (object.getTitle()!=null)
+			formparams.add(new BasicNameValuePair(webform.name.name(), object.getTitle()));
+		if (object.getGroupName()!=null)
+			formparams.add(new BasicNameValuePair(webform.ldapgroup.name(), object.getGroupName()));
+		if (formparams.size()==0) throw new InvalidInputException("No content!");
+		return new UrlEncodedFormEntity(formparams, "UTF-8");
+	}
+	
+	@Override
+	protected HttpEntity createPUTEntity(Organisation object) throws InvalidInputException,Exception {
+		List<NameValuePair> formparams = new ArrayList<NameValuePair>();
+		if (object.getTitle()!=null)
+			formparams.add(new BasicNameValuePair(webform.name.name(), object.getTitle()));
+		if (object.getGroupName()!=null)
+			formparams.add(new BasicNameValuePair(webform.ldapgroup.name(), object.getGroupName()));
+		if (formparams.size()==0) throw new InvalidInputException("Nothing to update!");
+		return new UrlEncodedFormEntity(formparams, "UTF-8");
+	}
 }

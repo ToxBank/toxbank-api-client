@@ -4,36 +4,70 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.toxbank.client.exceptions.InvalidInputException;
 import net.toxbank.client.io.rdf.IOClass;
 import net.toxbank.client.task.RemoteTask;
 
+import org.apache.http.HttpEntity;
 import org.opentox.rest.HTTPClient;
 import org.opentox.rest.RestException;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
-
+/**
+ * An abstract client, implementing HTTP GET, PUT, POST and DELETE.
+ * @author nina
+ *
+ * @param <T>
+ */
 public abstract class AbstractClient<T extends IToxBankResource> {
 	
 	public AbstractClient() {
 	}
-	
-	protected List<T> readRDF_XML(URL url) throws Exception {
-		return read(url,"application/rdf+xml");
+	/**
+	 * Same as {@link #getRDF_XML(URL)}
+	 * @param url
+	 * @return List of objects
+	 * @throws Exception
+	 */
+	public List<T> get(URL url) throws Exception {
+		return getRDF_XML(url);
 	}
-	protected List<T> readRDF_N3(URL url) throws Exception {
-		return read(url,"text/n3");
+	/**
+	 * HTTP GET with "Accept:application/rdf+xml".  Parses the RDF and creates list of objects.
+	 * @param url
+	 * @return
+	 * @throws Exception
+	 */
+	protected List<T> getRDF_XML(URL url) throws Exception {
+		return get(url,"application/rdf+xml");
+	}
+	/**
+	 * HTTP GET with "Accept:text/n3".  Parses the RDF and creates list of objects.
+	 * @param url
+	 * @return
+	 * @throws Exception
+	 */
+	protected List<T> getRDF_N3(URL url) throws Exception {
+		return get(url,"text/n3");
 	}	
-	protected List<T> read(URL url,String mediaType) throws RestException, IOException {
-		
+	/**
+	 * HTTP GET with given media type (expects one of RDF flavours). 
+	 * @param url
+	 * @param mediaType
+	 * @return
+	 * @throws RestException
+	 * @throws IOException
+	 */
+	protected List<T> get(URL url,String mediaType) throws RestException, IOException {
+		//TODO rewrite with Apache HTTPClient
 		HTTPClient client = new HTTPClient(url.toString());
 		client.setHeaders(new String[][] {{"Accept",mediaType},{"Accept-Charset", "utf-8"}});
 
@@ -54,7 +88,16 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 	
 	}
 	
-	public List<URL> readURI(URL url) throws  RestException, IOException {
+	/**
+	 * HTTP GET with "Accept:text/uri-list". 
+	 * If the resource is a container, will return list URIs of contained resources.
+	 * Otherwise, will return the URI of the object itself (for consistency).
+	 * @param url
+	 * @return
+	 * @throws RestException
+	 * @throws IOException
+	 */
+	public List<URL> listURI(URL url) throws  RestException, IOException {
 		HTTPClient client = new HTTPClient(url.toString());
 		client.setHeaders(new String[][] {{"Accept","text/uri-list"}});
 		client.get();
@@ -70,7 +113,16 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 			try {client.release();} catch (Exception x) {}
 		}
 	}
-	protected List<URL> readURI(InputStream in) throws IOException, MalformedURLException {
+	/**
+	 * HTTP GET with "Accept:text/uri-list". 
+	 * If the resource is a container, will return list URIs of contained resources.
+	 * Otherwise, will return the URI of the object itself (for consistency). 
+	 * @param in
+	 * @return
+	 * @throws IOException
+	 * @throws MalformedURLException
+	 */
+	private List<URL> readURI(InputStream in) throws IOException, MalformedURLException {
 		List<URL> uris = new ArrayList<URL>();
 		BufferedReader r = new BufferedReader(new InputStreamReader(in));
 		String line = null;
@@ -79,62 +131,62 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 		}
 		return uris;
 	}	
-
-	/**
-	 * Delete
-	 * @return
-	 */
-	protected void delete(URL url) throws Exception {
-		RemoteTask task = new RemoteTask(url, "text/uri-list", null, HTTPClient.DELETE);
-		task.waitUntilCompleted(500);
-	}
-	/**
-	 * 
-	 * @param object
-	 * @throws UniformInterfaceException
-	 * @throws URISyntaxException
-	 */
-	protected void delete(T object) throws Exception {
-		delete(object.getResourceURL());
-	}
-	/**
-	 * POST
-	 * @param object
-	 * @throws UniformInterfaceException
-	 * @throws URISyntaxException
-	 */
-	/*
-	protected void createWebForm(T object, URL collection) throws RestException {
-		if (collection==null) throw new Exception("No URL");
-		HTTPClient client = new HTTPClient(collection.toString());
-		client.setHeaders(new String[][] {{"Accept","text/uri-list"}});
-		client.post();
-		InputStream in = null;
-		try {
-			if (client.getStatus()!=200) 
-				throw new RestException(client.getStatus());
-		} catch (Exception x) {
-			throw x;
-		} finally {
-			try {in.close();} catch (Exception x) {}
-			try {client.release();} catch (Exception x) {}
-		}
-		
-
-	}
-	*/
 	
 	/**
-	 * POST to create a new object. 
+	 * HTTP POST to create a new object. Asynchronous.
 	 * @param object
 	 * @param collection  The URL of resource collection, e.g. /protocol or /user .
 	 * The new object will be added to the collection of resources.
 	 * @return  Returns {@link RemoteTask}
-	 * @throws Exception in case of error.
+	 * @throws Exception if not allowed, or other error condition
 	 */
-	protected abstract RemoteTask createAsync(T object, URL collection) 
-				throws RestException,UnsupportedEncodingException, IOException, URISyntaxException ;
-	
+	protected RemoteTask postAsync(T object, URL collection) throws Exception {
+		return sendAsync(collection, createPOSTEntity(object), HTTPClient.POST);
+	}	
+	/**
+	 * HTTP PUT to update an existing object. Asynchronous.
+	 * @param object
+	 * @return {@link RemoteTask}
+	 * @throws Exception if not allowed, or other error condition
+	 */
+	protected RemoteTask putAsync(T object) throws Exception {
+		return sendAsync(object.getResourceURL(), createPUTEntity(object), HTTPClient.PUT);
+	}
+	/**
+	 * HTTP DELETE to remove an existing object. Asynchronous.
+	 * @return {@link RemoteTask}
+	 * @throws Exception if not allowed, or other error condition 
+	 */
+	protected RemoteTask deleteAsync(T object) throws Exception {
+		return deleteAsync(object.getResourceURL());
+	}	
+	/**
+	 * The same as {@link #deleteAsync(IToxBankResource)}, but accepts an URL.
+	 * @param url
+	 * @return {@link RemoteTask}
+	 * @throws Exception
+	 */
+	protected RemoteTask deleteAsync(URL url) throws Exception {
+		return sendAsync(url,null, HTTPClient.DELETE);
+	}	
+	private RemoteTask sendAsync(URL target, HttpEntity entity, String method) throws Exception {
+		return new RemoteTask(target, "text/uri-list", entity, method);
+	}	
+
+	/**
+	 * 
+	 * @param object The object to be created
+	 * @return {@link HttpEntity}
+	 * @throws Exception
+	 */
+	protected abstract HttpEntity createPOSTEntity(T object) throws InvalidInputException,Exception;
+	/**
+	 * 
+	 * @param object the object to be updated
+	 * @return
+	 * @throws Exception
+	 */
+	protected abstract HttpEntity createPUTEntity(T object) throws InvalidInputException,Exception;
 	/**
 	 * Creates a new object. Waits until the asynchronous tasks completes.
 	 * @param object
@@ -142,14 +194,47 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 	 * @return
 	 * @throws Exception in case of error.
 	 */
-	protected T createSync(T object, URL collection) throws Exception {
-		RemoteTask task = createAsync(object, collection);
+	public T post(T object, URL collection) throws Exception {
+		RemoteTask task = postAsync(object, collection);
 		task.waitUntilCompleted(500);	
 		if (task.isERROR()) throw task.getError();
 		else object.setResourceURL(task.getResult());
 		return object;
 	}
+	/**
+	 * Updates an existing object. Waits until the asynchronous tasks completes.
+	 * @param object
+	 * @param collection
+	 * @return
+	 * @throws Exception
+	 */
+	public T put(T object) throws Exception {
+		RemoteTask task = putAsync(object);
+		task.waitUntilCompleted(500);	
+		if (task.isERROR()) throw task.getError();
+		else object.setResourceURL(task.getResult());
+		return object;
+	}	
 	
+	/**
+	 * Synchronous delete
+	 * @param url
+	 * @throws Exception
+	 */
+	public void delete(URL url) throws Exception {
+		RemoteTask task = deleteAsync(url);
+		task.waitUntilCompleted(500);
+		if (task.isERROR()) throw task.getError();
+	}
+	/**
+	 * 
+	 * @param object
+	 * @throws UniformInterfaceException
+	 * @throws URISyntaxException
+	 */
+	public void delete(T object) throws Exception {
+		delete(object.getResourceURL());
+	}
 	abstract IOClass<T> getIOClass();
 	
 

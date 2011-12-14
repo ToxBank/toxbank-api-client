@@ -2,7 +2,17 @@ package net.toxbank.client.resource;
 
 import java.net.URL;
 
-public class ProtocolVersionClient {
+import net.toxbank.client.io.rdf.IOClass;
+import net.toxbank.client.io.rdf.ProtocolIO;
+
+import org.apache.http.HttpEntity;
+
+/**
+ * A protocol version is a {@link Protocol}
+ * @author nina
+ *
+ */
+public class ProtocolVersionClient extends AbstractClient<Protocol> {
 
 	private ProtocolVersionClient() {};
 
@@ -17,6 +27,23 @@ public class ProtocolVersionClient {
 	public static Protocol download(URL resource) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	protected HttpEntity createPOSTEntity(Protocol object) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	protected HttpEntity createPUTEntity(Protocol object) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	IOClass<Protocol> getIOClass() {
+		return new ProtocolIO();
 	}
 
 }

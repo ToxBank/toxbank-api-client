@@ -20,7 +20,7 @@ public class OrganisationClientTest extends AbstractClientTest<Organisation,Orga
 	@Override
 	public void testList() throws Exception {
 		OrganisationClient tbClient = getToxBackClient();
-		List<URL> uri = tbClient.readURI(new URL(String.format("%s%s", TEST_SERVER,Resources.organisation)));
+		List<URL> uri = tbClient.listURI(new URL(String.format("%s%s", TEST_SERVER,Resources.organisation)));
 		System.out.println(uri);
 		Assert.assertTrue(uri.size()>0);
 	}
@@ -29,11 +29,11 @@ public class OrganisationClientTest extends AbstractClientTest<Organisation,Orga
 	public void testRead() throws Exception {
 		OrganisationClient tbClient = getToxBackClient();
 		//get the first record
-		List<URL> uri = tbClient.readURI(new URL(String.format("%s%s?page=0&pagesize=1", TEST_SERVER,Resources.organisation)));
+		List<URL> uri = tbClient.listURI(new URL(String.format("%s%s?page=0&pagesize=1", TEST_SERVER,Resources.organisation)));
 		//verify one record is retrieved
 		Assert.assertEquals(1,uri.size());
 		//retrieve organisation details
-		List<Organisation> orgs = tbClient.readRDF_XML(uri.get(0));
+		List<Organisation> orgs = tbClient.getRDF_XML(uri.get(0));
 		//verify one record is retrieved
 		Assert.assertEquals(1,orgs.size());
 		Assert.assertEquals(uri.get(0),orgs.get(0).getResourceURL());
@@ -48,7 +48,7 @@ public class OrganisationClientTest extends AbstractClientTest<Organisation,Orga
 		Organisation organisation = new Organisation();
 		organisation.setTitle(UUID.randomUUID().toString());
 		//POST
-		RemoteTask task = tbClient.createAsync(organisation,new URL(String.format("%s%s", TEST_SERVER,Resources.organisation)));
+		RemoteTask task = tbClient.postAsync(organisation,new URL(String.format("%s%s", TEST_SERVER,Resources.organisation)));
 		task.waitUntilCompleted(500);
 		//verify if ok
 		Assert.assertEquals(HttpURLConnection.HTTP_OK,task.getStatus());

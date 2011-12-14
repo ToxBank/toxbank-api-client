@@ -2,14 +2,12 @@ package net.toxbank.client.resource;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
 import net.toxbank.client.Resources;
 
 import org.junit.Assert;
-import org.opentox.rest.HTTPClient;
 
 import com.itextpdf.text.pdf.PdfReader;
 

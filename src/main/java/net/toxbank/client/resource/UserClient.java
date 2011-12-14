@@ -1,21 +1,19 @@
 package net.toxbank.client.resource;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.toxbank.client.exceptions.InvalidInputException;
 import net.toxbank.client.io.rdf.IOClass;
 import net.toxbank.client.io.rdf.UserIO;
-import net.toxbank.client.task.RemoteTask;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.message.BasicNameValuePair;
-import org.opentox.rest.HTTPClient;
 import org.opentox.rest.RestException;
 
 /**
@@ -24,24 +22,44 @@ import org.opentox.rest.RestException;
  * @author egonw
  */
 public class UserClient extends AbstractClient<User> {
-
+	protected enum webform {
+		username,title,firstname,lastname,institute,weblog,homepage
+	}
 	protected UserClient() {}
 
 	@Override
-	protected RemoteTask createAsync(User user, URL collection)
-			throws RestException, UnsupportedEncodingException, URISyntaxException {
+	protected HttpEntity createPOSTEntity(User user) throws Exception {
 
 		List<NameValuePair> formparams = new ArrayList<NameValuePair>();
-		formparams.add(new BasicNameValuePair("username", user.getUserName()));
-		formparams.add(new BasicNameValuePair("title", user.getTitle()));
-		formparams.add(new BasicNameValuePair("firstname", user.getFirstname()));
-		formparams.add(new BasicNameValuePair("lastname", user.getLastname()));
-		formparams.add(new BasicNameValuePair("institute", user.getInstitute().getResourceURL().toString()));
-		formparams.add(new BasicNameValuePair("weblog", user.getWeblog()==null?null:user.getWeblog().toString()));
-		formparams.add(new BasicNameValuePair("homepage", user.getHomepage()==null?null:user.getHomepage().toString()));
-		
-		UrlEncodedFormEntity entity = new UrlEncodedFormEntity(formparams, "UTF-8");
-		return new RemoteTask(collection, "text/uri-list", entity, HTTPClient.POST);		
+		formparams.add(new BasicNameValuePair(webform.username.name(), user.getUserName()));
+		formparams.add(new BasicNameValuePair(webform.title.name(), user.getTitle()));
+		formparams.add(new BasicNameValuePair(webform.firstname.name(), user.getFirstname()));
+		formparams.add(new BasicNameValuePair(webform.lastname.name(), user.getLastname()));
+		formparams.add(new BasicNameValuePair(webform.institute.name(), user.getInstitute().getResourceURL().toString()));
+		formparams.add(new BasicNameValuePair(webform.weblog.name(), user.getWeblog()==null?null:user.getWeblog().toString()));
+		formparams.add(new BasicNameValuePair(webform.homepage.name(), user.getHomepage()==null?null:user.getHomepage().toString()));
+		return new UrlEncodedFormEntity(formparams, "UTF-8");
+	}
+	
+	@Override
+	protected HttpEntity createPUTEntity(User user) throws Exception {
+		List<NameValuePair> formparams = new ArrayList<NameValuePair>();
+		if (user.getUserName()!=null)
+			formparams.add(new BasicNameValuePair(webform.username.name(), user.getUserName()));
+		if (user.getTitle()!=null)
+			formparams.add(new BasicNameValuePair(webform.title.name(), user.getTitle()));
+		if (user.getFirstname()!=null)
+			formparams.add(new BasicNameValuePair(webform.firstname.name(), user.getFirstname()));
+		if (user.getLastname()!=null)
+			formparams.add(new BasicNameValuePair(webform.lastname.name(), user.getLastname()));
+		if ((user.getInstitute()!=null) && (user.getInstitute().getResourceURL()!=null))
+			formparams.add(new BasicNameValuePair(webform.institute.name(), user.getInstitute().getResourceURL().toString()));
+		if ((user.getWeblog()!=null))
+			formparams.add(new BasicNameValuePair(webform.weblog.name(), user.getWeblog()==null?null:user.getWeblog().toString()));
+		if ((user.getHomepage()!=null))
+			formparams.add(new BasicNameValuePair(webform.homepage.name(), user.getHomepage()==null?null:user.getHomepage().toString()));
+		if (formparams.size()==0) throw new InvalidInputException("No content!");
+		return new UrlEncodedFormEntity(formparams, "UTF-8");
 	}
 	@Override
 	IOClass<User> getIOClass() {
@@ -52,7 +70,7 @@ public class UserClient extends AbstractClient<User> {
 	 */
 	public static User download(URL identifier) throws IOException, RestException {
 		UserClient cli = new UserClient();
-		List<User> users = cli.read(identifier, "application/rdf+xml");
+		List<User> users = cli.get(identifier, "application/rdf+xml");
 		return users.size()>0?users.get(0):null;
 	}
 	
@@ -61,7 +79,7 @@ public class UserClient extends AbstractClient<User> {
 	 */
 	public static List<URL> list(URL server)  throws IOException, RestException  {
 		UserClient cli = new UserClient();
-		return cli.readURI(server);
+		return cli.listURI(server);
 	}
 
 	/**

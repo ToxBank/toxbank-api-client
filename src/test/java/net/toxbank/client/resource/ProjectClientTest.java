@@ -21,7 +21,7 @@ public class ProjectClientTest extends AbstractClientTest<Project,ProjectClient>
 	@Override
 	public void testList() throws Exception {
 		ProjectClient tbClient = getToxBackClient();
-		List<URL> uri = tbClient.readURI(new URL(String.format("%s%s", TEST_SERVER,Resources.project)));
+		List<URL> uri = tbClient.listURI(new URL(String.format("%s%s", TEST_SERVER,Resources.project)));
 		System.out.println(uri);
 		Assert.assertTrue(uri.size()>0);
 	}
@@ -30,11 +30,11 @@ public class ProjectClientTest extends AbstractClientTest<Project,ProjectClient>
 	public void testRead() throws Exception {
 		ProjectClient tbClient = getToxBackClient();
 		//get the first record
-		List<URL> uri = tbClient.readURI(new URL(String.format("%s%s?page=0&pagesize=1", TEST_SERVER,Resources.project)));
+		List<URL> uri = tbClient.listURI(new URL(String.format("%s%s?page=0&pagesize=1", TEST_SERVER,Resources.project)));
 		//verify one record is retrieved
 		Assert.assertEquals(1,uri.size());
 		//retrieve project details
-		List<Project> projects = tbClient.readRDF_XML(uri.get(0));
+		List<Project> projects = tbClient.getRDF_XML(uri.get(0));
 		//verify one record is retrieved
 		Assert.assertEquals(1,projects.size());
 		Assert.assertEquals(uri.get(0),projects.get(0).getResourceURL());
@@ -48,7 +48,7 @@ public class ProjectClientTest extends AbstractClientTest<Project,ProjectClient>
 		ProjectClient tbClient = getToxBackClient();
 		Project project = new Project();
 		project.setTitle(UUID.randomUUID().toString());
-		RemoteTask task = tbClient.createAsync(project,new URL(String.format("%s%s", TEST_SERVER,Resources.project)));
+		RemoteTask task = tbClient.postAsync(project,new URL(String.format("%s%s", TEST_SERVER,Resources.project)));
 		task.waitUntilCompleted(500);
 		//verify if ok
 		Assert.assertEquals(HttpURLConnection.HTTP_OK,task.getStatus());
