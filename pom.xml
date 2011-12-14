@@ -90,7 +90,7 @@
 	<dependency>
 	  <groupId>ambit</groupId>
 	  <artifactId>opentox-opensso</artifactId>
-	  <version>1.0.2-SNAPSHOT</version>
+	  <version>1.0.3-SNAPSHOT</version>
 	</dependency>
 	<!-- to test if pdf files are readable -->
 	<dependency>
