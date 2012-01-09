@@ -90,16 +90,16 @@ public class RemoteTask implements Serializable {
 			
 			HttpRequestBase httpmethod;
 			
-			if (method.equals("POST")) {
+			if (method.equals(HttpPost.METHOD_NAME)) {
 				httpmethod = new HttpPost(url.toURI());
 				((HttpPost)httpmethod).setEntity(content);
-			} else if (method.equals("PUT")) {
+			} else if (method.equals(HttpPut.METHOD_NAME)) {
 				httpmethod = new HttpPut(url.toURI());
 				((HttpPut)httpmethod).setEntity(content);
-		    } else if (method.equals("DELETE"))
+		    } else if (method.equals(HttpDelete.METHOD_NAME))
 				httpmethod = new HttpDelete(url.toURI());
 				//client.delete();
-			else if (method.equals("GET"))
+			else if (method.equals(HttpGet.METHOD_NAME))
 				httpmethod = new HttpGet(url.toURI());
 				//client.get();
 			else throw new RestException(HttpStatus.SC_METHOD_NOT_ALLOWED);

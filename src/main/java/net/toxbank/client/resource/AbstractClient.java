@@ -15,6 +15,9 @@ import net.toxbank.client.io.rdf.IOClass;
 import net.toxbank.client.task.RemoteTask;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.opentox.rest.HTTPClient;
 import org.opentox.rest.RestException;
 
@@ -141,7 +144,7 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 	 * @throws Exception if not allowed, or other error condition
 	 */
 	protected RemoteTask postAsync(T object, URL collection) throws Exception {
-		return sendAsync(collection, createPOSTEntity(object), HTTPClient.POST);
+		return sendAsync(collection, createPOSTEntity(object), HttpPost.METHOD_NAME);
 	}	
 	/**
 	 * HTTP PUT to update an existing object. Asynchronous.
@@ -150,7 +153,7 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 	 * @throws Exception if not allowed, or other error condition
 	 */
 	protected RemoteTask putAsync(T object) throws Exception {
-		return sendAsync(object.getResourceURL(), createPUTEntity(object), HTTPClient.PUT);
+		return sendAsync(object.getResourceURL(), createPUTEntity(object), HttpPut.METHOD_NAME);
 	}
 	/**
 	 * HTTP DELETE to remove an existing object. Asynchronous.
@@ -167,7 +170,7 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 	 * @throws Exception
 	 */
 	protected RemoteTask deleteAsync(URL url) throws Exception {
-		return sendAsync(url,null, HTTPClient.DELETE);
+		return sendAsync(url,null, HttpDelete.METHOD_NAME);
 	}	
 	private RemoteTask sendAsync(URL target, HttpEntity entity, String method) throws Exception {
 		return new RemoteTask(target, "text/uri-list", entity, method);
