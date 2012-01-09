@@ -10,6 +10,7 @@ import java.net.URL;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -51,7 +52,9 @@ public class RemoteTask implements Serializable {
 	protected HttpClient httpclient;
 	
 	public HttpClient getHttpclient() {
-		if (httpclient==null) httpclient = new DefaultHttpClient();
+		if (httpclient==null) {
+			httpclient = new DefaultHttpClient();
+		}
 		return httpclient;
 	}
 	protected void setError(Exception error) {
@@ -99,7 +102,7 @@ public class RemoteTask implements Serializable {
 			else if (method.equals("GET"))
 				httpmethod = new HttpGet(url.toURI());
 				//client.get();
-			else throw new RestException(HttpURLConnection.HTTP_BAD_METHOD);
+			else throw new RestException(HttpStatus.SC_METHOD_NOT_ALLOWED);
 			
 			httpmethod.addHeader("Accept",acceptMIME);
 			httpmethod.addHeader("Accept-Charset", "utf-8");
@@ -109,7 +112,7 @@ public class RemoteTask implements Serializable {
 			this.status =  response.getStatusLine().getStatusCode();
 			
 			if (entity==null) {
-				throw new RestException(HttpURLConnection.HTTP_BAD_GATEWAY,
+				throw new RestException(HttpStatus.SC_BAD_GATEWAY,
 						String.format("[%s] Representation not available %s",this.status,url));
 			}
 			in = entity.getContent();
@@ -117,7 +120,7 @@ public class RemoteTask implements Serializable {
 		} catch (RestException x) {
 			status = x.getStatus();
 			try { 
-				error = new RestException(HttpURLConnection.HTTP_BAD_GATEWAY,String.format("URL=%s [%s] ",url,x.getStatus()),x); 
+				error = new RestException(HttpStatus.SC_BAD_GATEWAY,String.format("URL=%s [%s] ",url,x.getStatus()),x); 
 			}	catch (Exception xx) { error = x; }
 		} catch (Exception x) {
 			setError(x);
@@ -130,13 +133,13 @@ public class RemoteTask implements Serializable {
 	
 	
 	public boolean isCompletedOK() {
-		return HttpURLConnection.HTTP_OK == status;
+		return HttpStatus.SC_OK == status;
 	}
 	public boolean isCancelled() {
-		return  HttpURLConnection.HTTP_UNAVAILABLE == status;
+		return HttpStatus.SC_SERVICE_UNAVAILABLE == status;
 	}
 	public boolean isAccepted() {
-		return HttpURLConnection.HTTP_ACCEPTED == status;
+		return HttpStatus.SC_ACCEPTED == status;
 	}	
 
 	public boolean isERROR() {
@@ -180,7 +183,7 @@ public class RemoteTask implements Serializable {
 
 	        in = client.getInputStream();
 			status = client.getResponseCode();
-			if (HttpURLConnection.HTTP_UNAVAILABLE == status) {
+			if (HttpStatus.SC_SERVICE_UNAVAILABLE == status) {
 				return true;
 			}
 			
@@ -215,17 +218,17 @@ public class RemoteTask implements Serializable {
 	 */
 	protected URL handleOutput(InputStream in,int status,URL url) throws RestException {
 		URL ref = null;
-		if (HttpURLConnection.HTTP_OK == status
-						|| HttpURLConnection.HTTP_ACCEPTED == status 
-						|| HttpURLConnection.HTTP_CREATED == status 
+		if (HttpStatus.SC_OK == status
+						|| HttpStatus.SC_ACCEPTED == status 
+						|| HttpStatus.SC_CREATED == status 
 						//|| Status.REDIRECTION_SEE_OTHER.equals(status)
-						|| HttpURLConnection.HTTP_UNAVAILABLE == status
+						|| HttpStatus.SC_SERVICE_UNAVAILABLE == status
 						) {
 
 			if (in==null) {
-				if ((HttpURLConnection.HTTP_ACCEPTED == status) && (url != null)) return url;
+				if ((HttpStatus.SC_ACCEPTED == status) && (url != null)) return url;
 				String msg = String.format("Error reading response from %s: %s. Status was %s", url==null?getUrl():url, "Empty content",status);
-				throw new RestException(HttpURLConnection.HTTP_BAD_GATEWAY,msg);
+				throw new RestException(HttpStatus.SC_BAD_GATEWAY,msg);
 			}
 			
 			int count=0;
@@ -241,13 +244,13 @@ public class RemoteTask implements Serializable {
 					}
 				}
 			} catch (Exception x) {
-				throw new RestException(HttpURLConnection.HTTP_BAD_GATEWAY,
+				throw new RestException(HttpStatus.SC_BAD_GATEWAY,
 						String.format("Error reading response from %s: %s", url==null?getUrl():url, x.getMessage()),x);
 			} finally {
 				try { in.close(); } catch (Exception x) {} ;
 			}
 			if (count == 0) 
-				if (status==HttpURLConnection.HTTP_OK) return null;
+				if (status==HttpStatus.SC_OK) return null;
 				else return url==null?getUrl():url;
 			/* A hack for the validation service returning empty responses on 200 OK ...
 				throw new ResourceException(Status.SERVER_ERROR_BAD_GATEWAY,
@@ -294,10 +297,10 @@ public class RemoteTask implements Serializable {
 	protected URL handleOutputRDF(InputStream in,int status) throws RestException {
 		URL ref = result;
 		
-		if ((HttpURLConnection.HTTP_OK == status) || 
-			 (HttpURLConnection.HTTP_ACCEPTED == status) || 
-			 (HttpURLConnection.HTTP_CREATED == status) || 
-			 (HttpURLConnection.HTTP_SEE_OTHER == status)) {
+		if ((HttpStatus.SC_OK == status) || 
+			 (HttpStatus.SC_ACCEPTED == status) || 
+			 (HttpStatus.SC_CREATED == status) || 
+			 (HttpStatus.SC_SEE_OTHER == status)) {
 			Model jenaModel = null;
 			try {
 				jenaModel = ModelFactory
@@ -325,7 +328,7 @@ public class RemoteTask implements Serializable {
 				}	
 				i.close();
 			} catch (Exception x) {
-				throw new RestException(HttpURLConnection.HTTP_BAD_GATEWAY,x.getMessage(),x);
+				throw new RestException(HttpStatus.SC_BAD_GATEWAY,x.getMessage(),x);
 			} finally {
 				try { jenaModel.close(); } catch (Exception x) {} ;
 				try { in.close(); } catch (Exception x) {} ;

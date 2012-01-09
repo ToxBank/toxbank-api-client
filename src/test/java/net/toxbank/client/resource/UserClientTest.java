@@ -1,6 +1,5 @@
 package net.toxbank.client.resource;
 
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
@@ -8,6 +7,7 @@ import junit.framework.Assert;
 import net.toxbank.client.Resources;
 import net.toxbank.client.task.RemoteTask;
 
+import org.apache.http.HttpStatus;
 import org.junit.Test;
 
 public class UserClientTest {
@@ -102,7 +102,7 @@ public class UserClientTest {
 		RemoteTask task = tbClient.postAsync(user,new URL(TEST_SERVER_USER));
 		task.waitUntilCompleted(500);
 		//verify if ok
-		Assert.assertEquals(HttpURLConnection.HTTP_OK,task.getStatus());
+		Assert.assertEquals(HttpStatus.SC_OK,task.getStatus());
 		Assert.assertNull(task.getError());
 		System.out.println(task.getResult());
 		//should not be 0 ! http://toxbanktest1.opentox.org:8080/toxbank/project/G0 
