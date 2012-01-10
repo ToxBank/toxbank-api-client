@@ -303,6 +303,8 @@
 		</activation>
 		<properties>
 			<toxbank.test.server>http://toxbanktest1.opentox.org:8080/toxbank</toxbank.test.server>
+			<toxbank.aa.user>guest</toxbank.aa.user>
+	        <toxbank.aa.pass>guest</toxbank.aa.pass>
 		</properties>
 	</profile>
 </profiles>
