@@ -19,6 +19,10 @@ digraph G {
 			<tr><td align="left"> + DocumentClientTest() </td></tr>
 			<tr><td align="left"> # getToxBackClient() : ProtocolClient </td></tr>
 			<tr><td align="left"> + testRead() </td></tr>
+			<tr><td align="left"> + testDelete() </td></tr>
+			<tr><td align="left"> + testCreate() </td></tr>
+			<tr><td align="left"> + testUpdate() </td></tr>
+			<tr><td align="left"> + testList() </td></tr>
 		</table></td></tr>
 		</table>>, fontname="arial", fontcolor="black", fontsize=10.0];
 	// net.toxbank.client.resource.AbstractClientTest<T extends net.toxbank.client.resource.IToxBankResource, C extends net.toxbank.client.resource.AbstractClient<T>>
@@ -29,12 +33,16 @@ digraph G {
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td align="left"> + TEST_SERVER : String </td></tr>
 			<tr><td align="left"> # test_server_property : String </td></tr>
+			<tr><td align="left"> # aa_server_property : String </td></tr>
+			<tr><td align="left"> # aa_user_property : String </td></tr>
+			<tr><td align="left"> # aa_pass_property : String </td></tr>
+			<tr><td align="left"> + tbclient : TBClient </td></tr>
 		</table></td></tr>
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td align="left"> + AbstractClientTest() </td></tr>
 			<tr><td align="left"> + setup() </td></tr>
-			<tr><td align="left"> + config() : String </td></tr>
 			<tr><td align="left"> + teardown() </td></tr>
+			<tr><td align="left"> + config() : String </td></tr>
 			<tr><td align="left"><font face="ariali" point-size="10.0"> # getToxBackClient() : C </font></td></tr>
 			<tr><td align="left"> + testRead() </td></tr>
 			<tr><td align="left"> + testDelete() </td></tr>

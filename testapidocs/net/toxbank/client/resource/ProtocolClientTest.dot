@@ -17,11 +17,12 @@ digraph G {
 		</table></td></tr>
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td align="left"> + ProtocolClientTest() </td></tr>
-			<tr><td align="left"> + testListProtocols() </td></tr>
+			<tr><td align="left"> # getToxBackClient() : ProtocolClient </td></tr>
+			<tr><td align="left"> + testList() </td></tr>
 			<tr><td align="left"> + compare(f1 : File, f2 : File) </td></tr>
-			<tr><td align="left"> + testUpload() </td></tr>
+			<tr><td align="left"> + testCreate() </td></tr>
 			<tr><td align="left"> + testUploadNewVersion() </td></tr>
-			<tr><td align="left"> + testRetrieveMetadata() </td></tr>
+			<tr><td align="left"> + testRead() </td></tr>
 			<tr><td align="left"> + testListFiles() </td></tr>
 			<tr><td align="left"> + testGetTemplates() </td></tr>
 			<tr><td align="left"> + testListVersions() </td></tr>
@@ -32,7 +33,37 @@ digraph G {
 			<tr><td align="left"> + testRoundtripAbstract() </td></tr>
 			<tr><td align="left"> + testRoundtripSearchable() </td></tr>
 			<tr><td align="left"> + testRoundtripSubmissionDate() </td></tr>
+			<tr><td align="left"> + testDelete() </td></tr>
+			<tr><td align="left"> + testUpdate() </td></tr>
 		</table></td></tr>
 		</table>>, fontname="arial", fontcolor="black", fontsize=10.0];
+	// net.toxbank.client.resource.AbstractClientTest<T extends net.toxbank.client.resource.IToxBankResource, C extends net.toxbank.client.resource.AbstractClient<T>>
+	c65 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./AbstractClientTest.html">
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+			<tr><td><font face="ariali"> AbstractClientTest&lt;T extends IToxBankResource, C extends AbstractClient&lt;T&gt;&gt; </font></td></tr>
+		</table></td></tr>
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+			<tr><td align="left"> + TEST_SERVER : String </td></tr>
+			<tr><td align="left"> # test_server_property : String </td></tr>
+			<tr><td align="left"> # aa_server_property : String </td></tr>
+			<tr><td align="left"> # aa_user_property : String </td></tr>
+			<tr><td align="left"> # aa_pass_property : String </td></tr>
+			<tr><td align="left"> + tbclient : TBClient </td></tr>
+		</table></td></tr>
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+			<tr><td align="left"> + AbstractClientTest() </td></tr>
+			<tr><td align="left"> + setup() </td></tr>
+			<tr><td align="left"> + teardown() </td></tr>
+			<tr><td align="left"> + config() : String </td></tr>
+			<tr><td align="left"><font face="ariali" point-size="10.0"> # getToxBackClient() : C </font></td></tr>
+			<tr><td align="left"> + testRead() </td></tr>
+			<tr><td align="left"> + testDelete() </td></tr>
+			<tr><td align="left"> + testCreate() </td></tr>
+			<tr><td align="left"> + testUpdate() </td></tr>
+			<tr><td align="left"> + testList() </td></tr>
+		</table></td></tr>
+		</table>>, fontname="arial", fontcolor="black", fontsize=10.0];
+	//net.toxbank.client.resource.ProtocolClientTest extends net.toxbank.client.resource.AbstractClientTest<net.toxbank.client.resource.Protocol, net.toxbank.client.resource.ProtocolClient>
+	c65:p -> c58:p [dir=back,arrowtail=empty];
 }
 
