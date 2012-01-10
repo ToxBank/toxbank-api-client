@@ -18,6 +18,8 @@ import org.apache.http.message.BasicNameValuePair;
 import org.opentox.rest.RestException;
 
 /**
+ * ToxBank <a href="http://api.toxbank.net/index.php/User">User</a> client,
+ * implementing REST operations on {@link User}. 
  * Modeled after FOAF where possible.
  * 
  * @author egonw

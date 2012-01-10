@@ -16,6 +16,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HttpContext;
 import org.opentox.aa.opensso.OpenSSOToken;
 
+/**
+ * Top level ToxBank API client.
+ * @author nina
+ *
+ */
 public class TBClient {
 	protected HttpClient httpClient;
 	protected OpenSSOToken ssoToken;

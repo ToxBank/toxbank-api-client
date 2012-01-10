@@ -1,6 +1,10 @@
 package net.toxbank.client.task;
 
-
+/**
+ * An utility to calculate polling intervals 
+ * @author nina
+ *
+ */
 public class FibonacciSequence {
 	protected int[] Fn = new int[]{0,1};
 	protected int n = 0;

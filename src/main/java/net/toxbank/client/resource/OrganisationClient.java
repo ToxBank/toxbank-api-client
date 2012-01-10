@@ -14,7 +14,8 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.message.BasicNameValuePair;
 
 /**
- * REST operations on {@link Organisation}
+ * ToxBank <a href="http://api.toxbank.net/index.php/Organisation">Organisation</a> client,
+ * implementing REST operations on {@link Organisation}. 
  * @author nina
  *
  */

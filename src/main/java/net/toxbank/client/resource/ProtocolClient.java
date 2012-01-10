@@ -29,6 +29,12 @@ import org.apache.http.entity.mime.content.StringBody;
 import org.opentox.rest.HTTPClient;
 import org.opentox.rest.RestException;
 
+/**
+ * ToxBank <a href="http://api.toxbank.net/index.php/Protocol">Protocol</a> client,
+ * implementing REST operations on {@link Protocol}. 
+ * @author nina
+ *
+ */
 public class ProtocolClient extends AbstractClient<Protocol> {
 	protected enum webform {
 		project_uri,
