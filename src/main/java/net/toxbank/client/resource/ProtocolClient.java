@@ -149,6 +149,16 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 		Protocol p = post(protocol,server);
 		return p.getResourceURL();
 	}
+	/**
+	 * Asynchronous upload
+	 * @param protocol
+	 * @param server
+	 * @return {@link RemoteTask}
+	 * @throws Exception
+	 */
+	public RemoteTask uploadAsync(Protocol protocol, URL server) throws Exception {
+		return postAsync(protocol,server);
+	}
 
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/API_Protocol:Retrieve">API documentation</a>.
