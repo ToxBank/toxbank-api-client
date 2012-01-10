@@ -72,7 +72,7 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 	 * @return
 	 * @throws Exception
 	 */
-	protected List<T> getRDF_XML(URL url) throws Exception {
+	public List<T> getRDF_XML(URL url) throws Exception {
 		return get(url,"application/rdf+xml");
 	}
 	/**
@@ -167,7 +167,7 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 	 * @return  Returns {@link RemoteTask}
 	 * @throws Exception if not allowed, or other error condition
 	 */
-	protected RemoteTask postAsync(T object, URL collection) throws Exception {
+	public RemoteTask postAsync(T object, URL collection) throws Exception {
 		return sendAsync(collection, createPOSTEntity(object), HttpPost.METHOD_NAME);
 	}	
 	/**
