@@ -44,7 +44,11 @@ public class RemoteTask implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -8130424089714825424L;
+	/**
+	 * 
+	 */
+	
 	protected final URL url;
 	protected int status = -1;
 	protected URL result = null;
@@ -63,31 +67,26 @@ public class RemoteTask implements Serializable {
 	public Exception getError() {
 		return error;
 	}
+	
+	
 	/*
 	public RemoteTask(URL url,
 			  String acceptMIME, 
-			  String[][] form,
-			  String method) throws RestException, UnsupportedEncodingException {
-		this(url,acceptMIME,form==null?null:HTTPClient.getForm(form),HTTPClient.mime_wwwform,method);
+			  HttpEntity content,
+			  String method) throws RestException {
+		this(null,url,acceptMIME,content,method);
 	}
 	*/
-	public RemoteTask(URL url,
+	public RemoteTask(HttpClient httpClient, URL url,
 			  String acceptMIME, 
 			  HttpEntity content,
-			 // String contentMIME,
 			  String method) throws RestException {
 		super();
+		this.httpclient = httpClient;
 		this.url = url;
-
-		//HTTPClient client = null;
 		InputStream in = null;
 		try {
-			//client = new HTTPClient(url.toString());
-			//client.setHeaders(new String[][] {{"Accept",acceptMIME},{"Accept-Charset", "utf-8"}});
-			//client.setFollowingRedirects(true);
-			//client.setRetryAttempts(1);
-			//client.setRetryOnError(false);
-			
+
 			HttpRequestBase httpmethod;
 			
 			if (method.equals(HttpPost.METHOD_NAME)) {
@@ -126,7 +125,7 @@ public class RemoteTask implements Serializable {
 			setError(x);
 			status = -1;
 		} finally {
-			try { in.close(); } catch (Exception x) { x.printStackTrace();}
+			try { if (in!=null) in.close(); } catch (Exception x) { x.printStackTrace();}
 			//try { respo. } catch (Exception x) { x.printStackTrace();}
 		}
 	}	
@@ -170,25 +169,19 @@ public class RemoteTask implements Serializable {
 	 */
 	public boolean poll() {
 
-			
 		if (isDone()) return true;
-
-		HttpURLConnection client = null;
 		InputStream in = null;
-		
+		HttpGet httpGet = new HttpGet(result.toString());
+		httpGet.addHeader("Accept","text/uri-list");
 		try {
-			
-			client = HTTPClient.getHttpURLConnection(result.toString(),"GET","text/uri-list");
-			//client.setFollowRedirects(true);
+			HttpResponse response = getHttpclient().execute(httpGet);
+			HttpEntity entity  = response.getEntity();
+			status = response.getStatusLine().getStatusCode();
+			in = entity.getContent();
 
-	        in = client.getInputStream();
-			status = client.getResponseCode();
 			if (HttpStatus.SC_SERVICE_UNAVAILABLE == status) {
 				return true;
 			}
-			
-//			if (!r.getEntity().isAvailable()) throw new ResourceException(Status.SERVER_ERROR_BAD_GATEWAY,String.format("Representation not available %s",result));
-			
 			result = handleOutput(in,status,result);
 		} catch (IOException x) {
 			setError(x);
@@ -201,10 +194,6 @@ public class RemoteTask implements Serializable {
 			status = -1;
 		} finally {
 			try {in.close();} catch (Exception x) {}
-			try {
-				client.disconnect(); client = null;
-			} catch (Exception x) {}
-
 		}
 		return isDone();
 	}
@@ -265,16 +254,17 @@ public class RemoteTask implements Serializable {
 
 	public boolean pollRDF() {
 		if (isDone()) return true;
-
-		HttpURLConnection uc = null;
+	
 		InputStream in = null;
-		
+		HttpGet httpGet = new HttpGet(result.toString());
+		httpGet.addHeader("Accept","application/rdf+xml");
 		try {
-			uc = HTTPClient.getHttpURLConnection(result.toString(),"GET","application/rdf+xml");
+			HttpResponse response = getHttpclient().execute(httpGet);
+			HttpEntity entity  = response.getEntity();
 
-			status =uc.getResponseCode();
+			status = response.getStatusLine().getStatusCode();
 //			if (!r.getEntity().isAvailable()) throw new ResourceException(Status.SERVER_ERROR_BAD_GATEWAY,String.format("Representation not available %s",result));
-			in = uc.getInputStream();
+			in = entity.getContent();
 			result = handleOutputRDF(in,status);
 		} catch (IOException x) {
 			
@@ -288,9 +278,6 @@ public class RemoteTask implements Serializable {
 			status = -1;
 		} finally {
 			try {in.close();} catch (Exception x) {}
-			try {uc.disconnect();} catch (Exception x) {}
-
-
 		}
 		return isDone();
 	}	
