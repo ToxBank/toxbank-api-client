@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +37,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
  * @param <T>
  */
 public abstract class AbstractClient<T extends IToxBankResource> {
+	protected static String search_param = "search";
 	protected HttpClient httpClient;
 	
 	public HttpClient getHttpClient() throws IOException {
@@ -72,9 +74,20 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 	 * @return
 	 * @throws Exception
 	 */
+	
 	public List<T> getRDF_XML(URL url) throws Exception {
 		return get(url,"application/rdf+xml");
 	}
+	/**
+	 * 
+	 * @param url
+	 * @param query Search parameter
+	 * @return
+	 * @throws Exception
+	 */
+	public List<T> searchRDF_XML(URL url,String query) throws Exception {
+		return get(url,"application/rdf+xml",query==null?null:new String[] {search_param,query});
+	}	
 	/**
 	 * HTTP GET with "Accept:text/n3".  Parses the RDF and creates list of objects.
 	 * @param url
@@ -85,6 +98,16 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 		return get(url,"text/n3");
 	}	
 	/**
+	 * 
+	 * @param url
+	 * @param query Search parameter
+	 * @return
+	 * @throws Exception
+	 */
+	protected List<T> searchRDF_N3(URL url,String query) throws Exception {
+		return get(url,"text/n3",query==null?null:new String[] {search_param,query});
+	}		
+	/**
 	 * HTTP GET with given media type (expects one of RDF flavours). 
 	 * @param url
 	 * @param mediaType
@@ -93,7 +116,20 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 	 * @throws IOException
 	 */
 	protected List<T> get(URL url,String mediaType) throws RestException, IOException {
-		HttpGet httpGet = new HttpGet(url.toString());
+		return get(url,mediaType,(String[]) null);
+	}
+	/**
+	 * 
+	 * @param url
+	 * @param mediaType
+	 * @param params name/value pairs, sent as URI parameters
+	 * @return
+	 * @throws RestException
+	 * @throws IOException
+	 */
+	protected List<T> get(URL url,String mediaType,String... params) throws RestException, IOException {
+		String address = prepareParams(url, params);
+		HttpGet httpGet = new HttpGet(address);
 		httpGet.addHeader("Accept",mediaType);
 		httpGet.addHeader("Accept-Charset", "utf-8");
 
@@ -113,7 +149,20 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 		}
 	
 	}
-	
+	private String prepareParams(URL url,String... params) {
+		String address = url.toString();
+		if (params != null) {
+			StringBuilder b = new StringBuilder();
+			String d = url.getQuery()==null?"?":"&";
+			for (int i=0; i < params.length; i+=2) {
+				if ((i+1)>=params.length) break;
+				b.append(String.format("%s%s=%s",d,params[i],URLEncoder.encode(params[i+1])));
+				d = "&";
+			}
+			address = String.format("%s%s", address,b);
+		}
+		return address;
+	}
 	/**
 	 * HTTP GET with "Accept:text/uri-list". 
 	 * If the resource is a container, will return list URIs of contained resources.
@@ -124,7 +173,29 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 	 * @throws IOException
 	 */
 	public List<URL> listURI(URL url) throws  RestException, IOException {
-		HttpGet httpGet = new HttpGet(url.toString());
+		return listURI(url,(String[])null);
+	}
+	/**
+	 * 
+	 * @param url
+	 * @param query Search param
+	 * @return
+	 * @throws RestException
+	 * @throws IOException
+	 */
+	public List<URL> searchURI(URL url,String query) throws  RestException, IOException {
+		return listURI(url, new String[] {search_param,query});
+	}
+	/**
+	 * 
+	 * @param url
+	 * @param params  name/value pairs, sent as URI parameters
+	 * @return
+	 * @throws RestException
+	 * @throws IOException
+	 */
+	public List<URL> listURI(URL url,String... params) throws  RestException, IOException {
+		HttpGet httpGet = new HttpGet(prepareParams(url, params));
 		httpGet.addHeader("Accept","text/uri-list");
 
 		InputStream in = null;

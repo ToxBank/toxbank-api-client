@@ -23,7 +23,8 @@ public class UserClientTest extends AbstractClientTest<User, UserClient>  {
 	public void testRead() throws Exception {
 		//List users, but only the first one to get a valid user url
 		UserClient cli = getToxBackClient();
-		List<URL> users = cli.list(new URL(String.format("%s?page=%d&pagesize=%d",TEST_SERVER_USER,0,1)));
+		List<URL> users = cli.listURI(new URL(String.format("%s", TEST_SERVER_USER)),
+				new String[] {"page","0","pagesize","1"});		
 		Assert.assertNotNull(users);
 		Assert.assertEquals(1, users.size());
 		//now retrieve the user content
@@ -35,6 +36,24 @@ public class UserClientTest extends AbstractClientTest<User, UserClient>  {
 		Assert.assertNotNull(user.getHomepage());
 		// FIXME: test the rest of the loaded metadata
 	}
+	
+	@Test
+	public void testSearch() throws Exception {
+		//List users, but only the first one to get a valid user url
+		UserClient cli = getToxBackClient();
+		List<URL> users = cli.listURI(new URL(String.format("%s", TEST_SERVER_USER)),
+						new String[] {"search",""});		
+		Assert.assertNotNull(users);
+		Assert.assertTrue(users.size()>0);
+		//now retrieve the user content
+		User user = cli.download(users.get(0));
+		Assert.assertNotNull(user);
+		Assert.assertNotNull(user.getFirstname());
+		Assert.assertNotNull(user.getLastname());
+		Assert.assertEquals(users.get(0),user.getResourceURL());
+
+		// FIXME: test the rest of the loaded metadata
+	}	
 	
 	@Test
 	public void testList() throws Exception  {

@@ -132,7 +132,9 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 	public List<URL> listProtocols(URL server) throws IOException, RestException {
 		return listURI(server);
 	}
-
+	public List<URL> listProtocols(URL server,String... params) throws IOException, RestException {
+		return listURI(server,params);
+	}
 	public List<URL> listProtocols(User user) throws IOException, RestException {
 		return listURI(new URL(String.format("%s%s", user.getResourceURL(),Resources.protocol)));
 	}

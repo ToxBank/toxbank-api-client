@@ -125,7 +125,8 @@ public class ProtocolClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 	@Override
 	public void testRead() throws Exception {
 		ProtocolClient cli = tbclient.getProtocolClient();
-		List<URL> url = cli.listProtocols(new URL(String.format("%s?page=0&pagesize=1",TEST_SERVER_PROTOCOL)));
+		List<URL> url = cli.listProtocols(new URL(TEST_SERVER_PROTOCOL),
+							new String[] {"page","0","pagesize","1"});
 		Assert.assertNotNull(url);
 		Assert.assertEquals(1,url.size());
 		
@@ -138,9 +139,11 @@ public class ProtocolClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 		Assert.assertNotNull(protocol.getTitle());
 		Assert.assertNotNull(protocol.getIdentifier());
 		Assert.assertNotNull(protocol.getOwner());
+		Assert.assertNotNull(protocol.getStatus());
 		Assert.assertTrue(protocol.getVersion()>0);
 			
 	}
+
 	
 	@Test
 	public void testListFiles() throws Exception {

@@ -30,7 +30,8 @@ public class OrganisationClientTest extends AbstractClientTest<Organisation,Orga
 	public void testRead() throws Exception {
 		OrganisationClient tbClient = getToxBackClient();
 		//get the first record
-		List<URL> uri = tbClient.listURI(new URL(String.format("%s%s?page=0&pagesize=1", TEST_SERVER,Resources.organisation)));
+		List<URL> uri = tbClient.listURI(new URL(String.format("%s%s", TEST_SERVER,Resources.organisation)),
+				new String[] {"page","0","pagesize","1"});		
 		//verify one record is retrieved
 		Assert.assertEquals(1,uri.size());
 		//retrieve organisation details
@@ -43,6 +44,21 @@ public class OrganisationClientTest extends AbstractClientTest<Organisation,Orga
 		//Assert.assertNotNull(orgs.get(0).getGroupName());
 	}
 	
+	public void testSearch() throws Exception {
+		OrganisationClient cli = getToxBackClient();
+		//get the first record
+		List<URL> uri = cli.searchURI(new URL(String.format("%s%s", TEST_SERVER,Resources.organisation)),"");
+		//verify if a record is retrieved
+		Assert.assertTrue(uri.size()>0);
+		//retrieve project details
+		List<Organisation> projects = cli.getRDF_XML(uri.get(0));
+		//verify one record is retrieved
+		Assert.assertEquals(1,projects.size());
+		Assert.assertEquals(uri.get(0),projects.get(0).getResourceURL());
+		Assert.assertNotNull(projects.get(0).getTitle());
+		//this fails, not implemented
+		//Assert.assertNotNull(project.get(0).getGroupName());
+	}	
 	@Override
 	public void testCreate() throws Exception {
 		OrganisationClient tbClient = getToxBackClient();

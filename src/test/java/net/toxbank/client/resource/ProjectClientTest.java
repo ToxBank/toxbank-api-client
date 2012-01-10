@@ -31,7 +31,8 @@ public class ProjectClientTest extends AbstractClientTest<Project,ProjectClient>
 	public void testRead() throws Exception {
 		ProjectClient cli = getToxBackClient();
 		//get the first record
-		List<URL> uri = cli.listURI(new URL(String.format("%s%s?page=0&pagesize=1", TEST_SERVER,Resources.project)));
+		List<URL> uri = cli.listURI(new URL(String.format("%s%s", TEST_SERVER,Resources.project)),
+										new String[] {"page","0","pagesize","1"});
 		//verify one record is retrieved
 		Assert.assertEquals(1,uri.size());
 		//retrieve project details
@@ -44,6 +45,7 @@ public class ProjectClientTest extends AbstractClientTest<Project,ProjectClient>
 		//Assert.assertNotNull(project.get(0).getGroupName());
 	}	
 	
+
 	@Override
 	public void testCreate() throws Exception {
 		ProjectClient cli = getToxBackClient();
