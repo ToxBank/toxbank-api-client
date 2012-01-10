@@ -8,7 +8,7 @@ digraph G {
 	edge [fontname="arial",fontsize=10,labelfontname="arial",labelfontsize=10];
 	node [fontname="arial",fontsize=10,shape=plaintext];
 	// net.toxbank.client.resource.UserClient
-	c100 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./UserClient.html">
+	c146 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./UserClient.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td> UserClient </td></tr>
 		</table></td></tr>
@@ -16,7 +16,8 @@ digraph G {
 			<tr><td align="left">  </td></tr>
 		</table></td></tr>
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-			<tr><td align="left"> # UserClient() </td></tr>
+			<tr><td align="left"> + UserClient() </td></tr>
+			<tr><td align="left"> + UserClient(httpclient : HttpClient) </td></tr>
 			<tr><td align="left"> # createPOSTEntity(user : User) : HttpEntity </td></tr>
 			<tr><td align="left"> # createPUTEntity(user : User) : HttpEntity </td></tr>
 			<tr><td align="left"> + download(identifier : URL) : User </td></tr>
@@ -30,21 +31,30 @@ digraph G {
 		</table></td></tr>
 		</table>>, fontname="arial", fontcolor="black", fontsize=10.0];
 	// net.toxbank.client.resource.AbstractClient<T extends net.toxbank.client.resource.IToxBankResource>
-	c115 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./AbstractClient.html">
+	c161 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./AbstractClient.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td><font face="ariali"> AbstractClient&lt;T extends IToxBankResource&gt; </font></td></tr>
 		</table></td></tr>
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-			<tr><td align="left">  </td></tr>
+			<tr><td align="left"> # search_param : String </td></tr>
+			<tr><td align="left"> # httpClient : HttpClient </td></tr>
 		</table></td></tr>
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+			<tr><td align="left"> + AbstractClient(httpclient : HttpClient) </td></tr>
 			<tr><td align="left"> + AbstractClient() </td></tr>
+			<tr><td align="left"> + getHttpClient() : HttpClient </td></tr>
+			<tr><td align="left"> + setHttpClient(httpClient : HttpClient) </td></tr>
 			<tr><td align="left"> + get(url : URL) : List&lt;T&gt; </td></tr>
-			<tr><td align="left"> # getRDF_XML(url : URL) : List&lt;T&gt; </td></tr>
+			<tr><td align="left"> + getRDF_XML(url : URL) : List&lt;T&gt; </td></tr>
+			<tr><td align="left"> + searchRDF_XML(url : URL, query : String) : List&lt;T&gt; </td></tr>
 			<tr><td align="left"> # getRDF_N3(url : URL) : List&lt;T&gt; </td></tr>
+			<tr><td align="left"> # searchRDF_N3(url : URL, query : String) : List&lt;T&gt; </td></tr>
 			<tr><td align="left"> # get(url : URL, mediaType : String) : List&lt;T&gt; </td></tr>
+			<tr><td align="left"> # get(url : URL, mediaType : String, params : String[]) : List&lt;T&gt; </td></tr>
 			<tr><td align="left"> + listURI(url : URL) : List&lt;URL&gt; </td></tr>
-			<tr><td align="left"> # postAsync(object : T, collection : URL) : RemoteTask </td></tr>
+			<tr><td align="left"> + searchURI(url : URL, query : String) : List&lt;URL&gt; </td></tr>
+			<tr><td align="left"> + listURI(url : URL, params : String[]) : List&lt;URL&gt; </td></tr>
+			<tr><td align="left"> + postAsync(object : T, collection : URL) : RemoteTask </td></tr>
 			<tr><td align="left"> # putAsync(object : T) : RemoteTask </td></tr>
 			<tr><td align="left"> # deleteAsync(object : T) : RemoteTask </td></tr>
 			<tr><td align="left"> # deleteAsync(url : URL) : RemoteTask </td></tr>
@@ -54,9 +64,10 @@ digraph G {
 			<tr><td align="left"> + put(object : T) : T </td></tr>
 			<tr><td align="left"> + delete(url : URL) </td></tr>
 			<tr><td align="left"> + delete(object : T) </td></tr>
+			<tr><td align="left"> + login(username : String, password : String) : OpenSSOToken </td></tr>
 		</table></td></tr>
 		</table>>, fontname="arial", fontcolor="black", fontsize=10.0];
 	//net.toxbank.client.resource.UserClient extends net.toxbank.client.resource.AbstractClient<net.toxbank.client.resource.User>
-	c115:p -> c100:p [dir=back,arrowtail=empty];
+	c161:p -> c146:p [dir=back,arrowtail=empty];
 }
 

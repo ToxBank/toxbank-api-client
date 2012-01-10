@@ -8,7 +8,7 @@ digraph G {
 	edge [fontname="arial",fontsize=10,labelfontname="arial",labelfontsize=10];
 	node [fontname="arial",fontsize=10,shape=plaintext];
 	// net.toxbank.client.resource.UserClient
-	c385 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./UserClient.html">
+	c446 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./UserClient.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td> UserClient </td></tr>
 		</table></td></tr>
@@ -16,7 +16,8 @@ digraph G {
 			<tr><td align="left">  </td></tr>
 		</table></td></tr>
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-			<tr><td align="left"> # UserClient() </td></tr>
+			<tr><td align="left"> + UserClient() </td></tr>
+			<tr><td align="left"> + UserClient(httpclient : HttpClient) </td></tr>
 			<tr><td align="left"> # createPOSTEntity(user : User) : HttpEntity </td></tr>
 			<tr><td align="left"> # createPUTEntity(user : User) : HttpEntity </td></tr>
 			<tr><td align="left"> + download(identifier : URL) : User </td></tr>
@@ -30,7 +31,7 @@ digraph G {
 		</table></td></tr>
 		</table>>, fontname="arial", fontcolor="black", fontsize=10.0];
 	// net.toxbank.client.resource.ProtocolVersionClient
-	c389 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./ProtocolVersionClient.html">
+	c450 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./ProtocolVersionClient.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td> ProtocolVersionClient </td></tr>
 		</table></td></tr>
@@ -38,6 +39,8 @@ digraph G {
 			<tr><td align="left">  </td></tr>
 		</table></td></tr>
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+			<tr><td align="left"> + ProtocolVersionClient() </td></tr>
+			<tr><td align="left"> + ProtocolVersionClient(httpclient : HttpClient) </td></tr>
 			<tr><td align="left"> + upload(version : Protocol, server : URL) : URL </td></tr>
 			<tr><td align="left"> + download(resource : URL) : Protocol </td></tr>
 			<tr><td align="left"> # createPOSTEntity(object : Protocol) : HttpEntity </td></tr>
@@ -45,7 +48,7 @@ digraph G {
 		</table></td></tr>
 		</table>>, fontname="arial", fontcolor="black", fontsize=10.0];
 	// net.toxbank.client.resource.ProtocolClient
-	c390 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./ProtocolClient.html">
+	c451 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./ProtocolClient.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td> ProtocolClient </td></tr>
 		</table></td></tr>
@@ -53,16 +56,19 @@ digraph G {
 			<tr><td align="left">  </td></tr>
 		</table></td></tr>
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-			<tr><td align="left"> # ProtocolClient() </td></tr>
+			<tr><td align="left"> + ProtocolClient() </td></tr>
+			<tr><td align="left"> + ProtocolClient(httpclient : HttpClient) </td></tr>
 			<tr><td align="left"> # createPOSTEntity(protocol : Protocol) : HttpEntity </td></tr>
 			<tr><td align="left"> # createPUTEntity(object : Protocol) : HttpEntity </td></tr>
 			<tr><td align="left"> + uploadTemplate(protocol : Protocol, template : File) : RemoteTask </td></tr>
 			<tr><td align="left"> + createNewVersion(protocol : Protocol) : RemoteTask </td></tr>
 			<tr><td align="left"> + download(identifier : URL) : Protocol </td></tr>
 			<tr><td align="left"> + listProtocols(server : URL) : List&lt;URL&gt; </td></tr>
+			<tr><td align="left"> + listProtocols(server : URL, params : String[]) : List&lt;URL&gt; </td></tr>
 			<tr><td align="left"> + listProtocols(user : User) : List&lt;URL&gt; </td></tr>
 			<tr><td align="left"> + getProtocols(user : User) : List&lt;Protocol&gt; </td></tr>
 			<tr><td align="left"> + upload(protocol : Protocol, server : URL) : URL </td></tr>
+			<tr><td align="left"> + uploadAsync(protocol : Protocol, server : URL) : RemoteTask </td></tr>
 			<tr><td align="left"> + listFile(protocol : Protocol) : URL </td></tr>
 			<tr><td align="left"> + downloadFile(protocol : Protocol) : File </td></tr>
 			<tr><td align="left"> + downloadTemplate(protocol : Protocol) : File </td></tr>
@@ -74,7 +80,7 @@ digraph G {
 		</table></td></tr>
 		</table>>, fontname="arial", fontcolor="black", fontsize=10.0];
 	// net.toxbank.client.resource.ProjectClient
-	c392 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./ProjectClient.html">
+	c453 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./ProjectClient.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td> ProjectClient </td></tr>
 		</table></td></tr>
@@ -83,12 +89,13 @@ digraph G {
 		</table></td></tr>
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td align="left"> + ProjectClient() </td></tr>
+			<tr><td align="left"> + ProjectClient(httpclient : HttpClient) </td></tr>
 			<tr><td align="left"> # createPOSTEntity(object : Project) : HttpEntity </td></tr>
 			<tr><td align="left"> # createPUTEntity(object : Project) : HttpEntity </td></tr>
 		</table></td></tr>
 		</table>>, fontname="arial", fontcolor="black", fontsize=10.0];
 	// net.toxbank.client.resource.OrganisationClient
-	c394 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./OrganisationClient.html">
+	c455 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./OrganisationClient.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td> OrganisationClient </td></tr>
 		</table></td></tr>
@@ -97,26 +104,36 @@ digraph G {
 		</table></td></tr>
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td align="left"> + OrganisationClient() </td></tr>
+			<tr><td align="left"> + OrganisationClient(httpclient : HttpClient) </td></tr>
 			<tr><td align="left"> # createPOSTEntity(object : Organisation) : HttpEntity </td></tr>
 			<tr><td align="left"> # createPUTEntity(object : Organisation) : HttpEntity </td></tr>
 		</table></td></tr>
 		</table>>, fontname="arial", fontcolor="black", fontsize=10.0];
 	// net.toxbank.client.resource.AbstractClient<T extends net.toxbank.client.resource.IToxBankResource>
-	c400 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./AbstractClient.html">
+	c461 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./AbstractClient.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td><font face="ariali"> AbstractClient&lt;T extends IToxBankResource&gt; </font></td></tr>
 		</table></td></tr>
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
-			<tr><td align="left">  </td></tr>
+			<tr><td align="left"> # search_param : String </td></tr>
+			<tr><td align="left"> # httpClient : HttpClient </td></tr>
 		</table></td></tr>
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+			<tr><td align="left"> + AbstractClient(httpclient : HttpClient) </td></tr>
 			<tr><td align="left"> + AbstractClient() </td></tr>
+			<tr><td align="left"> + getHttpClient() : HttpClient </td></tr>
+			<tr><td align="left"> + setHttpClient(httpClient : HttpClient) </td></tr>
 			<tr><td align="left"> + get(url : URL) : List&lt;T&gt; </td></tr>
-			<tr><td align="left"> # getRDF_XML(url : URL) : List&lt;T&gt; </td></tr>
+			<tr><td align="left"> + getRDF_XML(url : URL) : List&lt;T&gt; </td></tr>
+			<tr><td align="left"> + searchRDF_XML(url : URL, query : String) : List&lt;T&gt; </td></tr>
 			<tr><td align="left"> # getRDF_N3(url : URL) : List&lt;T&gt; </td></tr>
+			<tr><td align="left"> # searchRDF_N3(url : URL, query : String) : List&lt;T&gt; </td></tr>
 			<tr><td align="left"> # get(url : URL, mediaType : String) : List&lt;T&gt; </td></tr>
+			<tr><td align="left"> # get(url : URL, mediaType : String, params : String[]) : List&lt;T&gt; </td></tr>
 			<tr><td align="left"> + listURI(url : URL) : List&lt;URL&gt; </td></tr>
-			<tr><td align="left"> # postAsync(object : T, collection : URL) : RemoteTask </td></tr>
+			<tr><td align="left"> + searchURI(url : URL, query : String) : List&lt;URL&gt; </td></tr>
+			<tr><td align="left"> + listURI(url : URL, params : String[]) : List&lt;URL&gt; </td></tr>
+			<tr><td align="left"> + postAsync(object : T, collection : URL) : RemoteTask </td></tr>
 			<tr><td align="left"> # putAsync(object : T) : RemoteTask </td></tr>
 			<tr><td align="left"> # deleteAsync(object : T) : RemoteTask </td></tr>
 			<tr><td align="left"> # deleteAsync(url : URL) : RemoteTask </td></tr>
@@ -126,17 +143,18 @@ digraph G {
 			<tr><td align="left"> + put(object : T) : T </td></tr>
 			<tr><td align="left"> + delete(url : URL) </td></tr>
 			<tr><td align="left"> + delete(object : T) </td></tr>
+			<tr><td align="left"> + login(username : String, password : String) : OpenSSOToken </td></tr>
 		</table></td></tr>
 		</table>>, fontname="arial", fontcolor="black", fontsize=10.0];
 	//net.toxbank.client.resource.UserClient extends net.toxbank.client.resource.AbstractClient<net.toxbank.client.resource.User>
-	c400:p -> c385:p [dir=back,arrowtail=empty];
+	c461:p -> c446:p [dir=back,arrowtail=empty];
 	//net.toxbank.client.resource.ProtocolVersionClient extends net.toxbank.client.resource.AbstractClient<net.toxbank.client.resource.Protocol>
-	c400:p -> c389:p [dir=back,arrowtail=empty];
+	c461:p -> c450:p [dir=back,arrowtail=empty];
 	//net.toxbank.client.resource.ProtocolClient extends net.toxbank.client.resource.AbstractClient<net.toxbank.client.resource.Protocol>
-	c400:p -> c390:p [dir=back,arrowtail=empty];
+	c461:p -> c451:p [dir=back,arrowtail=empty];
 	//net.toxbank.client.resource.ProjectClient extends net.toxbank.client.resource.AbstractClient<net.toxbank.client.resource.Project>
-	c400:p -> c392:p [dir=back,arrowtail=empty];
+	c461:p -> c453:p [dir=back,arrowtail=empty];
 	//net.toxbank.client.resource.OrganisationClient extends net.toxbank.client.resource.AbstractClient<net.toxbank.client.resource.Organisation>
-	c400:p -> c394:p [dir=back,arrowtail=empty];
+	c461:p -> c455:p [dir=back,arrowtail=empty];
 }
 

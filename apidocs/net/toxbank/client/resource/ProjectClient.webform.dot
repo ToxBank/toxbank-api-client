@@ -8,7 +8,7 @@ digraph G {
 	edge [fontname="arial",fontsize=10,labelfontname="arial",labelfontsize=10];
 	node [fontname="arial",fontsize=10,shape=plaintext];
 	// net.toxbank.client.resource.ProjectClient.webform
-	c260 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./ProjectClient.webform.html">
+	c314 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./ProjectClient.webform.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td> &laquo;enumeration&raquo; </td></tr>
 			<tr><td> webform </td></tr>
