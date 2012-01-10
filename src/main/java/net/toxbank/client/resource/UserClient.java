@@ -12,6 +12,7 @@ import net.toxbank.client.io.rdf.UserIO;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.message.BasicNameValuePair;
 import org.opentox.rest.RestException;
@@ -25,7 +26,15 @@ public class UserClient extends AbstractClient<User> {
 	protected enum webform {
 		username,title,firstname,lastname,institute,weblog,homepage
 	}
-	protected UserClient() {}
+	
+	public UserClient() {
+		this(null);
+	}
+		
+	public UserClient(HttpClient httpclient) {
+		super(httpclient);
+	}
+	
 
 	@Override
 	protected HttpEntity createPOSTEntity(User user) throws Exception {
@@ -68,25 +77,24 @@ public class UserClient extends AbstractClient<User> {
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/User:RetrieveList">API documentation</a>.
 	 */
-	public static User download(URL identifier) throws IOException, RestException {
-		UserClient cli = new UserClient();
-		List<User> users = cli.get(identifier, "application/rdf+xml");
+	public User download(URL identifier) throws IOException, RestException {
+		List<User> users = get(identifier, "application/rdf+xml");
 		return users.size()>0?users.get(0):null;
 	}
 	
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/User:RetrieveList">API documentation</a>.
 	 */
-	public static List<URL> list(URL server)  throws IOException, RestException  {
-		UserClient cli = new UserClient();
-		return cli.listURI(server);
+	public List<URL> list(URL server)  throws IOException, RestException  {
+		return listURI(server);
 	}
 
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/User:RetrieveProtocols">API documentation</a>.
+	 * Same as {@link ProtocolClient#listProtocols(User)}
 	 */
-	public static List<URL> listProtocols(User user) throws MalformedURLException, IOException, RestException {
-		ProtocolClient cli = new ProtocolClient();
+	public List<URL> listProtocols(User user) throws MalformedURLException, IOException, RestException {
+		ProtocolClient cli = new ProtocolClient(getHttpClient());
 		return cli.listProtocols(user);
 	}
 
@@ -94,16 +102,17 @@ public class UserClient extends AbstractClient<User> {
 	 * Described in this <a href="http://api.toxbank.net/index.php/User:RetrieveProtocols">API documentation</a>.
 	 * Equivalent to {@link #listProtocols()} but returns {@link ProtocolClient}s
 	 * already populated with metadata from the database.
+	 * Same as {@link ProtocolClient#listProtocols(User)}
 	 */
-	public static List<Protocol> getProtocols(User user) throws Exception {
-		ProtocolClient cli = new ProtocolClient();
+	public List<Protocol> getProtocols(User user) throws Exception {
+		ProtocolClient cli = new ProtocolClient(getHttpClient());
 		return cli.getProtocols(user);
 	}
 
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/User:RetrieveStudies">API documentation</a>.
 	 */
-	public static List<URL> listStudies(User user) {
+	public List<URL> listStudies(User user) {
 		// FIXME: implement uploading this protocol to the server
 		return null;
 	}
@@ -113,7 +122,7 @@ public class UserClient extends AbstractClient<User> {
 	 * Equivalent to {@link #listStudies()} but returns {@link StudyClient}s
 	 * already populated with metadata from the database.
 	 */
-	public static List<Study> getStudies(User user) {
+	public List<Study> getStudies(User user) {
 		// FIXME: implement uploading this protocol to the server
 		return null;
 	}
@@ -121,7 +130,7 @@ public class UserClient extends AbstractClient<User> {
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/User:RetrieveAlerts">API documentation</a>.
 	 */
-	public static List<URL> listAlerts(User user) {
+	public List<URL> listAlerts(User user) {
 		// FIXME: implement uploading this protocol to the server
 		return null;
 	}
@@ -131,7 +140,7 @@ public class UserClient extends AbstractClient<User> {
 	 * Equivalent to {@link #listAlerts()} but returns {@link AlertClient}s
 	 * already populated with metadata from the database.
 	 */
-	public static List<Alert> getAlerts(User user) {
+	public List<Alert> getAlerts(User user) {
 		// FIXME: implement uploading this protocol to the server
 		return null;
 	}

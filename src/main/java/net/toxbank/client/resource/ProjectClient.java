@@ -9,6 +9,7 @@ import net.toxbank.client.io.rdf.ProjectIO;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -22,6 +23,14 @@ public class ProjectClient extends AbstractClient<Project> {
 		name,ldapgroup
 	}
 
+	public ProjectClient() {
+		this(null);
+	}
+		
+	public ProjectClient(HttpClient httpclient) {
+		super(httpclient);
+	}
+	
 	@Override
 	IOClass<Project> getIOClass() {
 		return new ProjectIO();

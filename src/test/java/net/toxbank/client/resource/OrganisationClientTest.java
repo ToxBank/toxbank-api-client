@@ -15,7 +15,7 @@ public class OrganisationClientTest extends AbstractClientTest<Organisation,Orga
 
 	@Override
 	protected OrganisationClient getToxBackClient() {
-		return new OrganisationClient();
+		return tbclient.getOrganisationClient();
 	}
 	
 	@Override
@@ -61,5 +61,10 @@ public class OrganisationClientTest extends AbstractClientTest<Organisation,Orga
 	@Override
 	public void testDelete() throws Exception {
 		Assert.assertTrue("Delete is tested with testCreate(), the object is deleted upon creation",true);
+	}
+	
+	@Override
+	public void testUpdate() throws Exception {
+
 	}
 }

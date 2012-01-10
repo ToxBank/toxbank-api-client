@@ -6,6 +6,7 @@ import net.toxbank.client.io.rdf.IOClass;
 import net.toxbank.client.io.rdf.ProtocolIO;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.client.HttpClient;
 
 /**
  * A protocol version is a {@link Protocol}
@@ -14,17 +15,23 @@ import org.apache.http.HttpEntity;
  */
 public class ProtocolVersionClient extends AbstractClient<Protocol> {
 
-	private ProtocolVersionClient() {};
+	public ProtocolVersionClient() {
+		this(null);
+	}
+		
+	public ProtocolVersionClient(HttpClient httpclient) {
+		super(httpclient);
+	}
 
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/API_Protocol:Uploadt">API documentation</a>.
 	 */
-	public static URL upload(Protocol version, URL server) {
+	public URL upload(Protocol version, URL server) {
 		// FIXME: implement uploading this protocol to the server
 		return null;
 	}
 
-	public static Protocol download(URL resource) {
+	public Protocol download(URL resource) {
 		// TODO Auto-generated method stub
 		return null;
 	}

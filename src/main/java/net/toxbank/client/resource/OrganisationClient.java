@@ -1,6 +1,5 @@
 package net.toxbank.client.resource;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +9,7 @@ import net.toxbank.client.io.rdf.OrganisationIO;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -22,6 +22,16 @@ public class OrganisationClient extends AbstractClient<Organisation> {
 	protected enum webform {
 		name,ldapgroup
 	}
+	
+	public OrganisationClient() {
+		this(null);
+	}
+		
+	public OrganisationClient(HttpClient httpclient) {
+		super(httpclient);
+	}
+	
+	
 	@Override
 	IOClass<Organisation> getIOClass() {
 		return new OrganisationIO();

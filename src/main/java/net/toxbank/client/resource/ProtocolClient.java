@@ -2,8 +2,8 @@ package net.toxbank.client.resource;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -17,6 +17,11 @@ import net.toxbank.client.io.rdf.ProtocolIO;
 import net.toxbank.client.task.RemoteTask;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
@@ -36,8 +41,14 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 		keywords,
 		filename
 	}
-	
-	protected ProtocolClient() {}
+
+	public ProtocolClient() {
+		this(null);
+	}
+		
+	public ProtocolClient(HttpClient httpclient) {
+		super(httpclient);
+	}
 	
 	@Override
 	IOClass<Protocol> getIOClass() {
@@ -93,8 +104,8 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
 		entity.addPart("template", new FileBody(template));
 		 
-		return new RemoteTask(new URL(String.format("%s%s",protocol.getResourceURL(),Resources.datatemplate)), 
-											"text/uri-list", entity, HTTPClient.POST);
+		return new RemoteTask(getHttpClient(),new URL(String.format("%s%s",protocol.getResourceURL(),Resources.datatemplate)), 
+											"text/uri-list", entity, HttpPost.METHOD_NAME);
 	}
 	
 	
@@ -104,18 +115,16 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/API_Protocol:Upload">API documentation</a>.
 	 */
-	public static Protocol download(URL identifier) throws Exception {
-		ProtocolClient cli = new ProtocolClient();
-		List<Protocol> protocol = cli.getRDF_XML(identifier);
+	public Protocol download(URL identifier) throws Exception {
+		List<Protocol> protocol = getRDF_XML(identifier);
 		return protocol.size()==0?null:protocol.get(0);
 	}
 
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/API_Protocol:RetrieveList">API documentation</a>.
 	 */
-	public static List<URL> listProtocols(URL server) throws IOException, RestException {
-		ProtocolClient cli = new ProtocolClient();
-		return cli.listURI(server);
+	public List<URL> listProtocols(URL server) throws IOException, RestException {
+		return listURI(server);
 	}
 
 	public List<URL> listProtocols(User user) throws IOException, RestException {
@@ -128,51 +137,66 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/API_Protocol:Upload">API documentation</a>.
 	 */
-	public static URL upload(Protocol protocol, URL server) throws Exception {
-		ProtocolClient cli = new ProtocolClient();
-		Protocol p = cli.post(protocol,server);
+	public URL upload(Protocol protocol, URL server) throws Exception {
+		Protocol p = post(protocol,server);
 		return p.getResourceURL();
 	}
 
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/API_Protocol:Retrieve">API documentation</a>.
 	 */
-	public static URL listFile(Protocol protocol) throws MalformedURLException {
+	public URL listFile(Protocol protocol) throws MalformedURLException {
 		return new URL(String.format("%s%s",protocol.getResourceURL(),Resources.document));
 	}
 	
-	public static File downloadFile(Protocol protocol) throws MalformedURLException, IOException {
+	public File downloadFile(Protocol protocol) throws MalformedURLException, IOException, RestException {
 		URL url = new URL(String.format("%s%s",protocol.getResourceURL(),Resources.document));
-		HttpURLConnection c = HTTPClient.getHttpURLConnection(url.toExternalForm(), HTTPClient.GET,"");
+		
+		HttpGet httpGet = new HttpGet(url.toExternalForm());
+		httpGet.addHeader("Accept","");
+		
+		InputStream in = null;
 		try {
-			c.connect();
-			File temp = File.createTempFile("download_", ".pdf");
-			HTTPClient.download(c.getInputStream(), temp);
-			return temp;
+			HttpResponse response = getHttpClient().execute(httpGet);
+			HttpEntity entity  = response.getEntity();
+			if (response.getStatusLine().getStatusCode()== HttpStatus.SC_OK) {
+				in = entity.getContent();
+				File temp = File.createTempFile("download_", ".pdf");
+				HTTPClient.download(in, temp);
+				return temp;
+			} else throw new RestException(response.getStatusLine().getStatusCode());
+		
 		} finally {
-			try {c.disconnect(); } catch (Exception x) {}
-		}
+			try {if (in !=null) in.close();} catch (Exception x) {}
+		}		
 	}
 	
-	public static File downloadTemplate(Protocol protocol) throws MalformedURLException, IOException {
+	public File downloadTemplate(Protocol protocol) throws MalformedURLException, IOException , RestException {
 		URL url = new URL(String.format("%s%s",protocol.getResourceURL(),Resources.datatemplate));
-		HttpURLConnection c = HTTPClient.getHttpURLConnection(url.toExternalForm(), HTTPClient.GET,"");
+		HttpGet httpGet = new HttpGet(url.toExternalForm());
+		httpGet.addHeader("Accept","");
+		
+		InputStream in = null;
 		try {
-			c.connect();
-			File temp = File.createTempFile("download_", ".txt");
-			HTTPClient.download(c.getInputStream(), temp);
-			return temp;
+			HttpResponse response = getHttpClient().execute(httpGet);
+			HttpEntity entity  = response.getEntity();
+			if (response.getStatusLine().getStatusCode()== HttpStatus.SC_OK) {
+				in = entity.getContent();
+				File temp = File.createTempFile("download_", ".txt");
+				HTTPClient.download(in, temp);
+				return temp;
+			} else throw new RestException(response.getStatusLine().getStatusCode());
+		
 		} finally {
-			try {c.disconnect(); } catch (Exception x) {}
-		}
+			try {if (in !=null) in.close();} catch (Exception x) {}
+		}			
 	}
 
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/API_Protocol:RetrieveVersions">API documentation</a>.
 	 */
-	public static List<URL> listVersions(Protocol protocol) throws IOException, RestException{
-		ProtocolClient cli = new ProtocolClient();
-		return cli.listURI(new URL(String.format("%s%s",protocol.getResourceURL(),Resources.versions)));
+	public List<URL> listVersions(Protocol protocol) throws IOException, RestException{
+		return listURI(new URL(String.format("%s%s",protocol.getResourceURL(),Resources.versions)));
 	}
 
 	/**
@@ -180,16 +204,15 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 	 * Equivalent to {@link #listVersions()} but returns {@link ProtocolVersionClient}s
 	 * already populated with metadata from the database.
 	 */
-	public static List<Protocol> getVersions(Protocol protocol) throws Exception {
-		ProtocolClient cli = new ProtocolClient();
-		return cli.getRDF_XML(new URL(String.format("%s%s",protocol.getResourceURL(),Resources.versions)));
+	public List<Protocol> getVersions(Protocol protocol) throws Exception {
+		return getRDF_XML(new URL(String.format("%s%s",protocol.getResourceURL(),Resources.versions)));
 	}
 
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/API_Protocol:RetrieveTemplates">API documentation</a>.
 	 */
 
-	public static URL listTemplate(Protocol protocol) throws MalformedURLException  {
+	public URL listTemplate(Protocol protocol) throws MalformedURLException  {
 		return new URL(String.format("%s%s",protocol.getResourceURL(),Resources.datatemplate));
 	}
 
@@ -198,15 +221,14 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 	 * Equivalent to {@link #listTempaltes()} but returns {@link TemplateClient}s
 	 * already populated with metadata from the database.
 	 */
-	public static List<Template> getTemplates(Protocol protocol) throws MalformedURLException {
+	public List<Template> getTemplates(Protocol protocol) throws MalformedURLException {
 		List<Template> templates = new ArrayList<Template>();
 		templates.add(new Template(new URL(String.format("%s%s",protocol.getResourceURL(),Resources.datatemplate))));
 		return templates;
 	}
 
-	public static void deleteProtocol(Protocol protocol) throws Exception {
-		ProtocolClient cli = new ProtocolClient();
-		cli.delete(protocol);
+	public void deleteProtocol(Protocol protocol) throws Exception {
+		delete(protocol);
 	}
 
 }

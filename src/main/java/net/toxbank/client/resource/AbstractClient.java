@@ -15,10 +15,15 @@ import net.toxbank.client.io.rdf.IOClass;
 import net.toxbank.client.task.RemoteTask;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
-import org.opentox.rest.HTTPClient;
+import org.opentox.aa.opensso.AAServicesConfig;
+import org.opentox.aa.opensso.OpenSSOToken;
 import org.opentox.rest.RestException;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -31,9 +36,27 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
  * @param <T>
  */
 public abstract class AbstractClient<T extends IToxBankResource> {
+	protected HttpClient httpClient;
+	
+	public HttpClient getHttpClient() throws IOException {
+		if (httpClient==null) throw new IOException("No HttpClient!"); 
+			//setHttpClient(new DefaultHttpClient());
+		return httpClient;
+	}
+	public void setHttpClient(HttpClient httpClient) {
+		this.httpClient = httpClient;
+	}
+	
+	
+	public AbstractClient(HttpClient httpclient) {
+		super();
+		setHttpClient(httpclient);
+	}
 	
 	public AbstractClient() {
+		this(null);
 	}
+	
 	/**
 	 * Same as {@link #getRDF_XML(URL)}
 	 * @param url
@@ -70,23 +93,23 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 	 * @throws IOException
 	 */
 	protected List<T> get(URL url,String mediaType) throws RestException, IOException {
-		//TODO rewrite with Apache HTTPClient
-		HTTPClient client = new HTTPClient(url.toString());
-		client.setHeaders(new String[][] {{"Accept",mediaType},{"Accept-Charset", "utf-8"}});
+		HttpGet httpGet = new HttpGet(url.toString());
+		httpGet.addHeader("Accept",mediaType);
+		httpGet.addHeader("Accept-Charset", "utf-8");
 
-		client.get();
 		InputStream in = null;
 		try {
-			if (client.getStatus()==200) {
-				in = client.getInputStream();
+			HttpResponse response = getHttpClient().execute(httpGet);
+			HttpEntity entity  = response.getEntity();
+			in = entity.getContent();
+			if (response.getStatusLine().getStatusCode()== HttpStatus.SC_OK) {
 				Model model = ModelFactory.createDefaultModel();
 				model.read(new InputStreamReader(in,"UTF-8"),"");
 				return getIOClass().fromJena(model);
-			} else throw new RestException(client.getStatus());
+			} else throw new RestException(response.getStatusLine().getStatusCode());
 		
 		} finally {
-			try {in.close();} catch (Exception x) {}
-			try {client.release();} catch (Exception x) {}
+			try {if (in != null) in.close();} catch (Exception x) {}
 		}
 	
 	}
@@ -101,20 +124,21 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 	 * @throws IOException
 	 */
 	public List<URL> listURI(URL url) throws  RestException, IOException {
-		HTTPClient client = new HTTPClient(url.toString());
-		client.setHeaders(new String[][] {{"Accept","text/uri-list"}});
-		client.get();
+		HttpGet httpGet = new HttpGet(url.toString());
+		httpGet.addHeader("Accept","text/uri-list");
+
 		InputStream in = null;
 		try {
-			if (client.getStatus()==200) {
-				in = client.getInputStream();
+			HttpResponse response = getHttpClient().execute(httpGet);
+			HttpEntity entity  = response.getEntity();
+			in = entity.getContent();
+			if (response.getStatusLine().getStatusCode()== HttpStatus.SC_OK) {
 				return readURI(in);
-			} else throw new RestException(client.getStatus());
+			} else throw new RestException(response.getStatusLine().getStatusCode());
 
 		} finally {
-			try {in.close();} catch (Exception x) {}
-			try {client.release();} catch (Exception x) {}
-		}
+			try {if (in !=null) in.close();} catch (Exception x) {}
+		}		
 	}
 	/**
 	 * HTTP GET with "Accept:text/uri-list". 
@@ -173,7 +197,7 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 		return sendAsync(url,null, HttpDelete.METHOD_NAME);
 	}	
 	private RemoteTask sendAsync(URL target, HttpEntity entity, String method) throws Exception {
-		return new RemoteTask(target, "text/uri-list", entity, method);
+		return new RemoteTask(getHttpClient(),target, "text/uri-list", entity, method);
 	}	
 
 	/**
@@ -240,5 +264,14 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 	}
 	abstract IOClass<T> getIOClass();
 	
+	public static OpenSSOToken login(String username,String password) throws Exception {
+		OpenSSOToken token = new OpenSSOToken(AAServicesConfig.getSingleton().getOpenSSOService());
+		if (token.login(username,password)) {
+			//AAClient.setTokenFactory();
+		}
+		return token;
+		
+	}
 
+	
 }
