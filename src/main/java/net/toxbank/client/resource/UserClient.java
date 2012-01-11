@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.toxbank.client.Resources;
 import net.toxbank.client.exceptions.InvalidInputException;
 import net.toxbank.client.io.rdf.IOClass;
 import net.toxbank.client.io.rdf.UserIO;
@@ -26,7 +27,7 @@ import org.opentox.rest.RestException;
  */
 public class UserClient extends AbstractClient<User> {
 	protected enum webform {
-		username,title,firstname,lastname,institute,weblog,homepage
+		username,title,firstname,lastname,institute,project,weblog,homepage
 	}
 	
 	public UserClient() {
@@ -46,7 +47,16 @@ public class UserClient extends AbstractClient<User> {
 		formparams.add(new BasicNameValuePair(webform.title.name(), user.getTitle()));
 		formparams.add(new BasicNameValuePair(webform.firstname.name(), user.getFirstname()));
 		formparams.add(new BasicNameValuePair(webform.lastname.name(), user.getLastname()));
-		formparams.add(new BasicNameValuePair(webform.institute.name(), user.getInstitute().getResourceURL().toString()));
+		
+		if (user.getOrganisation()!=null)
+			for (Organisation org: user.getOrganisation())
+				if (org.getResourceURL()!=null)
+				formparams.add(new BasicNameValuePair(webform.institute.name(), org.getResourceURL().toString()));
+		if (user.getProjects()!=null)
+			for (Project project: user.getProjects())
+				if (project.getResourceURL()!=null)
+				formparams.add(new BasicNameValuePair(webform.project.name(), project.getResourceURL().toString()));
+				
 		formparams.add(new BasicNameValuePair(webform.weblog.name(), user.getWeblog()==null?null:user.getWeblog().toString()));
 		formparams.add(new BasicNameValuePair(webform.homepage.name(), user.getHomepage()==null?null:user.getHomepage().toString()));
 		return new UrlEncodedFormEntity(formparams, "UTF-8");
@@ -63,8 +73,16 @@ public class UserClient extends AbstractClient<User> {
 			formparams.add(new BasicNameValuePair(webform.firstname.name(), user.getFirstname()));
 		if (user.getLastname()!=null)
 			formparams.add(new BasicNameValuePair(webform.lastname.name(), user.getLastname()));
-		if ((user.getInstitute()!=null) && (user.getInstitute().getResourceURL()!=null))
-			formparams.add(new BasicNameValuePair(webform.institute.name(), user.getInstitute().getResourceURL().toString()));
+		
+		if (user.getOrganisation()!=null)
+			for (Organisation org: user.getOrganisation())
+				if (org.getResourceURL()!=null)
+				formparams.add(new BasicNameValuePair(webform.institute.name(), org.getResourceURL().toString()));
+		if (user.getProjects()!=null)
+			for (Project project: user.getProjects())
+				if (project.getResourceURL()!=null)
+				formparams.add(new BasicNameValuePair(webform.project.name(), project.getResourceURL().toString()));
+		
 		if ((user.getWeblog()!=null))
 			formparams.add(new BasicNameValuePair(webform.weblog.name(), user.getWeblog()==null?null:user.getWeblog().toString()));
 		if ((user.getHomepage()!=null))
@@ -110,7 +128,27 @@ public class UserClient extends AbstractClient<User> {
 		ProtocolClient cli = new ProtocolClient(getHttpClient());
 		return cli.getProtocols(user);
 	}
+	/**
+	 * 
+	 * @param user
+	 * @return Projects
+	 * @throws Exception
+	 */
+	public List<Project> getProjects(User user) throws Exception {
+		ProjectClient cli = new ProjectClient(getHttpClient());
+		return cli.getRDF_XML(new URL(String.format("%s%s",user.getResourceURL(),Resources.project)));
+	}
 
+	/**
+	 * 
+	 * @param user
+	 * @return Organisations
+	 * @throws Exception
+	 */
+	public List<Organisation> getOrganisaitons(User user) throws Exception {
+		OrganisationClient cli = new OrganisationClient(getHttpClient());
+		return cli.getRDF_XML(new URL(String.format("%s%s",user.getResourceURL(),Resources.organisation)));
+	}	
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/User:RetrieveStudies">API documentation</a>.
 	 */

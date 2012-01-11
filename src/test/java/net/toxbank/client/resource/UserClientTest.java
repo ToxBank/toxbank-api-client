@@ -84,6 +84,26 @@ public class UserClientTest extends AbstractClientTest<User, UserClient>  {
 	}
 
 	@Test
+	public void testGetProjects() throws Exception {
+		//get the first user available
+		UserClient cli = getToxBackClient();
+		User user = cli.download(new URL(String.format("%s?page=%d&pagesize=%d",TEST_SERVER_USER,0,1)));
+		List<Project> projects = cli.getProjects(user);
+		Assert.assertNotNull(projects);
+		Assert.assertNotSame(0, projects.size());
+	}
+	
+	@Test
+	public void testGetOrganisations() throws Exception {
+		//get the first user available
+		UserClient cli = getToxBackClient();
+		User user = cli.download(new URL(String.format("%s?page=%d&pagesize=%d",TEST_SERVER_USER,0,1)));
+		List<Organisation> orgs = cli.getOrganisaitons(user);
+		Assert.assertNotNull(orgs);
+		Assert.assertNotSame(0, orgs.size());
+	}	
+	
+	@Test
 	public void testListStudies() throws Exception {
 		User user = new User(new URL(TEST_SERVER_USER + "user/ab7f235ccd"));
 		UserClient cli = getToxBackClient();
@@ -125,7 +145,8 @@ public class UserClientTest extends AbstractClientTest<User, UserClient>  {
 		user.setFirstname("Test");
 		user.setLastname("Tester");
 		//user.setUserName("guest");
-		user.setInstitute(new Organisation(new URL(String.format("%s%s/G1",AbstractClientTest.TEST_SERVER,Resources.organisation))));
+		user.addOrganisation(new Organisation(new URL(String.format("%s%s/G1",AbstractClientTest.TEST_SERVER,Resources.organisation))));
+		user.addProject(new Project(new URL(String.format("%s%s/G1",AbstractClientTest.TEST_SERVER,Resources.project))));
 		user.setWeblog(new URL("http://example.org/blog"));
 		user.setHomepage(new URL("http://example.org/home"));
 		
