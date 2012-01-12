@@ -48,8 +48,8 @@ public class UserClient extends AbstractClient<User> {
 		formparams.add(new BasicNameValuePair(webform.firstname.name(), user.getFirstname()));
 		formparams.add(new BasicNameValuePair(webform.lastname.name(), user.getLastname()));
 		
-		if (user.getOrganisation()!=null)
-			for (Organisation org: user.getOrganisation())
+		if (user.getOrganisations()!=null)
+			for (Organisation org: user.getOrganisations())
 				if (org.getResourceURL()!=null)
 				formparams.add(new BasicNameValuePair(webform.institute.name(), org.getResourceURL().toString()));
 		if (user.getProjects()!=null)
@@ -74,8 +74,8 @@ public class UserClient extends AbstractClient<User> {
 		if (user.getLastname()!=null)
 			formparams.add(new BasicNameValuePair(webform.lastname.name(), user.getLastname()));
 		
-		if (user.getOrganisation()!=null)
-			for (Organisation org: user.getOrganisation())
+		if (user.getOrganisations()!=null)
+			for (Organisation org: user.getOrganisations())
 				if (org.getResourceURL()!=null)
 				formparams.add(new BasicNameValuePair(webform.institute.name(), org.getResourceURL().toString()));
 		if (user.getProjects()!=null)
