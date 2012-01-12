@@ -157,6 +157,9 @@ public class UserClientTest extends AbstractClientTest<User, UserClient>  {
 		Assert.assertNull(task.getError());
 		System.out.println(task.getResult());
 		//should not be 0 ! http://toxbanktest1.opentox.org:8080/toxbank/project/G0 
+		//and now clean everything
+		tbclient.getOrganisationClient().delete(new Organisation(new URL(String.format("%s%s/G1",task.getResult(),Resources.organisation))));
+		tbclient.getProjectClient().delete(new Project(new URL(String.format("%s%s/G1",task.getResult(),Resources.project))));
 		uClient.delete(task.getResult());		
 	}
 	

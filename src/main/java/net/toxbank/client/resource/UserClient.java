@@ -27,7 +27,7 @@ import org.opentox.rest.RestException;
  */
 public class UserClient extends AbstractClient<User> {
 	protected enum webform {
-		username,title,firstname,lastname,institute,project,weblog,homepage
+		username,title,firstname,lastname,organisation_uri,project_uri,weblog,homepage
 	}
 	
 	public UserClient() {
@@ -51,11 +51,11 @@ public class UserClient extends AbstractClient<User> {
 		if (user.getOrganisations()!=null)
 			for (Organisation org: user.getOrganisations())
 				if (org.getResourceURL()!=null)
-				formparams.add(new BasicNameValuePair(webform.institute.name(), org.getResourceURL().toString()));
+				formparams.add(new BasicNameValuePair(webform.organisation_uri.name(), org.getResourceURL().toString()));
 		if (user.getProjects()!=null)
 			for (Project project: user.getProjects())
 				if (project.getResourceURL()!=null)
-				formparams.add(new BasicNameValuePair(webform.project.name(), project.getResourceURL().toString()));
+				formparams.add(new BasicNameValuePair(webform.project_uri.name(), project.getResourceURL().toString()));
 				
 		formparams.add(new BasicNameValuePair(webform.weblog.name(), user.getWeblog()==null?null:user.getWeblog().toString()));
 		formparams.add(new BasicNameValuePair(webform.homepage.name(), user.getHomepage()==null?null:user.getHomepage().toString()));
@@ -77,11 +77,11 @@ public class UserClient extends AbstractClient<User> {
 		if (user.getOrganisations()!=null)
 			for (Organisation org: user.getOrganisations())
 				if (org.getResourceURL()!=null)
-				formparams.add(new BasicNameValuePair(webform.institute.name(), org.getResourceURL().toString()));
+				formparams.add(new BasicNameValuePair(webform.organisation_uri.name(), org.getResourceURL().toString()));
 		if (user.getProjects()!=null)
 			for (Project project: user.getProjects())
 				if (project.getResourceURL()!=null)
-				formparams.add(new BasicNameValuePair(webform.project.name(), project.getResourceURL().toString()));
+				formparams.add(new BasicNameValuePair(webform.project_uri.name(), project.getResourceURL().toString()));
 		
 		if ((user.getWeblog()!=null))
 			formparams.add(new BasicNameValuePair(webform.weblog.name(), user.getWeblog()==null?null:user.getWeblog().toString()));
