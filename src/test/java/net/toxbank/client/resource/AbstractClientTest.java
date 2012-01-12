@@ -17,7 +17,7 @@ public abstract class AbstractClientTest<T extends IToxBankResource, C extends A
 	protected static final String aa_server_property = "toxbank.aa.opensso";
 	protected static final String aa_user_property = "toxbank.aa.user";
 	protected static final String aa_pass_property = "toxbank.aa.pass";
-	private static Properties properties;
+	protected static Properties properties;
 	
 	public final static TBClient tbclient = new TBClient();
 	@BeforeClass

@@ -185,4 +185,15 @@ public class UserClient extends AbstractClient<User> {
 		return null;
 	}
 
+	/**
+	 * 
+	 * @param serverURL , root URL ; e.g. http://localhost:8080/toxbank
+	 * @return  Information about the logged in user.
+	 * @throws IOException 
+	 * @throws RestException  404 if not found; 403 if not logged in 
+	 */
+	public User myAccount(URL serverURL) throws IOException, RestException {
+		List<User> users = get(new URL(String.format("%s/myaccount",serverURL)), "application/rdf+xml");
+		return users.size()>0?users.get(0):null;
+	}
 }

@@ -170,4 +170,13 @@ public class UserClientTest extends AbstractClientTest<User, UserClient>  {
 	@Override
 	public void testUpdate() throws Exception {
 	}
+	
+	@Test
+	public void testGetMyAccount() throws Exception  {
+		String username = properties.getProperty(aa_user_property);
+		UserClient cli = getToxBackClient();
+		User user = cli.myAccount(new URL(TEST_SERVER));
+		Assert.assertNotNull(user);
+		Assert.assertEquals(username,user.getUserName());
+	}
 }
