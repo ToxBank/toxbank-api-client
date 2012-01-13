@@ -26,6 +26,8 @@ digraph G {
 			<tr><td align="left"> summarySearchable </td></tr>
 			<tr><td align="left"> keywords </td></tr>
 			<tr><td align="left"> filename </td></tr>
+			<tr><td align="left"> allowReadByUser </td></tr>
+			<tr><td align="left"> allowReadByGroup </td></tr>
 		</table></td></tr>
 		</table>>, fontname="arial", fontcolor="black", fontsize=10.0];
 }

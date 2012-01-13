@@ -21,7 +21,8 @@ digraph G {
 			<tr><td align="left"> title </td></tr>
 			<tr><td align="left"> firstname </td></tr>
 			<tr><td align="left"> lastname </td></tr>
-			<tr><td align="left"> institute </td></tr>
+			<tr><td align="left"> organisation_uri </td></tr>
+			<tr><td align="left"> project_uri </td></tr>
 			<tr><td align="left"> weblog </td></tr>
 			<tr><td align="left"> homepage </td></tr>
 		</table></td></tr>

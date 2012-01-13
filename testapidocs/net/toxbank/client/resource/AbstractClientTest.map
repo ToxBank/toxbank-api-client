@@ -1,9 +1,9 @@
 <map id="G" name="G">
-<area shape="rect" id="node1_0" href="./UserClientTest.html" title="&lt;TABLE&gt;" alt="" coords="16,409,229,690"/>
-<area shape="rect" id="node2_1" href="./TemplateClientTest.html" title="&lt;TABLE&gt;" alt="" coords="275,465,509,634"/>
-<area shape="rect" id="node3_2" href="./ProtocolClientTest.html" title="&lt;TABLE&gt;" alt="" coords="555,369,789,730"/>
-<area shape="rect" id="node4_3" href="./ProjectClientTest.html" title="&lt;TABLE&gt;" alt="" coords="835,465,1063,634"/>
-<area shape="rect" id="node5_4" href="./OrganisationClientTest.html" title="&lt;TABLE&gt;" alt="" coords="1109,457,1369,642"/>
-<area shape="rect" id="node6_5" href="./DocumentClientTest.html" title="&lt;TABLE&gt;" alt="" coords="1415,465,1649,634"/>
-<area shape="rect" id="node7_6" href="./AbstractClientTest.html" title="&lt;TABLE&gt;" alt="" coords="542,11,1079,309"/>
+<area shape="rect" id="node1_0" href="./UserClientTest.html" title="&lt;TABLE&gt;" alt="" coords="16,401,229,730"/>
+<area shape="rect" id="node2_1" href="./TemplateClientTest.html" title="&lt;TABLE&gt;" alt="" coords="275,481,509,650"/>
+<area shape="rect" id="node3_2" href="./ProtocolClientTest.html" title="&lt;TABLE&gt;" alt="" coords="555,385,789,746"/>
+<area shape="rect" id="node4_3" href="./ProjectClientTest.html" title="&lt;TABLE&gt;" alt="" coords="835,481,1063,650"/>
+<area shape="rect" id="node5_4" href="./OrganisationClientTest.html" title="&lt;TABLE&gt;" alt="" coords="1109,473,1369,658"/>
+<area shape="rect" id="node6_5" href="./DocumentClientTest.html" title="&lt;TABLE&gt;" alt="" coords="1415,481,1649,650"/>
+<area shape="rect" id="node7_6" href="./AbstractClientTest.html" title="&lt;TABLE&gt;" alt="" coords="542,11,1079,325"/>
 </map>

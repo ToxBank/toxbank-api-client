@@ -24,10 +24,13 @@ digraph G {
 			<tr><td align="left"> + list(server : URL) : List&lt;URL&gt; </td></tr>
 			<tr><td align="left"> + listProtocols(user : User) : List&lt;URL&gt; </td></tr>
 			<tr><td align="left"> + getProtocols(user : User) : List&lt;Protocol&gt; </td></tr>
+			<tr><td align="left"> + getProjects(user : User) : List&lt;Project&gt; </td></tr>
+			<tr><td align="left"> + getOrganisaitons(user : User) : List&lt;Organisation&gt; </td></tr>
 			<tr><td align="left"> + listStudies(user : User) : List&lt;URL&gt; </td></tr>
 			<tr><td align="left"> + getStudies(user : User) : List&lt;Study&gt; </td></tr>
 			<tr><td align="left"> + listAlerts(user : User) : List&lt;URL&gt; </td></tr>
 			<tr><td align="left"> + getAlerts(user : User) : List&lt;Alert&gt; </td></tr>
+			<tr><td align="left"> + myAccount(serverURL : URL) : User </td></tr>
 		</table></td></tr>
 		</table>>, fontname="arial", fontcolor="black", fontsize=10.0];
 	// net.toxbank.client.resource.AbstractClient<T extends net.toxbank.client.resource.IToxBankResource>

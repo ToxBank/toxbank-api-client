@@ -23,6 +23,8 @@ digraph G {
 			<tr><td align="left"> + testList() </td></tr>
 			<tr><td align="left"> + testListProtocols() </td></tr>
 			<tr><td align="left"> + testGetProtocols() </td></tr>
+			<tr><td align="left"> + testGetProjects() </td></tr>
+			<tr><td align="left"> + testGetOrganisations() </td></tr>
 			<tr><td align="left"> + testListStudies() </td></tr>
 			<tr><td align="left"> + testGetStudies() </td></tr>
 			<tr><td align="left"> + testListAlerts() </td></tr>
@@ -30,6 +32,7 @@ digraph G {
 			<tr><td align="left"> + testCreate() </td></tr>
 			<tr><td align="left"> + testDelete() </td></tr>
 			<tr><td align="left"> + testUpdate() </td></tr>
+			<tr><td align="left"> + testGetMyAccount() </td></tr>
 		</table></td></tr>
 		</table>>, fontname="arial", fontcolor="black", fontsize=10.0];
 	// net.toxbank.client.resource.TemplateClientTest
@@ -146,6 +149,7 @@ digraph G {
 			<tr><td align="left"> # aa_server_property : String </td></tr>
 			<tr><td align="left"> # aa_user_property : String </td></tr>
 			<tr><td align="left"> # aa_pass_property : String </td></tr>
+			<tr><td align="left"> # properties : Properties </td></tr>
 			<tr><td align="left"> + tbclient : TBClient </td></tr>
 		</table></td></tr>
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
