@@ -145,7 +145,7 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 				return getIOClass().fromJena(model);
 			} else if (response.getStatusLine().getStatusCode()== HttpStatus.SC_NOT_FOUND) {	
 				return Collections.emptyList();
-			} else throw new RestException(response.getStatusLine().getStatusCode());
+			} else throw new RestException(response.getStatusLine().getStatusCode(),response.getStatusLine().getReasonPhrase());
 		
 		} finally {
 			try {if (in != null) in.close();} catch (Exception x) {}
@@ -210,7 +210,7 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 				return readURI(in);
 			} else if (response.getStatusLine().getStatusCode()== HttpStatus.SC_NOT_FOUND) {	
 				return Collections.emptyList();				
-			} else throw new RestException(response.getStatusLine().getStatusCode());
+			} else throw new RestException(response.getStatusLine().getStatusCode(),response.getStatusLine().getReasonPhrase());
 
 		} finally {
 			try {if (in !=null) in.close();} catch (Exception x) {}

@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Serializable;
-import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.apache.http.HttpEntity;
@@ -18,7 +17,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.opentox.rest.HTTPClient;
 import org.opentox.rest.RestException;
 
 import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
@@ -51,6 +49,7 @@ public class RemoteTask implements Serializable {
 	
 	protected final URL url;
 	protected int status = -1;
+	protected String statusLine = null;
 	protected URL result = null;
 	protected Exception error = null;
 	protected HttpClient httpclient;
@@ -101,7 +100,7 @@ public class RemoteTask implements Serializable {
 			else if (method.equals(HttpGet.METHOD_NAME))
 				httpmethod = new HttpGet(url.toURI());
 				//client.get();
-			else throw new RestException(HttpStatus.SC_METHOD_NOT_ALLOWED);
+			else throw new RestException(HttpStatus.SC_METHOD_NOT_ALLOWED,String.format("Method %s not allowed at %s", method,url));
 			
 			httpmethod.addHeader("Accept",acceptMIME);
 			httpmethod.addHeader("Accept-Charset", "utf-8");
@@ -177,6 +176,7 @@ public class RemoteTask implements Serializable {
 			HttpResponse response = getHttpclient().execute(httpGet);
 			HttpEntity entity  = response.getEntity();
 			status = response.getStatusLine().getStatusCode();
+			statusLine = response.getStatusLine().getReasonPhrase();
 			in = entity.getContent();
 
 			if (HttpStatus.SC_SERVICE_UNAVAILABLE == status) {
@@ -189,9 +189,11 @@ public class RemoteTask implements Serializable {
 		} catch (RestException x) {
 			setError(x);
 			status = x.getStatus();
+			statusLine = x.getMessage();
 		} catch (Exception x) {
 			setError(x);
 			status = -1;
+			statusLine = x.getMessage();
 		} finally {
 			try {in.close();} catch (Exception x) {}
 		}
@@ -248,13 +250,12 @@ public class RemoteTask implements Serializable {
 			return ref;
 						
 		} else { //everything else considered an error
-			throw new RestException(status);
+			throw new RestException(status,statusLine);
 		}
 	}
 
 	public boolean pollRDF() {
 		if (isDone()) return true;
-	
 		InputStream in = null;
 		HttpGet httpGet = new HttpGet(result.toString());
 		httpGet.addHeader("Accept","application/rdf+xml");
@@ -263,19 +264,22 @@ public class RemoteTask implements Serializable {
 			HttpEntity entity  = response.getEntity();
 
 			status = response.getStatusLine().getStatusCode();
+			statusLine = response.getStatusLine().getReasonPhrase();
 //			if (!r.getEntity().isAvailable()) throw new ResourceException(Status.SERVER_ERROR_BAD_GATEWAY,String.format("Representation not available %s",result));
 			in = entity.getContent();
 			result = handleOutputRDF(in,status);
 		} catch (IOException x) {
 			
-			error = new RestException(status);
+			error = new RestException(status,statusLine,x);
 			
 		} catch (RestException x) {
 			error = x;
 			status = x.getStatus();
+			statusLine = x.getMessage();
 		} catch (Exception x) {
 			error = x;
 			status = -1;
+			statusLine = x.getMessage();
 		} finally {
 			try {in.close();} catch (Exception x) {}
 		}
@@ -326,7 +330,7 @@ public class RemoteTask implements Serializable {
 			return ref;
 						
 		} else { //everything else considered an error
-			throw new RestException(status);
+			throw new RestException(status,statusLine);
 		}
 	}	
 	
