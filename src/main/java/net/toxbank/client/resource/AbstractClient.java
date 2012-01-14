@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import net.toxbank.client.exceptions.InvalidInputException;
@@ -142,6 +143,8 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 				Model model = ModelFactory.createDefaultModel();
 				model.read(new InputStreamReader(in,"UTF-8"),"");
 				return getIOClass().fromJena(model);
+			} else if (response.getStatusLine().getStatusCode()== HttpStatus.SC_NOT_FOUND) {	
+				return Collections.emptyList();
 			} else throw new RestException(response.getStatusLine().getStatusCode());
 		
 		} finally {
@@ -205,6 +208,8 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 			in = entity.getContent();
 			if (response.getStatusLine().getStatusCode()== HttpStatus.SC_OK) {
 				return readURI(in);
+			} else if (response.getStatusLine().getStatusCode()== HttpStatus.SC_NOT_FOUND) {	
+				return Collections.emptyList();				
 			} else throw new RestException(response.getStatusLine().getStatusCode());
 
 		} finally {
