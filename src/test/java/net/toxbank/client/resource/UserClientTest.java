@@ -172,6 +172,33 @@ public class UserClientTest extends AbstractClientTest<User, UserClient>  {
 	}
 	
 	@Test
+	public void testAddProject() throws Exception {
+		UserClient uClient = getToxBackClient();
+		UserClient cli = getToxBackClient();
+		List<URL> users = cli.listURI(new URL(String.format("%s", TEST_SERVER_USER)),
+				new String[] {"page","0","pagesize","1"});		
+		Assert.assertNotNull(users);
+		Assert.assertEquals(1,users.size());
+		
+		ProjectClient pcli = tbclient.getProjectClient();
+		List<URL> projects = pcli.listURI(new URL(String.format("%s%s", TEST_SERVER,Resources.project)),
+																new String[] {"page","0","pagesize","1"});		
+		Assert.assertNotNull(projects);
+		Assert.assertEquals(1,projects.size());
+		
+		RemoteTask task = cli.addProject(new User(users.get(0)), new Project(projects.get(0)));
+		task.waitUntilCompleted(500);
+		//verify if ok
+		Assert.assertEquals(HttpStatus.SC_OK,task.getStatus());
+		Assert.assertNull(task.getError());
+		System.out.println(task.getResult());
+		//should not be 0 ! http://toxbanktest1.opentox.org:8080/toxbank/project/G0 
+		//and now clean everything
+		//cli.delete(new Organisation(new URL(String.format("%s%s/G1",task.getResult(),Resources.organisation))));
+	
+	}	
+	
+	@Test
 	public void testGetMyAccount() throws Exception  {
 		String username = properties.getProperty(aa_user_property);
 		UserClient cli = getToxBackClient();

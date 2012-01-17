@@ -10,11 +10,13 @@ import net.toxbank.client.Resources;
 import net.toxbank.client.exceptions.InvalidInputException;
 import net.toxbank.client.io.rdf.IOClass;
 import net.toxbank.client.io.rdf.UserIO;
+import net.toxbank.client.task.RemoteTask;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 import org.opentox.rest.RestException;
 
@@ -197,4 +199,32 @@ public class UserClient extends AbstractClient<User> {
 		return users.size()>0?users.get(0):null;
 	}
 
+	private RemoteTask addGroup(User user,Group project,String paramName,String groupSuffix) throws Exception {
+		if (user.getResourceURL()==null) throw new InvalidInputException("No user URI");
+		if (project.getResourceURL()==null) throw new InvalidInputException(String.format("No %s URI",groupSuffix));
+		
+		List<NameValuePair> formparams = new ArrayList<NameValuePair>();
+		formparams.add(new BasicNameValuePair(paramName, project.getResourceURL().toExternalForm()));
+		return sendAsync(new URL(String.format("%s%s", user,groupSuffix)), 
+					new UrlEncodedFormEntity(formparams, "UTF-8") , HttpPost.METHOD_NAME);
+	}
+	
+	/**
+	 * Adds a {@link Project} to the user profile
+	 * @param project
+	 * @throws RestException
+	 */
+	public RemoteTask addProject(User user,Project project) throws Exception {
+		return addGroup(user, project, "project_uri", Resources.project);
+	}
+	/**
+	 *  Adds a {@link Organisation} to the user profile
+	 * @param user
+	 * @param org
+	 * @return
+	 * @throws Exception
+	 */
+	public RemoteTask addOrganisation(User user,Organisation org) throws Exception {
+		return addGroup(user, org, "organisation_uri", Resources.organisation);
+	}
 }

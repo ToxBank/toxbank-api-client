@@ -276,7 +276,7 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 	protected RemoteTask deleteAsync(URL url) throws Exception {
 		return sendAsync(url,null, HttpDelete.METHOD_NAME);
 	}	
-	private RemoteTask sendAsync(URL target, HttpEntity entity, String method) throws Exception {
+	protected RemoteTask sendAsync(URL target, HttpEntity entity, String method) throws Exception {
 		return new RemoteTask(getHttpClient(),target, "text/uri-list", entity, method);
 	}	
 
