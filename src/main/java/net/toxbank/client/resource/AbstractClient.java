@@ -39,6 +39,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
  */
 public abstract class AbstractClient<T extends IToxBankResource> {
 	protected static String search_param = "search";
+	protected static String modified_param = "modifiedSince";
 	protected HttpClient httpClient;
 	
 	public HttpClient getHttpClient() throws IOException {
