@@ -250,11 +250,11 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 	}
 	
 	public List<Protocol> getModifiedSinceRDF_XML(URL url,Long unixtimestamp) throws Exception {
-		return get(url,"application/rdf+xml",unixtimestamp==null?null:new String[] {modified_param,unixtimestamp.toString()});
+		return get(url,mime_rdfxml,unixtimestamp==null?null:new String[] {modified_param,unixtimestamp.toString()});
 	}	
 
 	public List<Protocol> getModifiedSinceRDF_N3(URL url,Long unixtimestamp) throws Exception {
-		return get(url,"text/n3",unixtimestamp==null?null:new String[] {modified_param,unixtimestamp.toString()});
+		return get(url,mime_n3,unixtimestamp==null?null:new String[] {modified_param,unixtimestamp.toString()});
 	}	
 	public List<URL> getModifiedSinceURI(URL url,Long unixtimestamp) throws  RestException, IOException {
 		return listURI(url, unixtimestamp==null?null:new String[] {modified_param,unixtimestamp.toString()});

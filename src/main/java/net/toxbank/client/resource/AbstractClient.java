@@ -38,8 +38,11 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
  * @param <T>
  */
 public abstract class AbstractClient<T extends IToxBankResource> {
-	protected static String search_param = "search";
-	protected static String modified_param = "modifiedSince";
+	protected static final String mime_rdfxml = "application/rdf+xml";
+	protected static final String mime_n3 = "text/n3";
+	
+	protected static final String search_param = "search";
+	protected static final String modified_param = "modifiedSince";
 	protected HttpClient httpClient;
 	
 	public HttpClient getHttpClient() throws IOException {
@@ -78,7 +81,7 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 	 */
 	
 	public List<T> getRDF_XML(URL url) throws Exception {
-		return get(url,"application/rdf+xml");
+		return get(url,mime_rdfxml);
 	}
 	/**
 	 * 
@@ -88,7 +91,7 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 	 * @throws Exception
 	 */
 	public List<T> searchRDF_XML(URL url,String query) throws Exception {
-		return get(url,"application/rdf+xml",query==null?null:new String[] {search_param,query});
+		return get(url,mime_rdfxml,query==null?null:new String[] {search_param,query});
 	}	
 	/**
 	 * HTTP GET with "Accept:text/n3".  Parses the RDF and creates list of objects.
@@ -97,7 +100,7 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 	 * @throws Exception
 	 */
 	protected List<T> getRDF_N3(URL url) throws Exception {
-		return get(url,"text/n3");
+		return get(url,mime_n3);
 	}	
 	/**
 	 * 
@@ -107,7 +110,7 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 	 * @throws Exception
 	 */
 	protected List<T> searchRDF_N3(URL url,String query) throws Exception {
-		return get(url,"text/n3",query==null?null:new String[] {search_param,query});
+		return get(url,mime_n3,query==null?null:new String[] {search_param,query});
 	}		
 	/**
 	 * HTTP GET with given media type (expects one of RDF flavours). 

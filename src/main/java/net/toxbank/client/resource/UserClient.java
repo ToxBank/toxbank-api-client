@@ -98,7 +98,7 @@ public class UserClient extends AbstractClient<User> {
 	 * Described in this <a href="http://api.toxbank.net/index.php/User:RetrieveList">API documentation</a>.
 	 */
 	public User download(URL identifier) throws IOException, RestException {
-		List<User> users = get(identifier, "application/rdf+xml");
+		List<User> users = get(identifier, mime_rdfxml);
 		return users.size()>0?users.get(0):null;
 	}
 	
@@ -193,7 +193,8 @@ public class UserClient extends AbstractClient<User> {
 	 * @throws RestException  404 if not found; 403 if not logged in 
 	 */
 	public User myAccount(URL serverURL) throws IOException, RestException {
-		List<User> users = get(new URL(String.format("%s/myaccount",serverURL)), "application/rdf+xml");
+		List<User> users = get(new URL(String.format("%s/myaccount",serverURL)), mime_rdfxml);
 		return users.size()>0?users.get(0):null;
 	}
+
 }
