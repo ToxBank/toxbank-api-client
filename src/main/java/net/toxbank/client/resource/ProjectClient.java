@@ -19,10 +19,7 @@ import org.apache.http.message.BasicNameValuePair;
  * @author nina
  *
  */
-public class ProjectClient extends AbstractClient<Project> {
-	protected enum webform {
-		name,ldapgroup
-	}
+public class ProjectClient extends AbstractGroupClient<Project> {
 
 	public ProjectClient() {
 		this(null);
@@ -37,25 +34,5 @@ public class ProjectClient extends AbstractClient<Project> {
 		return new ProjectIO();
 	}
 	
-	@Override
-	protected HttpEntity createPOSTEntity(Project object) throws InvalidInputException,Exception {
-		List<NameValuePair> formparams = new ArrayList<NameValuePair>();
-		if (object.getTitle()!=null)
-			formparams.add(new BasicNameValuePair(webform.name.name(), object.getTitle()));
-		if (object.getGroupName()!=null)
-			formparams.add(new BasicNameValuePair(webform.ldapgroup.name(), object.getGroupName()));
-		if (formparams.size()==0) throw new InvalidInputException("No content!");
-		return new UrlEncodedFormEntity(formparams, "UTF-8");
-	}
-
-	@Override
-	protected HttpEntity createPUTEntity(Project object) throws InvalidInputException,Exception {
-		List<NameValuePair> formparams = new ArrayList<NameValuePair>();
-		if (object.getTitle()!=null)
-			formparams.add(new BasicNameValuePair(webform.name.name(), object.getTitle()));
-		if (object.getGroupName()!=null)
-			formparams.add(new BasicNameValuePair(webform.ldapgroup.name(), object.getGroupName()));
-		if (formparams.size()==0) throw new InvalidInputException("Nothing to update!");
-		return new UrlEncodedFormEntity(formparams, "UTF-8");
-	}
+	
 }
