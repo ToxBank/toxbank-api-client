@@ -262,12 +262,13 @@ public class ProtocolClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 	@Test
 	public void testRoundtripSubmissionDate() throws MalformedURLException {
 		Protocol version = new Protocol();
-		version.setSubmissionDate("2011-09-15");
+		long now = System.currentTimeMillis();
+		version.setSubmissionDate(now);
 		ProtocolVersionClient cli = tbclient.getProtocolVersionClient();
 		URL resource = cli.upload(version, new URL(TEST_SERVER_PROTOCOL));
 
 		Protocol roundtripped = cli.download(resource);
-		Assert.assertEquals("2011-09-15", roundtripped.getSubmissionDate());
+		Assert.assertEquals(now, roundtripped.getSubmissionDate());
 	}
 	
 	@Override
