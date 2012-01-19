@@ -97,6 +97,9 @@ public class ProtocolClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 		List<Protocol> newp = cli.get(newProtocol);
 		Assert.assertEquals(1,newp.size());
 		Assert.assertEquals(STATUS.SOP,newp.get(0).getStatus());
+		System.out.println(newp.get(0).getProject());
+		Assert.assertNotNull(newp.get(0).getProject().getTitle());
+		//Assert.assertNotNull(newp.get(0).getProject().getGroupName());
 		cli.delete(newProtocol);
 	}
 	
