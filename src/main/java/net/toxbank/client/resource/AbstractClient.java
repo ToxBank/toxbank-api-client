@@ -256,7 +256,7 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 	 * @return {@link RemoteTask}
 	 * @throws Exception if not allowed, or other error condition
 	 */
-	protected RemoteTask putAsync(T object) throws Exception {
+	public RemoteTask putAsync(T object) throws Exception {
 		return sendAsync(object.getResourceURL(), createPUTEntity(object), HttpPut.METHOD_NAME);
 	}
 	/**
