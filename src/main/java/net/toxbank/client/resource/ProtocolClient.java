@@ -45,7 +45,8 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 		anabstract,
 		summarySearchable,
 		keywords,
-		filename
+		filename,
+		status
 	}
 
 	public ProtocolClient() {
@@ -82,6 +83,7 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 		entity.addPart(webform.anabstract.name(), new StringBody(protocol.getAbstract()));
 		entity.addPart(webform.summarySearchable.name(), new StringBody(Boolean.toString(protocol.isSearchable())));
 		entity.addPart(webform.keywords.name(), new StringBody(b.toString()));
+		entity.addPart(webform.status.name(), new StringBody(protocol.getStatus().toString()));
 		if (protocol.getAuthors()!=null)
 			for (int i=0; i < protocol.getAuthors().size(); i++)
 				entity.addPart(webform.author_uri.name(),new StringBody(protocol.getAuthors().get(i).getResourceURL().toString()));

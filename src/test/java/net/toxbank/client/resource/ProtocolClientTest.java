@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.UUID;
 
 import net.toxbank.client.Resources;
+import net.toxbank.client.resource.Protocol.STATUS;
 import net.toxbank.client.task.RemoteTask;
 
 import org.junit.Assert;
@@ -64,6 +65,7 @@ public class ProtocolClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 	public void testCreate() throws Exception {
 		//TODO get the user from the token
 		Protocol protocol = new Protocol();
+		protocol.setStatus(STATUS.SOP);
 		protocol.setProject(new Project(new URL(String.format("%s%s/G1",AbstractClientTest.TEST_SERVER,Resources.project))));
 		protocol.setOrganisation(new Organisation(new URL(String.format("%s%s/G1",AbstractClientTest.TEST_SERVER,Resources.organisation))));
 		protocol.setOwner(new User(new URL(String.format("%s%s/U1",AbstractClientTest.TEST_SERVER,Resources.user))));
@@ -92,6 +94,9 @@ public class ProtocolClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 		Assert.assertEquals("Nina Jeliazkova", reader.getInfo().get("Author"));
 		in.close();
 		download.delete();
+		List<Protocol> newp = cli.get(newProtocol);
+		Assert.assertEquals(1,newp.size());
+		System.out.println(newp.get(0).getStatus());
 		cli.delete(newProtocol);
 	}
 	
