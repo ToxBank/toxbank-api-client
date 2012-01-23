@@ -99,7 +99,7 @@ public class ProtocolClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 		Assert.assertEquals(STATUS.SOP,newp.get(0).getStatus());
 		System.out.println(newp.get(0).getProject());
 		Assert.assertNotNull(newp.get(0).getProject().getTitle());
-		//Assert.assertNotNull(newp.get(0).getProject().getGroupName());
+		Assert.assertNotNull(newp.get(0).getProject().getGroupName());
 		cli.delete(newProtocol);
 	}
 	
@@ -270,13 +270,14 @@ public class ProtocolClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 	@Test
 	public void testRoundtripSubmissionDate() throws MalformedURLException {
 		Protocol version = new Protocol();
-		long now = System.currentTimeMillis();
+		Long now = System.currentTimeMillis();
 		version.setSubmissionDate(now);
 		ProtocolVersionClient cli = tbclient.getProtocolVersionClient();
 		URL resource = cli.upload(version, new URL(TEST_SERVER_PROTOCOL));
 
 		Protocol roundtripped = cli.download(resource);
 		Assert.assertEquals(now, roundtripped.getSubmissionDate());
+		Assert.assertEquals(now, roundtripped.getTimeModified());
 	}
 	
 	@Override
