@@ -79,6 +79,7 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 		entity.addPart(webform.organisation_uri.name(), new StringBody(protocol.getOrganisation().getResourceURL().toString()));
 		if ((protocol.getOwner()==null) || (protocol.getOwner().getResourceURL()==null)) throw new InvalidInputException("No User URI!");
 		entity.addPart(webform.user_uri.name(), new StringBody(protocol.getOwner().getResourceURL().toString()));
+		if (protocol.getTitle().length()>255) throw new InvalidInputException(String.format("Title length %d, expected <=255",protocol.getTitle().length()));
 		entity.addPart(webform.title.name(), new StringBody(protocol.getTitle()));
 		entity.addPart(webform.anabstract.name(), new StringBody(protocol.getAbstract()));
 		entity.addPart(webform.summarySearchable.name(), new StringBody(Boolean.toString(protocol.isSearchable())));
