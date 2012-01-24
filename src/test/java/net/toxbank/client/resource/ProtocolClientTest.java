@@ -71,7 +71,7 @@ public class ProtocolClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 		protocol.setOwner(new User(new URL(String.format("%s%s/U1",AbstractClientTest.TEST_SERVER,Resources.user))));
 		protocol.addAuthor(new User(new URL(String.format("%s%s/U1",AbstractClientTest.TEST_SERVER,Resources.user))));
 		protocol.setTitle("title");
-		protocol.setAbstract("abstrakt");
+		protocol.setAbstract("My \u2122 abstract");
 		protocol.setSearchable(true);
 		protocol.addKeyword("one");
 		protocol.addKeyword("two");
@@ -100,7 +100,11 @@ public class ProtocolClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 		System.out.println(newp.get(0).getProject());
 		Assert.assertNotNull(newp.get(0).getProject().getTitle());
 		Assert.assertNotNull(newp.get(0).getProject().getGroupName());
+		
+		Assert.assertTrue(newProtocol.toString(),newp.get(0).getAbstract().contains("\u2122"));
 		cli.delete(newProtocol);
+
+		
 	}
 	
 	@Test
