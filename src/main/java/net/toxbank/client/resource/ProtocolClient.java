@@ -7,6 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,23 +72,23 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 			b.append(keyword);
 			d = ";";
 		}
-
-		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+		Charset utf8 = Charset.forName("UTF-8");
+		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE,null,utf8);
 		if ((protocol.getProject()==null) || (protocol.getProject().getResourceURL()==null)) throw new InvalidInputException("No Project URI!");
-		entity.addPart(webform.project_uri.name(), new StringBody(protocol.getProject().getResourceURL().toString()));
+		entity.addPart(webform.project_uri.name(), new StringBody(protocol.getProject().getResourceURL().toString(),utf8));
 		if ((protocol.getOrganisation()==null) || (protocol.getOrganisation().getResourceURL()==null)) throw new InvalidInputException("No Organisation URI!");
-		entity.addPart(webform.organisation_uri.name(), new StringBody(protocol.getOrganisation().getResourceURL().toString()));
+		entity.addPart(webform.organisation_uri.name(), new StringBody(protocol.getOrganisation().getResourceURL().toString(),utf8));
 		if ((protocol.getOwner()==null) || (protocol.getOwner().getResourceURL()==null)) throw new InvalidInputException("No User URI!");
-		entity.addPart(webform.user_uri.name(), new StringBody(protocol.getOwner().getResourceURL().toString()));
+		entity.addPart(webform.user_uri.name(), new StringBody(protocol.getOwner().getResourceURL().toString(),utf8));
 		if (protocol.getTitle().length()>255) throw new InvalidInputException(String.format("Title length %d, expected <=255",protocol.getTitle().length()));
-		entity.addPart(webform.title.name(), new StringBody(protocol.getTitle()));
-		entity.addPart(webform.anabstract.name(), new StringBody(protocol.getAbstract()));
-		entity.addPart(webform.summarySearchable.name(), new StringBody(Boolean.toString(protocol.isSearchable())));
-		entity.addPart(webform.keywords.name(), new StringBody(b.toString()));
-		entity.addPart(webform.status.name(), new StringBody(protocol.getStatus().toString()));
+		entity.addPart(webform.title.name(), new StringBody(protocol.getTitle(),utf8));
+		entity.addPart(webform.anabstract.name(), new StringBody(protocol.getAbstract(),utf8));
+		entity.addPart(webform.summarySearchable.name(), new StringBody(Boolean.toString(protocol.isSearchable()),utf8));
+		entity.addPart(webform.keywords.name(), new StringBody(b.toString(),utf8));
+		entity.addPart(webform.status.name(), new StringBody(protocol.getStatus().toString(),utf8));
 		if (protocol.getAuthors()!=null)
 			for (int i=0; i < protocol.getAuthors().size(); i++)
-				entity.addPart(webform.author_uri.name(),new StringBody(protocol.getAuthors().get(i).getResourceURL().toString()));
+				entity.addPart(webform.author_uri.name(),new StringBody(protocol.getAuthors().get(i).getResourceURL().toString(),utf8));
 		entity.addPart(webform.filename.name(), new FileBody(new File(protocol.getDocument().getResourceURL().toURI())));
 		 
 		return entity;
