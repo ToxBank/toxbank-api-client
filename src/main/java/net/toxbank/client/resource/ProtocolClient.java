@@ -7,7 +7,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +22,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
@@ -37,6 +37,7 @@ import org.opentox.rest.RestException;
  *
  */
 public class ProtocolClient extends AbstractClient<Protocol> {
+	
 	protected enum webform {
 		project_uri,
 		organisation_uri,
@@ -47,7 +48,8 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 		summarySearchable,
 		keywords,
 		filename,
-		status
+		status,
+		published
 	}
 
 	public ProtocolClient() {
@@ -72,7 +74,7 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 			b.append(keyword);
 			d = ";";
 		}
-		Charset utf8 = Charset.forName("UTF-8");
+
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE,null,utf8);
 		if ((protocol.getProject()==null) || (protocol.getProject().getResourceURL()==null)) throw new InvalidInputException("No Project URI!");
 		entity.addPart(webform.project_uri.name(), new StringBody(protocol.getProject().getResourceURL().toString(),utf8));
@@ -84,6 +86,7 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 		entity.addPart(webform.title.name(), new StringBody(protocol.getTitle(),utf8));
 		entity.addPart(webform.anabstract.name(), new StringBody(protocol.getAbstract(),utf8));
 		entity.addPart(webform.summarySearchable.name(), new StringBody(Boolean.toString(protocol.isSearchable()),utf8));
+		entity.addPart(webform.published.name(), new StringBody(Boolean.toString(protocol.isPublished()),utf8));
 		entity.addPart(webform.keywords.name(), new StringBody(b.toString(),utf8));
 		entity.addPart(webform.status.name(), new StringBody(protocol.getStatus().toString(),utf8));
 		if (protocol.getAuthors()!=null)
@@ -94,10 +97,56 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 		return entity;
 	}
 	
+	protected HttpEntity createPublishFlagOnly(boolean isPublished) throws Exception {
+		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE,null,utf8);
+		entity.addPart(webform.published.name(), new StringBody(Boolean.toString(isPublished),utf8));
+
+		return entity;
+	}	
+	/**
+	 * Almost same as {@link #createPOSTEntity(Protocol)} , but used for updating an existing protocol and allows missing fields 
+	 */
 	@Override
-	protected HttpEntity createPUTEntity(Protocol object) throws Exception {
-		// TODO Auto-generated method stub
-		return null;
+	protected HttpEntity createPUTEntity(Protocol protocol) throws Exception {
+		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE,null,utf8);
+		
+		if ((protocol.getProject()!=null) && (protocol.getProject().getResourceURL()!=null)) 
+			entity.addPart(webform.project_uri.name(), new StringBody(protocol.getProject().getResourceURL().toString(),utf8));
+		
+		if ((protocol.getOrganisation()!=null) && (protocol.getOrganisation().getResourceURL()!=null))
+			entity.addPart(webform.organisation_uri.name(), new StringBody(protocol.getOrganisation().getResourceURL().toString(),utf8));
+		
+		if (protocol.getTitle()!=null) {
+			if (protocol.getTitle().length()>255) throw new InvalidInputException(String.format("Title length %d, expected <=255",protocol.getTitle().length()));
+			entity.addPart(webform.title.name(), new StringBody(protocol.getTitle(),utf8));
+		}
+		if (protocol.getAbstract()!=null) 
+			entity.addPart(webform.anabstract.name(), new StringBody(protocol.getAbstract(),utf8));
+
+		entity.addPart(webform.published.name(), new StringBody(Boolean.toString(protocol.isPublished()),utf8));
+
+		entity.addPart(webform.summarySearchable.name(), new StringBody(Boolean.toString(protocol.isSearchable()),utf8));
+		
+		if (protocol.getKeywords()!=null) {
+			StringBuilder b = new StringBuilder();
+			String d = "";
+			for (String keyword: protocol.getKeywords()) {
+				b.append(d);
+				b.append(keyword);
+				d = ";";
+			}
+			entity.addPart(webform.keywords.name(), new StringBody(b.toString(),utf8));
+		}
+		if (protocol.getStatus()!=null)
+			entity.addPart(webform.status.name(), new StringBody(protocol.getStatus().toString(),utf8));
+		
+		if (protocol.getAuthors()!=null)
+			for (int i=0; i < protocol.getAuthors().size(); i++)
+				entity.addPart(webform.author_uri.name(),new StringBody(protocol.getAuthors().get(i).getResourceURL().toString(),utf8));
+		//no file update
+		//entity.addPart(webform.filename.name(), new FileBody(new File(protocol.getDocument().getResourceURL().toURI())));
+		 
+		return entity;
 	}
 	/**
 	 * Upload template.
@@ -164,6 +213,38 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 		return postAsync(protocol,server);
 	}
 
+	/**
+	 * Sets the "isPublished" flag only. 
+	 * @param protocol
+	 * @param isPublished
+	 * @return
+	 * @throws Exception
+	 */
+	public RemoteTask publishAsync(Protocol protocol, boolean isPublished) throws Exception {
+		if (protocol.getResourceURL()==null) throw new MalformedURLException("No protocol URI");
+		return sendAsync(protocol.getResourceURL(), createPublishFlagOnly(isPublished), HttpPut.METHOD_NAME);
+	}
+	/**
+	 * Modifies all non-null fields. File is not modified.
+	 * @param protocol
+	 * @return
+	 * @throws Exception
+	 */
+	public URL update(Protocol protocol) throws Exception {
+		if (protocol.getResourceURL()==null) throw new MalformedURLException("No protocol URI");
+		Protocol p = put(protocol);
+		return p.getResourceURL();
+	}
+	/**
+	 * Modifies all non-null fields. File is not modified.
+	 * @param protocol
+	 * @return
+	 * @throws Exception
+	 */
+	public RemoteTask updateAsync(Protocol protocol) throws Exception {
+		if (protocol.getResourceURL()==null) throw new MalformedURLException("No protocol URI");
+		return putAsync(protocol);
+	}	
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/API_Protocol:Retrieve">API documentation</a>.
 	 */

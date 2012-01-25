@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -38,6 +39,7 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
  * @param <T>
  */
 public abstract class AbstractClient<T extends IToxBankResource> {
+	public static final Charset utf8 = Charset.forName("UTF-8");
 	protected static final String mime_rdfxml = "application/rdf+xml";
 	protected static final String mime_n3 = "text/n3";
 	

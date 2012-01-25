@@ -134,6 +134,13 @@ public class ProtocolClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 		Assert.assertTrue(newVersion.getVersion()>protocol.getVersion());
 		
 	}
+	
+	protected URL readFirst(ProtocolClient cli) throws Exception {
+		List<URL> url = cli.listProtocols(new URL(TEST_SERVER_PROTOCOL),new String[] {"page","0","pagesize","1"});
+		Assert.assertNotNull(url);
+		Assert.assertEquals(1,url.size());
+		return url.get(0);
+	}
 	@Override
 	public void testRead() throws Exception {
 		ProtocolClient cli = tbclient.getProtocolClient();
@@ -227,52 +234,60 @@ public class ProtocolClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 
 	@Test
 	public void testRoundtripTitle() throws Exception {
-		//this will not work 
 		ProtocolClient cli = tbclient.getProtocolClient();
-		Protocol protocol = new Protocol();
-		protocol.setTitle("Title");
-		URL resource = cli.upload(protocol, new URL(TEST_SERVER_PROTOCOL));
-
-		Protocol roundtripped = cli.download(resource);
-		Assert.assertEquals("Title", roundtripped.getTitle());
+		URL url = readFirst(cli);
+		Protocol protocol = new Protocol(url);
+		String title = UUID.randomUUID().toString();
+		protocol.setTitle(title);
+		URL resource = cli.update(protocol);
+		Assert.assertEquals(url,resource);
+		Protocol roundtripped = cli.download(url);
+		Assert.assertEquals(title, roundtripped.getTitle());
 	}
 
 	@Test
 	public void testRoundtripIdentifier() throws Exception {
-		ProtocolClient cli = tbclient.getProtocolClient();
-		Protocol protocol = new Protocol();
-		protocol.setIdentifier("Title");
-		URL resource = cli.upload(protocol, new URL(TEST_SERVER_PROTOCOL));
-
-		Protocol roundtripped = cli.download(resource);
-		Assert.assertEquals("Title", roundtripped.getIdentifier());
+		throw new Exception("Identifier should not be changed");
 	}
 
 	@Test
 	public void testRoundtripAbstract() throws Exception {
 		ProtocolClient cli = tbclient.getProtocolClient();
-		Protocol protocol = new Protocol();
-		protocol.setAbstract("This is the funniest abstract ever!");
-		URL resource = cli.upload(protocol, new URL(TEST_SERVER_PROTOCOL));
-
-		Protocol roundtripped = cli.download(resource);
-		Assert.assertEquals("This is the funniest abstract ever!", roundtripped.getAbstract());
+		URL url = readFirst(cli);
+		Protocol protocol = new Protocol(url);
+		String abstrakt = UUID.randomUUID().toString();
+		protocol.setAbstract(abstrakt);
+		URL resource = cli.update(protocol);
+		Assert.assertEquals(url,resource);
+		Protocol roundtripped = cli.download(url);
+		Assert.assertEquals(abstrakt, roundtripped.getAbstract());
 	}
 
 	@Test
-	public void testRoundtripSearchable() throws MalformedURLException {
-		Protocol version = new Protocol();
-		Assert.assertFalse(version.isSearchable());
-		version.setSearchable(true);
-		ProtocolVersionClient cli = tbclient.getProtocolVersionClient();
-		URL resource = cli.upload(version, new URL(TEST_SERVER_PROTOCOL));
-
-		Protocol roundtripped = cli.download(resource);
-		Assert.assertTrue(roundtripped.isSearchable());
+	public void testRoundtripSearchable() throws Exception {
+		//get the first protocol
+		ProtocolClient cli = tbclient.getProtocolClient();
+		URL url = readFirst(cli);
+		Protocol protocol = cli.download(url);
+		boolean searchable = protocol.isSearchable();
+		
+		//update only the flag, not anything else
+		//toggle the flag
+		Protocol toUpdate = new Protocol(url);
+		toUpdate.setSearchable(!searchable);
+		URL resource = cli.update(toUpdate);
+		
+		Assert.assertEquals(url,resource);
+		
+		Protocol roundtripped = cli.download(url);
+		Assert.assertEquals(!searchable,roundtripped.isSearchable());
 	}
 	
 	@Test
-	public void testRoundtripSubmissionDate() throws MalformedURLException {
+	public void testRoundtripSubmissionDate() throws Exception {
+		//submission date should not change, why test?
+		throw new Exception("submission date should not be changed");
+		/*
 		Protocol version = new Protocol();
 		Long now = System.currentTimeMillis();
 		version.setSubmissionDate(now);
@@ -282,6 +297,7 @@ public class ProtocolClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 		Protocol roundtripped = cli.download(resource);
 		Assert.assertEquals(now, roundtripped.getSubmissionDate());
 		Assert.assertEquals(now, roundtripped.getTimeModified());
+		*/
 	}
 	
 	@Override
