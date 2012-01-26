@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.UUID;
@@ -308,4 +307,11 @@ public class ProtocolClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 	@Override
 	public void testUpdate() throws Exception {
 	}
+	
+	@Test
+	public void testUploadAllowed() throws Exception {
+		Assert.assertTrue(tbclient.isProtocolUploadAllowed(new URL(TEST_SERVER_PROTOCOL)));
+	}
+	
+	
 }

@@ -1,6 +1,8 @@
 package net.toxbank.client;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.Hashtable;
 
 import net.toxbank.client.resource.OrganisationClient;
 import net.toxbank.client.resource.ProjectClient;
@@ -101,6 +103,34 @@ public class TBClient {
 	public ProtocolVersionClient getProtocolVersionClient() {
 		return new ProtocolVersionClient(getHttpClient());
 	}
+	
+	/**
+	 *  Returns true if authorized
+	 * @param uri
+	 * @param httpAction
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean authorize(URL uri, String httpAction) throws Exception {
+		return ssoToken.authorize(uri.toString(), httpAction);
+	}
+	
+	/**
+	 * Returns true if post is allowed
+	 * @param protocolURI  expects  "http://host/protocol"
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean isProtocolUploadAllowed(URL protocolURI) throws Exception {
+		return authorize(protocolURI, "POST");
+	}
+	
+	public Hashtable<String, String> getUserAttributes() throws Exception {
+		Hashtable<String, String> results = new Hashtable<String, String>();
+		ssoToken.getAttributes(null,results);
+		return results;
+	}
+	
 	
 	
 }
