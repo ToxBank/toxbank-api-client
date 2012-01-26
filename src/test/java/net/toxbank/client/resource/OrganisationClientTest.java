@@ -81,6 +81,28 @@ public class OrganisationClientTest extends AbstractClientTest<Organisation,Orga
 	
 	@Override
 	public void testUpdate() throws Exception {
+		OrganisationClient tbClient = getToxBackClient();
+		
+		List<Organisation> organisations = tbClient.searchRDF_XML(new URL(String.format("%s%s", TEST_SERVER,Resources.organisation)),"Test");
+		Assert.assertNotNull(organisations);
+		Assert.assertTrue("An organisation with name starting with 'Test' is expected!",organisations.size()>0);
+		
+		Organisation organisation = organisations.get(0);
+		organisation.setTitle(String.format("Test %s",UUID.randomUUID().toString()));
 
+		//PUT
+		RemoteTask task = tbClient.putAsync(organisation);
+		task.waitUntilCompleted(500);
+		//verify if ok
+		Assert.assertEquals(HttpStatus.SC_OK,task.getStatus());
+		Assert.assertNull(task.getError());
+		System.out.println(task.getResult());
+		
+		int hits = 0;
+		List<Organisation> updatedOrg = tbClient.get(organisation.getResourceURL());
+		for (Organisation o : updatedOrg) {
+			if (organisation.getTitle().equals(o.getTitle())) hits++;
+		}
+		Assert.assertEquals(1,hits);
 	}
 }
