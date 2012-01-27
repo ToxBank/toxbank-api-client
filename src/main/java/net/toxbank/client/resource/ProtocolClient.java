@@ -85,8 +85,9 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 		if (protocol.getTitle().length()>255) throw new InvalidInputException(String.format("Title length %d, expected <=255",protocol.getTitle().length()));
 		entity.addPart(webform.title.name(), new StringBody(protocol.getTitle(),utf8));
 		entity.addPart(webform.anabstract.name(), new StringBody(protocol.getAbstract(),utf8));
-		entity.addPart(webform.summarySearchable.name(), new StringBody(Boolean.toString(protocol.isSearchable()),utf8));
-		entity.addPart(webform.published.name(), new StringBody(Boolean.toString(protocol.isPublished()),utf8));
+		entity.addPart(webform.summarySearchable.name(), new StringBody(protocol.isSearchable()==null?Boolean.FALSE.toString():Boolean.toString(protocol.isSearchable()),utf8));
+
+		entity.addPart(webform.published.name(), new StringBody(Boolean.toString(protocol.isPublished()==null?false:protocol.isPublished()),utf8));
 		entity.addPart(webform.keywords.name(), new StringBody(b.toString(),utf8));
 		entity.addPart(webform.status.name(), new StringBody(protocol.getStatus().toString(),utf8));
 		if (protocol.getAuthors()!=null)
@@ -123,9 +124,11 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 		if (protocol.getAbstract()!=null) 
 			entity.addPart(webform.anabstract.name(), new StringBody(protocol.getAbstract(),utf8));
 
-		entity.addPart(webform.published.name(), new StringBody(Boolean.toString(protocol.isPublished()),utf8));
+		if (protocol.isPublished()!=null)
+			entity.addPart(webform.published.name(), new StringBody(Boolean.toString(protocol.isPublished()),utf8));
 
-		entity.addPart(webform.summarySearchable.name(), new StringBody(Boolean.toString(protocol.isSearchable()),utf8));
+		if (protocol.isSearchable()!=null)
+			entity.addPart(webform.summarySearchable.name(), new StringBody(Boolean.toString(protocol.isSearchable()),utf8));
 		
 		if (protocol.getKeywords()!=null) {
 			StringBuilder b = new StringBuilder();
