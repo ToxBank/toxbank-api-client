@@ -67,7 +67,8 @@ public class UserClientTest extends AbstractClientTest<User, UserClient>  {
 	public void testListProtocols() throws Exception {
 		//get the first user available
 		UserClient cli = getToxBackClient();
-		User user = cli.download(new URL(String.format("%s?page=%d&pagesize=%d",TEST_SERVER_USER,0,1)));
+		User user = cli.myAccount(new URL(TEST_SERVER));
+		Assert.assertNotNull(user);		
 		List<URL> protocols = cli.listProtocols(user);
 		Assert.assertNotNull(protocols);
 		Assert.assertNotSame(0, protocols.size());
@@ -77,7 +78,8 @@ public class UserClientTest extends AbstractClientTest<User, UserClient>  {
 	public void testGetProtocols() throws Exception {
 		//get the first user available
 		UserClient cli = getToxBackClient();
-		User user = cli.download(new URL(String.format("%s?page=%d&pagesize=%d",TEST_SERVER_USER,0,1)));
+		User user = cli.myAccount(new URL(TEST_SERVER));
+		Assert.assertNotNull(user);		
 		List<Protocol> protocols = cli.getProtocols(user);
 		Assert.assertNotNull(protocols);
 		Assert.assertNotSame(0, protocols.size());
@@ -87,7 +89,8 @@ public class UserClientTest extends AbstractClientTest<User, UserClient>  {
 	public void testGetProjects() throws Exception {
 		//get the first user available
 		UserClient cli = getToxBackClient();
-		User user = cli.download(new URL(String.format("%s?page=%d&pagesize=%d",TEST_SERVER_USER,0,1)));
+		User user = cli.myAccount(new URL(TEST_SERVER));
+		Assert.assertNotNull(user);		
 		List<Project> projects = cli.getProjects(user);
 		Assert.assertNotNull(projects);
 		Assert.assertNotSame(0, projects.size());
@@ -97,7 +100,8 @@ public class UserClientTest extends AbstractClientTest<User, UserClient>  {
 	public void testGetOrganisations() throws Exception {
 		//get the first user available
 		UserClient cli = getToxBackClient();
-		User user = cli.download(new URL(String.format("%s?page=%d&pagesize=%d",TEST_SERVER_USER,0,1)));
+		User user = cli.myAccount(new URL(TEST_SERVER));
+		Assert.assertNotNull(user);		
 		List<Organisation> orgs = cli.getOrganisaitons(user);
 		Assert.assertNotNull(orgs);
 		Assert.assertNotSame(0, orgs.size());
@@ -173,12 +177,10 @@ public class UserClientTest extends AbstractClientTest<User, UserClient>  {
 	
 	@Test
 	public void testAddProject() throws Exception {
-		UserClient uClient = getToxBackClient();
+		
 		UserClient cli = getToxBackClient();
-		List<URL> users = cli.listURI(new URL(String.format("%s", TEST_SERVER_USER)),
-				new String[] {"page","0","pagesize","1"});		
-		Assert.assertNotNull(users);
-		Assert.assertEquals(1,users.size());
+		User user = cli.myAccount(new URL(TEST_SERVER));
+		Assert.assertNotNull(user);		
 		
 		ProjectClient pcli = tbclient.getProjectClient();
 		List<URL> projects = pcli.listURI(new URL(String.format("%s%s", TEST_SERVER,Resources.project)),
@@ -186,7 +188,7 @@ public class UserClientTest extends AbstractClientTest<User, UserClient>  {
 		Assert.assertNotNull(projects);
 		Assert.assertEquals(1,projects.size());
 		
-		RemoteTask task = cli.addProject(new User(users.get(0)), new Project(projects.get(0)));
+		RemoteTask task = cli.addProject(user, new Project(projects.get(0)));
 		task.waitUntilCompleted(500);
 		//verify if ok
 		Assert.assertEquals(HttpStatus.SC_OK,task.getStatus());
