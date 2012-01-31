@@ -2,21 +2,30 @@ package net.toxbank.client;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.List;
 
+import net.toxbank.client.policy.AccessRights;
+import net.toxbank.client.policy.PolicyParser;
 import net.toxbank.client.resource.OrganisationClient;
 import net.toxbank.client.resource.ProjectClient;
 import net.toxbank.client.resource.ProtocolClient;
-import net.toxbank.client.resource.ProtocolVersionClient;
 import net.toxbank.client.resource.UserClient;
 
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
 import org.apache.http.HttpRequestInterceptor;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HttpContext;
+import org.opentox.aa.IOpenToxUser;
+import org.opentox.aa.OpenToxUser;
+import org.opentox.aa.opensso.OpenSSOPolicy;
 import org.opentox.aa.opensso.OpenSSOToken;
+import org.opentox.rest.RestException;
 
 /**
  * Top level ToxBank API client.
@@ -99,10 +108,7 @@ public class TBClient {
 	public OrganisationClient getOrganisationClient() {
 		return new OrganisationClient(getHttpClient());
 	}
-	
-	public ProtocolVersionClient getProtocolVersionClient() {
-		return new ProtocolVersionClient(getHttpClient());
-	}
+
 	
 	/**
 	 *  Returns true if authorized
@@ -131,6 +137,46 @@ public class TBClient {
 		return results;
 	}
 	
+	protected static OpenSSOPolicy getOpenSSOPolicyInstance() throws Exception {
+		//TODO get form config
+		return new OpenSSOPolicy("http://opensso.in-silico.ch/Pol/opensso-pol");
+	}
+	/**
+	 * 
+	 * @param url
+	 * @param accessRights
+	 * @return HTTP status code
+	 * @throws Exception
+	 */
+	public int deletePolicy(URL url, AccessRights accessRights) throws Exception {
+		
+		OpenSSOPolicy policy = getOpenSSOPolicyInstance();
+		if (accessRights.getPolicyID()!=null)
+			return policy.deletePolicy(ssoToken, accessRights.getPolicyID());
+		else throw new Exception("No policy ID!");
+	}
 	
+	public List<AccessRights> readPolicy(URL url) throws Exception {
+		OpenSSOPolicy policy = getOpenSSOPolicyInstance();
+		IOpenToxUser user = new OpenToxUser();
+		
+		List<AccessRights> lotofpolicies = new ArrayList<AccessRights>();
+		Hashtable<String, String> policies = new Hashtable<String, String>();
+		int status = policy.getURIOwner(ssoToken, url.toExternalForm(), user, policies);
+		if (HttpStatus.SC_OK == status) {
+			Enumeration<String> e = policies.keys();
+			while (e.hasMoreElements()) {
+				String policyId = e.nextElement();
+				status = policy.listPolicy(ssoToken, policyId, policies);
+				if (HttpStatus.SC_OK == status) {
+					String xml = policies.get(policyId);
+					PolicyParser parser = new PolicyParser(xml);
+					AccessRights accessRights = parser.getAccessRights();
+					lotofpolicies.add(accessRights);
+				} else throw new RestException(status);
+			}
+		} else throw new RestException(status);
+		return lotofpolicies;
+	}
 	
 }
