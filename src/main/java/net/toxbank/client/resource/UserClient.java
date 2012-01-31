@@ -10,6 +10,7 @@ import net.toxbank.client.Resources;
 import net.toxbank.client.exceptions.InvalidInputException;
 import net.toxbank.client.io.rdf.IOClass;
 import net.toxbank.client.io.rdf.UserIO;
+import net.toxbank.client.policy.PolicyRule;
 import net.toxbank.client.task.RemoteTask;
 
 import org.apache.http.HttpEntity;
@@ -42,7 +43,7 @@ public class UserClient extends AbstractClient<User> {
 	
 
 	@Override
-	protected HttpEntity createPOSTEntity(User user) throws Exception {
+	protected HttpEntity createPOSTEntity(User user,List<PolicyRule> accessRights) throws Exception {
 
 		List<NameValuePair> formparams = new ArrayList<NameValuePair>();
 		formparams.add(new BasicNameValuePair(webform.username.name(), user.getUserName()));
@@ -65,7 +66,7 @@ public class UserClient extends AbstractClient<User> {
 	}
 	
 	@Override
-	protected HttpEntity createPUTEntity(User user) throws Exception {
+	protected HttpEntity createPUTEntity(User user,List<PolicyRule> accessRights) throws Exception {
 		List<NameValuePair> formparams = new ArrayList<NameValuePair>();
 		if (user.getUserName()!=null)
 			formparams.add(new BasicNameValuePair(webform.username.name(), user.getUserName()));

@@ -15,6 +15,11 @@ import java.util.List;
 
 import net.toxbank.client.exceptions.InvalidInputException;
 import net.toxbank.client.io.rdf.IOClass;
+import net.toxbank.client.policy.GroupPolicyRule;
+import net.toxbank.client.policy.PolicyRule;
+import net.toxbank.client.policy.UserPolicyRule;
+import net.toxbank.client.policy.PolicyRule.Method;
+import net.toxbank.client.policy.UserPolicyRule.webform;
 import net.toxbank.client.task.RemoteTask;
 
 import org.apache.http.HttpEntity;
@@ -25,6 +30,8 @@ import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.StringBody;
 import org.opentox.aa.opensso.AAServicesConfig;
 import org.opentox.aa.opensso.OpenSSOToken;
 import org.opentox.rest.RestException;
@@ -46,6 +53,7 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 	protected static final String search_param = "search";
 	protected static final String modified_param = "modifiedSince";
 	protected HttpClient httpClient;
+
 	
 	public HttpClient getHttpClient() throws IOException {
 		if (httpClient==null) throw new IOException("No HttpClient!"); 
@@ -242,24 +250,54 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 	}	
 	
 	/**
+	 * same as {@link #postAsync(IToxBankResource, URL, List)}, but let the server to decide on policies
+	 * @param object
+	 * @param collection
+	 * @return
+	 * @throws Exception
+	 */
+	//public RemoteTask postAsync(T object, URL collection) throws Exception {
+	//	return postAsync(object, collection,null);
+	//}	
+	/**
 	 * HTTP POST to create a new object. Asynchronous.
 	 * @param object
 	 * @param collection  The URL of resource collection, e.g. /protocol or /user .
+     * @param accessRights
 	 * The new object will be added to the collection of resources.
 	 * @return  Returns {@link RemoteTask}
 	 * @throws Exception if not allowed, or other error condition
+	 */	
+	public RemoteTask postAsync(T object, URL collection, List<PolicyRule> accessRights) throws Exception {
+		return sendAsync(collection, createPOSTEntity(object,accessRights), HttpPost.METHOD_NAME);
+	}
+	/**
+	 * Same as {@link #postAsync(IToxBankResource, URL, null)} 
+	 * @param object
+	 * @param collection
+	 * @return
+	 * @throws Exception
 	 */
 	public RemoteTask postAsync(T object, URL collection) throws Exception {
-		return sendAsync(collection, createPOSTEntity(object), HttpPost.METHOD_NAME);
-	}	
+		return postAsync(object, collection, null);
+	}
 	/**
 	 * HTTP PUT to update an existing object. Asynchronous.
 	 * @param object
 	 * @return {@link RemoteTask}
 	 * @throws Exception if not allowed, or other error condition
 	 */
+	public RemoteTask putAsync(T object, List<PolicyRule> accessRights) throws Exception {
+		return sendAsync(object.getResourceURL(), createPUTEntity(object,accessRights), HttpPut.METHOD_NAME);
+	}
+	/**
+	 * Same as {@link #putAsync(IToxBankResource, URL, null)} 
+	 * @param object
+	 * @return
+	 * @throws Exception
+	 */
 	public RemoteTask putAsync(T object) throws Exception {
-		return sendAsync(object.getResourceURL(), createPUTEntity(object), HttpPut.METHOD_NAME);
+		return putAsync(object,null);
 	}
 	/**
 	 * HTTP DELETE to remove an existing object. Asynchronous.
@@ -288,37 +326,40 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 	 * @return {@link HttpEntity}
 	 * @throws Exception
 	 */
-	protected abstract HttpEntity createPOSTEntity(T object) throws InvalidInputException,Exception;
+	protected abstract HttpEntity createPOSTEntity(T object,List<PolicyRule> accessRights) throws InvalidInputException,Exception;
 	/**
 	 * 
 	 * @param object the object to be updated
 	 * @return
 	 * @throws Exception
 	 */
-	protected abstract HttpEntity createPUTEntity(T object) throws InvalidInputException,Exception;
+	protected abstract HttpEntity createPUTEntity(T object, List<PolicyRule> accessRights) throws InvalidInputException,Exception;
 	/**
 	 * Creates a new object. Waits until the asynchronous tasks completes.
 	 * @param object
 	 * @param collection
+	 * @param accessRights. {@link PolicyRule} Can be null.
 	 * @return
 	 * @throws Exception in case of error.
 	 */
-	public T post(T object, URL collection) throws Exception {
-		RemoteTask task = postAsync(object, collection);
+	public T post(T object, URL collection, List<PolicyRule> accessRights) throws Exception {
+		RemoteTask task = postAsync(object, collection,accessRights);
 		task.waitUntilCompleted(500);	
 		if (task.isERROR()) throw task.getError();
 		else object.setResourceURL(task.getResult());
 		return object;
 	}
+
 	/**
 	 * Updates an existing object. Waits until the asynchronous tasks completes.
 	 * @param object
 	 * @param collection
+	 * @param accessRights. {@link PolicyRule} Can be null.
 	 * @return
 	 * @throws Exception
 	 */
-	public T put(T object) throws Exception {
-		RemoteTask task = putAsync(object);
+	public T put(T object, List<PolicyRule> accessRights) throws Exception {
+		RemoteTask task = putAsync(object,accessRights);
 		task.waitUntilCompleted(500);	
 		if (task.isERROR()) throw task.getError();
 		else object.setResourceURL(task.getResult());
@@ -354,6 +395,49 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 		return token;
 		
 	}
-
 	
+	/**
+	 * Policies in a web form
+	 */
+	
+	private static String getPolicyRuleWebField(User user, Method method, Boolean value) {
+		if (value == null) return null;
+		switch (method) {
+		case GET: return value?webform.allowReadByUser.toString():webform.denyReadByUser.toString();
+		case POST: return value?webform.allowPostByUser.toString():webform.denyPostByUser.toString();
+		case PUT: return value?webform.allowPutByUser.toString():webform.denyPutByUser.toString();
+		case DELETE: return value?webform.allowDeleteByUser.toString():webform.denyDeleteByUser.toString();
+		default : return null;
+		}
+	}
+	
+	
+	private static String getPolicyRuleWebField(Group group,Method method, Boolean value) {
+		if (value == null) return null;
+		switch (method) {
+		case GET: return value?GroupPolicyRule.webform.allowReadByGroup.toString():GroupPolicyRule.webform.denyReadByGroup.toString();
+		case POST: return value?GroupPolicyRule.webform.allowPostByGroup.toString():GroupPolicyRule.webform.denyPostByGroup.toString();
+		case PUT: return value?GroupPolicyRule.webform.allowPutByGroup.toString():GroupPolicyRule.webform.denyPutByGroup.toString();
+		case DELETE: return value?GroupPolicyRule.webform.allowDeleteByGroup.toString():GroupPolicyRule.webform.denyDeleteByGroup.toString();
+		default : return null;
+			
+		}
+	}
+	
+	public static void addPolicyRules(MultipartEntity entity, List<PolicyRule> accessRights) throws InvalidInputException,Exception {
+		if ((accessRights==null) || (accessRights.size()==0)) return;
+		for (PolicyRule rule : accessRights) {
+			for (Method method: Method.values()) {
+				Boolean allows = rule.allows(method);
+				if (allows==null) continue;
+				String field = null;
+				if (rule instanceof  UserPolicyRule) 
+					field = getPolicyRuleWebField((User)rule.getSubject(),method,allows);	
+				else if (rule instanceof GroupPolicyRule) 
+					field = getPolicyRuleWebField((Group)rule.getSubject(),method,allows);
+				if (field==null) continue;
+				entity.addPart(field, new StringBody(rule.getSubject().getResourceURL().toExternalForm(),utf8));
+			}
+		}
+	}
 }

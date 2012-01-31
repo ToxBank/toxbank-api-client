@@ -14,6 +14,10 @@ import net.toxbank.client.Resources;
 import net.toxbank.client.exceptions.InvalidInputException;
 import net.toxbank.client.io.rdf.IOClass;
 import net.toxbank.client.io.rdf.ProtocolIO;
+import net.toxbank.client.policy.GroupPolicyRule;
+import net.toxbank.client.policy.PolicyRule;
+import net.toxbank.client.policy.PolicyRule.Method;
+import net.toxbank.client.policy.UserPolicyRule;
 import net.toxbank.client.task.RemoteTask;
 
 import org.apache.http.HttpEntity;
@@ -66,7 +70,7 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 	}
 
 	@Override
-	protected HttpEntity createPOSTEntity(Protocol protocol) throws InvalidInputException,Exception {
+	protected HttpEntity createPOSTEntity(Protocol protocol,List<PolicyRule> accessRights) throws InvalidInputException,Exception {
 		StringBuilder b = new StringBuilder();
 		String d = "";
 		for (String keyword: protocol.getKeywords()) {
@@ -95,8 +99,11 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 				entity.addPart(webform.author_uri.name(),new StringBody(protocol.getAuthors().get(i).getResourceURL().toString(),utf8));
 		entity.addPart(webform.filename.name(), new FileBody(new File(protocol.getDocument().getResourceURL().toURI())));
 		 
+		addPolicyRules(entity, accessRights);
 		return entity;
 	}
+	
+	
 	
 	protected HttpEntity createPublishFlagOnly(boolean isPublished) throws Exception {
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE,null,utf8);
@@ -108,7 +115,7 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 	 * Almost same as {@link #createPOSTEntity(Protocol)} , but used for updating an existing protocol and allows missing fields 
 	 */
 	@Override
-	protected HttpEntity createPUTEntity(Protocol protocol) throws Exception {
+	protected HttpEntity createPUTEntity(Protocol protocol,List<PolicyRule> accessRights) throws Exception {
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE,null,utf8);
 		
 		if ((protocol.getProject()!=null) && (protocol.getProject().getResourceURL()!=null)) 
@@ -148,7 +155,7 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 				entity.addPart(webform.author_uri.name(),new StringBody(protocol.getAuthors().get(i).getResourceURL().toString(),utf8));
 		//no file update
 		//entity.addPart(webform.filename.name(), new FileBody(new File(protocol.getDocument().getResourceURL().toURI())));
-		 
+		addPolicyRules(entity, accessRights);		 
 		return entity;
 	}
 	/**
@@ -170,9 +177,20 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 											"text/uri-list", entity, HttpPost.METHOD_NAME);
 	}
 	
-	
+	/**
+	 * Described in this <a href="http://api.toxbank.net/index.php/API_Protocol:Uploadt">API documentation</a>.
+	 */
+	public RemoteTask createNewVersion(Protocol protocol,List<PolicyRule> accessRights) throws Exception {
+		return postAsync(protocol,new URL(String.format("%s%s", protocol.getResourceURL(),Resources.versions)),accessRights);
+	}
+	/**
+	 * Same as {@link #createNewVersion(Protocol,null)}
+	 * @param protocol
+	 * @return
+	 * @throws Exception
+	 */
 	public RemoteTask createNewVersion(Protocol protocol) throws Exception {
-		return postAsync(protocol,new URL(String.format("%s%s", protocol.getResourceURL(),Resources.versions)));
+		return createNewVersion(protocol,null);
 	}
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/API_Protocol:Upload">API documentation</a>.
@@ -200,20 +218,36 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 	}	
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/API_Protocol:Upload">API documentation</a>.
+	 * @param protocol
+	 * @param server
+	 * @param accessRights {@link List} of {@link PolicyRule} or null
+	 * @return
+	 * @throws Exception
+	 */
+	public URL upload(Protocol protocol, URL server,List<PolicyRule> accessRights) throws Exception {
+		Protocol p = post(protocol,server,accessRights);
+		return p.getResourceURL();
+	}
+	/**
+	 * Same as {@link #upload(Protocol, URL, null)}
+	 * @param protocol
+	 * @param server
+	 * @return
+	 * @throws Exception
 	 */
 	public URL upload(Protocol protocol, URL server) throws Exception {
-		Protocol p = post(protocol,server);
-		return p.getResourceURL();
+		return upload(protocol, server,null);
 	}
 	/**
 	 * Asynchronous upload
 	 * @param protocol
 	 * @param server
+	 * @param accessRights {@link List} of {@link PolicyRule} or null
 	 * @return {@link RemoteTask}
 	 * @throws Exception
 	 */
-	public RemoteTask uploadAsync(Protocol protocol, URL server) throws Exception {
-		return postAsync(protocol,server);
+	public RemoteTask uploadAsync(Protocol protocol, URL server,List<PolicyRule> accessRights) throws Exception {
+		return postAsync(protocol,server,accessRights);
 	}
 
 	/**
@@ -230,23 +264,34 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 	/**
 	 * Modifies all non-null fields. File is not modified.
 	 * @param protocol
+	 * @param accessRights {@link List} of {@link PolicyRule} or null
 	 * @return
 	 * @throws Exception
 	 */
-	public URL update(Protocol protocol) throws Exception {
+	public URL update(Protocol protocol,List<PolicyRule> accessRights) throws Exception {
 		if (protocol.getResourceURL()==null) throw new MalformedURLException("No protocol URI");
-		Protocol p = put(protocol);
+		Protocol p = put(protocol,accessRights);
 		return p.getResourceURL();
 	}
 	/**
-	 * Modifies all non-null fields. File is not modified.
+	 * Same as {@link #update(Protocol,null)}
 	 * @param protocol
 	 * @return
 	 * @throws Exception
 	 */
-	public RemoteTask updateAsync(Protocol protocol) throws Exception {
+	public URL update(Protocol protocol) throws Exception {
+		return update(protocol,null);
+	}
+	/**
+	 * Modifies all non-null fields. File is not modified.
+	 * @param protocol
+	 * @param accessRights {@link List} of {@link PolicyRule} or null
+	 * @return
+	 * @throws Exception
+	 */
+	public RemoteTask updateAsync(Protocol protocol,List<PolicyRule> accessRights) throws Exception {
 		if (protocol.getResourceURL()==null) throw new MalformedURLException("No protocol URI");
-		return putAsync(protocol);
+		return putAsync(protocol,accessRights);
 	}	
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/API_Protocol:Retrieve">API documentation</a>.
@@ -347,4 +392,6 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 	public List<URL> getModifiedSinceURI(URL url,Long unixtimestamp) throws  RestException, IOException {
 		return listURI(url, unixtimestamp==null?null:new String[] {modified_param,unixtimestamp.toString()});
 	}
+	
+
 }

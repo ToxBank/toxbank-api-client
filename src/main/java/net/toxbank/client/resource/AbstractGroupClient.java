@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.toxbank.client.exceptions.InvalidInputException;
+import net.toxbank.client.policy.PolicyRule;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
@@ -32,7 +33,7 @@ public abstract class AbstractGroupClient<PO extends Group> extends AbstractClie
 	}
 	
 	@Override
-	protected HttpEntity createPOSTEntity(PO object) throws InvalidInputException,Exception {
+	protected HttpEntity createPOSTEntity(PO object,List<PolicyRule> accessRights) throws InvalidInputException,Exception {
 		List<NameValuePair> formparams = new ArrayList<NameValuePair>();
 		if (object.getTitle()!=null)
 			formparams.add(new BasicNameValuePair(webform.name.name(), object.getTitle()));
@@ -45,7 +46,7 @@ public abstract class AbstractGroupClient<PO extends Group> extends AbstractClie
 
 
 	@Override
-	protected HttpEntity createPUTEntity(PO object) throws InvalidInputException,Exception {
+	protected HttpEntity createPUTEntity(PO object,List<PolicyRule> accessRights) throws InvalidInputException,Exception {
 		List<NameValuePair> formparams = new ArrayList<NameValuePair>();
 		if (object.getTitle()!=null)
 			formparams.add(new BasicNameValuePair(webform.name.name(), object.getTitle()));
@@ -54,4 +55,5 @@ public abstract class AbstractGroupClient<PO extends Group> extends AbstractClie
 		if (formparams.size()==0) throw new InvalidInputException("Nothing to update!");
 		return new UrlEncodedFormEntity(formparams, "UTF-8");
 	}
+	
 }

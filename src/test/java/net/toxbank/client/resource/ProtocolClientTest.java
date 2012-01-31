@@ -5,13 +5,20 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import net.toxbank.client.Resources;
+import net.toxbank.client.policy.AccessRights;
+import net.toxbank.client.policy.GroupPolicyRule;
+import net.toxbank.client.policy.PolicyRule;
+import net.toxbank.client.policy.UserPolicyRule;
 import net.toxbank.client.resource.Protocol.STATUS;
 import net.toxbank.client.task.RemoteTask;
 
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
 import org.junit.Assert;
 import org.junit.Test;
 import org.opentox.rest.RestException;
@@ -313,5 +320,22 @@ public class ProtocolClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 		Assert.assertTrue(tbclient.isProtocolUploadAllowed(new URL(TEST_SERVER_PROTOCOL)));
 	}
 	
-	
+	public void testAccessRights() throws Exception {
+		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE,null,AbstractClient.utf8);
+		List<PolicyRule> accessRights = new ArrayList<PolicyRule>();
+		accessRights.add(new UserPolicyRule<User>(new User(new URL("http://example.com/user/1"))));
+		accessRights.add(new UserPolicyRule<User>(new User(new URL("http://example.com/user/2")),true,null,null,true));
+		accessRights.add(new GroupPolicyRule<Group>(new Project(new URL("http://example.com/group/1"))));
+		AbstractClient.addPolicyRules(entity, accessRights);
+		entity.writeTo(System.out);
+		
+	}
+	@Test
+	public void testReadPolicy() throws Exception {
+		User user = tbclient.getUserClient().myAccount(new URL(TEST_SERVER));
+		List<Protocol> protocols = tbclient.getProtocolClient().getProtocols(user);
+		List<AccessRights> rights = tbclient.readPolicy(protocols.get(0).getResourceURL());
+		Assert.assertNotNull(rights);
+		Assert.assertTrue(rights.size()>0);
+	}
 }
