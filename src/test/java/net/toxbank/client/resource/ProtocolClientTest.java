@@ -142,11 +142,20 @@ public class ProtocolClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 	}
 	
 	protected URL readFirst(ProtocolClient cli) throws Exception {
+		User user = tbclient.getUserClient().myAccount(new URL(TEST_SERVER));
+		List<URL> url = tbclient.getProtocolClient().listProtocols(user);
+		Assert.assertNotNull(url);
+		Assert.assertEquals(1,url.size());
+		return url.get(0);
+	}
+	/*
+	protected URL readFirst(ProtocolClient cli) throws Exception {
 		List<URL> url = cli.listProtocols(new URL(TEST_SERVER_PROTOCOL),new String[] {"page","0","pagesize","1"});
 		Assert.assertNotNull(url);
 		Assert.assertEquals(1,url.size());
 		return url.get(0);
 	}
+	*/
 	@Override
 	public void testRead() throws Exception {
 		ProtocolClient cli = tbclient.getProtocolClient();
