@@ -7,11 +7,19 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 
+import javax.activity.InvalidActivityException;
+
+import net.toxbank.client.exceptions.InvalidInputException;
 import net.toxbank.client.policy.AccessRights;
+import net.toxbank.client.policy.GroupPolicyRule;
+import net.toxbank.client.policy.PolicyRule;
 import net.toxbank.client.policy.TBPolicyParser;
+import net.toxbank.client.policy.UserPolicyRule;
+import net.toxbank.client.resource.Group;
 import net.toxbank.client.resource.OrganisationClient;
 import net.toxbank.client.resource.ProjectClient;
 import net.toxbank.client.resource.ProtocolClient;
+import net.toxbank.client.resource.User;
 import net.toxbank.client.resource.UserClient;
 
 import org.apache.http.HttpException;
@@ -148,12 +156,21 @@ public class TBClient {
 	 * @return HTTP status code
 	 * @throws Exception
 	 */
-	public int deletePolicy(URL url, AccessRights accessRights) throws Exception {
-		
-		OpenSSOPolicy policy = getOpenSSOPolicyInstance();
-		if (accessRights.getPolicyID()!=null)
-			return policy.deletePolicy(ssoToken, accessRights.getPolicyID());
-		else throw new Exception("No policy ID!");
+	public int deletePolicy(AccessRights accessRights) throws Exception {
+		return deletePolicy(accessRights==null?null:accessRights.getPolicyID());
+	}
+	/**
+	 * 
+	 * @param url
+	 * @param policyID
+	 * @return HTTP status code
+	 * @throws Exception
+	 */
+	public int deletePolicy(String policyID) throws Exception {
+		if (policyID!=null) {
+			OpenSSOPolicy policy = getOpenSSOPolicyInstance();
+			return policy.deletePolicy(ssoToken, policyID);
+		} else throw new Exception("No policy ID!");
 	}
 	
 	public List<AccessRights> readPolicy(URL url) throws Exception {
@@ -179,4 +196,61 @@ public class TBClient {
 		return lotofpolicies;
 	}
 	
+	public void updatePolicy(AccessRights accessRights) throws Exception {
+		if ((accessRights==null) || (accessRights.getResource()==null) || (accessRights.getRules()==null)) throw new InvalidInputException("Policy");
+		//First remove current policies
+		OpenSSOPolicy policy = getOpenSSOPolicyInstance();
+		IOpenToxUser user = new OpenToxUser();
+		
+		Hashtable<String, String> policies = new Hashtable<String, String>();
+		int status = policy.getURIOwner(ssoToken, accessRights.getResource().toExternalForm(), user, policies);
+		if (HttpStatus.SC_OK == status) {
+			Enumeration<String> e = policies.keys();
+			while (e.hasMoreElements()) {
+				String policyID = e.nextElement();
+				deletePolicy(policyID);
+			}
+		} //else throw new RestException(status);
+		//then send the new policy
+		sendPolicy(accessRights);
+		
+	}
+	public void sendPolicy(AccessRights accessRights) throws Exception {
+		if ((accessRights==null) || (accessRights.getResource()==null) || (accessRights.getRules()==null)) throw new InvalidInputException("Policy");
+		OpenSSOPolicy policy = getOpenSSOPolicyInstance();
+		List<String> xmls = createPolicyXML(accessRights);
+		for (String xml : xmls) try {
+			int status = policy.sendPolicy(ssoToken, xml);
+			if (HttpStatus.SC_OK!=status) 
+				throw new RestException(status,String.format("Error when creating policy for URI %s",accessRights.getResource()));
+		} catch (RestException x) {
+			throw x;
+		} catch (Exception x) {
+			throw new Exception(String.format("Error when creating policy for URI %s",accessRights.getResource()),x);
+		}
+
+	}
+	public List<String> createPolicyXML(AccessRights accessRights) throws Exception {
+		OpenSSOPolicy policy = getOpenSSOPolicyInstance();
+		String xmlpolicy = null;
+		if ((accessRights.getResource()!=null) && (accessRights.getRules()!=null)) {
+			List<String> xmlpolicies = new ArrayList<String>();
+			for (PolicyRule rule: accessRights.getRules()) {
+				xmlpolicy = null;
+				if (rule instanceof UserPolicyRule) {
+					UserPolicyRule<? extends User> userRule = (UserPolicyRule) rule;
+					xmlpolicy = policy.createUserPolicyXML(
+									userRule.getSubject().getUserName(),accessRights.getResource(),userRule.getActionsAsArray());
+				} else if (rule instanceof GroupPolicyRule) {
+					GroupPolicyRule<? extends Group> groupRule = (GroupPolicyRule) rule;
+					xmlpolicy = policy.createGroupPolicyXML(
+							groupRule.getSubject().getGroupName(),accessRights.getResource(),groupRule.getActionsAsArray());
+				}
+				if (xmlpolicy!=null) xmlpolicies.add(xmlpolicy);
+			}
+			return xmlpolicies;
+		}
+		return null;
+		
+	}	
 }
