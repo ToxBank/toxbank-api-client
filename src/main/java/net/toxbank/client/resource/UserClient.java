@@ -206,7 +206,7 @@ public class UserClient extends AbstractClient<User> {
 		
 		List<NameValuePair> formparams = new ArrayList<NameValuePair>();
 		formparams.add(new BasicNameValuePair(paramName, project.getResourceURL().toExternalForm()));
-		return sendAsync(new URL(String.format("%s%s", user,groupSuffix)), 
+		return sendAsync(new URL(String.format("%s%s", user.getResourceURL(),groupSuffix)), 
 					new UrlEncodedFormEntity(formparams, "UTF-8") , HttpPost.METHOD_NAME);
 	}
 	
