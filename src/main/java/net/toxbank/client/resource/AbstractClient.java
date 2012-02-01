@@ -349,7 +349,16 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 		else object.setResourceURL(task.getResult());
 		return object;
 	}
-
+	/**
+	 * Same as {@link #post(IToxBankResource, URL, null)} 
+	 * @param object
+	 * @param collection
+	 * @return
+	 * @throws Exception
+	 */
+	public T post(T object, URL collection) throws Exception {
+		return post(object,collection,null);
+	}
 	/**
 	 * Updates an existing object. Waits until the asynchronous tasks completes.
 	 * @param object
