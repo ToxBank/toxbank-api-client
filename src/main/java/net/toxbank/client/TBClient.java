@@ -8,7 +8,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import net.toxbank.client.policy.AccessRights;
-import net.toxbank.client.policy.PolicyParser;
+import net.toxbank.client.policy.TBPolicyParser;
 import net.toxbank.client.resource.OrganisationClient;
 import net.toxbank.client.resource.ProjectClient;
 import net.toxbank.client.resource.ProtocolClient;
@@ -170,7 +170,7 @@ public class TBClient {
 				status = policy.listPolicy(ssoToken, policyId, policies);
 				if (HttpStatus.SC_OK == status) {
 					String xml = policies.get(policyId);
-					PolicyParser parser = new PolicyParser(xml);
+					TBPolicyParser parser = new TBPolicyParser(xml);
 					AccessRights accessRights = parser.getAccessRights();
 					lotofpolicies.add(accessRights);
 				} else throw new RestException(status);

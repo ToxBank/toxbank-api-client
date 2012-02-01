@@ -18,7 +18,6 @@ import net.toxbank.client.io.rdf.IOClass;
 import net.toxbank.client.policy.GroupPolicyRule;
 import net.toxbank.client.policy.PolicyRule;
 import net.toxbank.client.policy.UserPolicyRule;
-import net.toxbank.client.policy.PolicyRule.Method;
 import net.toxbank.client.policy.UserPolicyRule.webform;
 import net.toxbank.client.task.RemoteTask;
 
@@ -34,6 +33,7 @@ import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.StringBody;
 import org.opentox.aa.opensso.AAServicesConfig;
 import org.opentox.aa.opensso.OpenSSOToken;
+import org.opentox.aa.policy.Method;
 import org.opentox.rest.RestException;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -428,7 +428,7 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 		if ((accessRights==null) || (accessRights.size()==0)) return;
 		for (PolicyRule rule : accessRights) {
 			for (Method method: Method.values()) {
-				Boolean allows = rule.allows(method);
+				Boolean allows = rule.allows(method.name());
 				if (allows==null) continue;
 				String field = null;
 				if (rule instanceof  UserPolicyRule) 

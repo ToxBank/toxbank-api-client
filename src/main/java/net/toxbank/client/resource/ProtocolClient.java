@@ -14,10 +14,7 @@ import net.toxbank.client.Resources;
 import net.toxbank.client.exceptions.InvalidInputException;
 import net.toxbank.client.io.rdf.IOClass;
 import net.toxbank.client.io.rdf.ProtocolIO;
-import net.toxbank.client.policy.GroupPolicyRule;
 import net.toxbank.client.policy.PolicyRule;
-import net.toxbank.client.policy.PolicyRule.Method;
-import net.toxbank.client.policy.UserPolicyRule;
 import net.toxbank.client.task.RemoteTask;
 
 import org.apache.http.HttpEntity;
