@@ -108,7 +108,7 @@ public class RemoteTask implements Serializable {
 			HttpEntity entity  = response.getEntity();
 			
 			this.status =  response.getStatusLine().getStatusCode();
-			
+			this.statusLine = response.getStatusLine().getReasonPhrase();
 			if (entity==null) {
 				throw new RestException(HttpStatus.SC_BAD_GATEWAY,
 						String.format("[%s] Representation not available %s",this.status,url));
