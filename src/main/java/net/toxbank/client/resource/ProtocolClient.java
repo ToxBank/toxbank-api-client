@@ -364,11 +364,7 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 	}
 	
 	public List<Protocol> getPreviousVersion(Protocol protocol) throws Exception {
-		List<Protocol> previousVersion = getRDF_XML(new URL(String.format("%s%s",protocol.getResourceURL(),Resources.previous)));
-		if ((previousVersion!=null) && (previousVersion.size()>0)) 
-			protocol.setPreviousVersion(previousVersion.get(0));
-		return previousVersion;
-		//there should be only one previous version!
+		return getRDF_XML(new URL(String.format("%s%s",protocol.getResourceURL(),Resources.previous)));
 	}
 	
 	/**
