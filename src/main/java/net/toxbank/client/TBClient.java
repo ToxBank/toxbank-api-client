@@ -150,7 +150,7 @@ public class TBClient {
 		return new OpenSSOPolicy("http://opensso.in-silico.ch/Pol/opensso-pol");
 	}
 	/**
-	 * 
+	 * Deletes a policy, give its policyID (in accessRights.getPolicyID() )
 	 * @param url
 	 * @param accessRights
 	 * @return HTTP status code
@@ -160,7 +160,7 @@ public class TBClient {
 		return deletePolicy(accessRights==null?null:accessRights.getPolicyID());
 	}
 	/**
-	 * 
+	 * Deletes a policy, given its policyID
 	 * @param url
 	 * @param policyID
 	 * @return HTTP status code
@@ -171,6 +171,25 @@ public class TBClient {
 			OpenSSOPolicy policy = getOpenSSOPolicyInstance();
 			return policy.deletePolicy(ssoToken, policyID);
 		} else throw new Exception("No policy ID!");
+	}
+	/**
+	 * Deletes all policies for an URI
+	 * @param url
+	 * @throws Exception
+	 */
+	public void deleteAllPolicies(URL url) throws Exception {
+		OpenSSOPolicy policy = getOpenSSOPolicyInstance();
+		IOpenToxUser user = new OpenToxUser();
+		
+		Hashtable<String, String> policies = new Hashtable<String, String>();
+		int status = policy.getURIOwner(ssoToken, url.toExternalForm(), user, policies);
+		if (HttpStatus.SC_OK == status) {
+			Enumeration<String> e = policies.keys();
+			while (e.hasMoreElements()) {
+				String policyID = e.nextElement();
+				deletePolicy(policyID);
+			}
+		} //else throw new RestException(status);
 	}
 	
 	public List<AccessRights> readPolicy(URL url) throws Exception {
@@ -198,19 +217,7 @@ public class TBClient {
 	
 	public void updatePolicy(AccessRights accessRights) throws Exception {
 		if ((accessRights==null) || (accessRights.getResource()==null) || (accessRights.getRules()==null)) throw new InvalidInputException("Policy");
-		//First remove current policies
-		OpenSSOPolicy policy = getOpenSSOPolicyInstance();
-		IOpenToxUser user = new OpenToxUser();
-		
-		Hashtable<String, String> policies = new Hashtable<String, String>();
-		int status = policy.getURIOwner(ssoToken, accessRights.getResource().toExternalForm(), user, policies);
-		if (HttpStatus.SC_OK == status) {
-			Enumeration<String> e = policies.keys();
-			while (e.hasMoreElements()) {
-				String policyID = e.nextElement();
-				deletePolicy(policyID);
-			}
-		} //else throw new RestException(status);
+		deleteAllPolicies(accessRights.getResource());
 		//then send the new policy
 		sendPolicy(accessRights);
 		
