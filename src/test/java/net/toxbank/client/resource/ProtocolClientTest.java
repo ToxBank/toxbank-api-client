@@ -329,6 +329,16 @@ public class ProtocolClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 
 	@Override
 	public void testUpdate() throws Exception {
+		ProtocolClient cli = tbclient.getProtocolClient();
+		URL url = readFirst(cli);
+		Protocol protocol = cli.download(url);
+		long updated = protocol.getTimeModified();
+		//this is the file to upload
+		URL file = getClass().getClassLoader().getResource("net/toxbank/client/test/protocol-sample.pdf");
+		protocol.setDocument(new Document(file));
+		cli.update(protocol);
+		protocol = cli.download(url);
+		Assert.assertNotSame(updated,protocol.getTimeModified());
 	}
 	
 	@Test

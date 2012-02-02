@@ -134,6 +134,9 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 		if (protocol.isSearchable()!=null)
 			entity.addPart(webform.summarySearchable.name(), new StringBody(Boolean.toString(protocol.isSearchable()),utf8));
 		
+		if ((protocol.getDocument()!=null) && (protocol.getDocument().getResourceURL()!=null))
+			entity.addPart(webform.filename.name(), new FileBody(new File(protocol.getDocument().getResourceURL().toURI())));
+		
 		if (protocol.getKeywords()!=null) {
 			StringBuilder b = new StringBuilder();
 			String d = "";
