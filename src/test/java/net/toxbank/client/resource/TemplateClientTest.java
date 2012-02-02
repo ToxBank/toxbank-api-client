@@ -9,6 +9,8 @@ import net.toxbank.client.task.RemoteTask;
 
 import org.junit.Assert;
 
+import com.hp.hpl.jena.ontology.OntDocumentManager.ReadFailureHandler;
+
 public class TemplateClientTest  extends AbstractClientTest<Protocol, ProtocolClient> {
 	
 	private final static String TEST_SERVER_PROTOCOL = String.format("%s%s",AbstractClientTest.TEST_SERVER,Resources.protocol);
@@ -22,7 +24,8 @@ public class TemplateClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 	public void testCreate() throws Exception {
 		//TODO get the user from the token
 		ProtocolClient cli = tbclient.getProtocolClient();
-		Protocol protocol = cli.download(new URL(String.format("%s?page=0&pagesize=1",TEST_SERVER_PROTOCOL)));
+		
+		Protocol protocol = cli.download(readFirst(cli));
 		//this is the file to upload
 		URL url = getClass().getClassLoader().getResource("net/toxbank/client/test/protocol-sample.pdf");
 
@@ -31,6 +34,14 @@ public class TemplateClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 		Assert.assertNotNull(task.getResult());
 		Assert.assertTrue(task.getResult().toExternalForm().startsWith(TEST_SERVER_PROTOCOL));
 		
+	}
+	
+	protected URL readFirst(ProtocolClient cli) throws Exception {
+		User user = tbclient.getUserClient().myAccount(new URL(TEST_SERVER));
+		List<URL> url = tbclient.getProtocolClient().listURI(new URL(String.format("%s%s?page=0&pagesize=1", user.getResourceURL(),Resources.protocol)));
+		Assert.assertNotNull(url);
+		Assert.assertEquals(1,url.size());
+		return url.get(0);
 	}
 	
 	@Override

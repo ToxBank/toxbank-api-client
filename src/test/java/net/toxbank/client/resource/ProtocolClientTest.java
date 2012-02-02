@@ -168,12 +168,11 @@ public class ProtocolClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 	@Override
 	public void testRead() throws Exception {
 		ProtocolClient cli = tbclient.getProtocolClient();
-		List<URL> url = cli.listProtocols(new URL(TEST_SERVER_PROTOCOL),
-							new String[] {"page","0","pagesize","1"});
+		URL url = readFirst(cli);
+
 		Assert.assertNotNull(url);
-		Assert.assertEquals(1,url.size());
 		
-		Protocol protocol = cli.download(url.get(0));
+		Protocol protocol = cli.download(url);
 		Assert.assertNotNull(protocol);
 		Assert.assertNotNull(protocol.getOrganisation().getResourceURL());
 		Assert.assertNotNull(protocol.getProject().getResourceURL());
