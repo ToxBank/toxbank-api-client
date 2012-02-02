@@ -123,7 +123,9 @@ public class ProtocolClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 	@Test
 	public void testUploadNewVersion() throws Exception {
 		ProtocolClient cli = tbclient.getProtocolClient();
-		Protocol protocol = cli.download(new URL(String.format("%s?page=0&pagesize=1",TEST_SERVER_PROTOCOL)));
+		URL url = readFirst(cli);
+		List<Protocol> protocols = cli.get(url);
+		Protocol protocol = protocols.get(0);
 		System.out.println(protocol.getIdentifier());
 		List<URL> versions = cli.listVersions(protocol);
 		
@@ -224,13 +226,12 @@ public class ProtocolClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 	}
 	
 	@Test
-	public void testListVersions() throws RestException, IOException {
+	public void testListVersions() throws Exception {
 		ProtocolClient cli = tbclient.getProtocolClient();
-		List<URL> url = cli.listProtocols(new URL(String.format("%s?page=0&pagesize=1",TEST_SERVER_PROTOCOL)));
+		URL url = readFirst(cli);
 		Assert.assertNotNull(url);
-		Assert.assertEquals(1,url.size());
 
-		Protocol protocol = new Protocol(url.get(0));		
+		Protocol protocol = new Protocol(url);		
 		List<URL> versions = cli.listVersions(protocol);
 		Assert.assertNotNull(versions);
 		Assert.assertNotSame(0, versions.size());
@@ -239,11 +240,8 @@ public class ProtocolClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 	@Test
 	public void testGetVersions() throws Exception {
 		ProtocolClient cli = tbclient.getProtocolClient();
-		List<URL> url = cli.listProtocols(new URL(String.format("%s?page=0&pagesize=1",TEST_SERVER_PROTOCOL)));
-		Assert.assertNotNull(url);
-		Assert.assertEquals(1,url.size());
-
-		Protocol protocol = new Protocol(url.get(0));
+		URL url = readFirst(cli);
+		Protocol protocol = new Protocol(url);
 		List<Protocol> versions = cli.getVersions(protocol);
 		Assert.assertNotNull(versions);
 		Assert.assertNotSame(0, versions.size());
