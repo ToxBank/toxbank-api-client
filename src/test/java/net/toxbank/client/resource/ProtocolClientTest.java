@@ -215,6 +215,15 @@ public class ProtocolClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 	}
 	
 	@Test
+	public void testListPreviousVersion() throws Exception {
+		ProtocolClient cli = tbclient.getProtocolClient();
+		URL url = readFirst(cli);
+		Protocol protocol = new Protocol(url);		
+		List<Protocol> versions = cli.getPreviousVersion(protocol);
+		//Assert.assertNotNull(protocol.getPreviousVersion());
+	}
+	
+	@Test
 	public void testListVersions() throws RestException, IOException {
 		ProtocolClient cli = tbclient.getProtocolClient();
 		List<URL> url = cli.listProtocols(new URL(String.format("%s?page=0&pagesize=1",TEST_SERVER_PROTOCOL)));

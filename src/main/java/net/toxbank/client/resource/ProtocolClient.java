@@ -359,6 +359,18 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 		return getRDF_XML(new URL(String.format("%s%s",protocol.getResourceURL(),Resources.versions)));
 	}
 
+	public List<URL> listPreviousVersion(Protocol protocol) throws IOException, RestException{
+		return listURI(new URL(String.format("%s%s",protocol.getResourceURL(),Resources.previous)));
+	}
+	
+	public List<Protocol> getPreviousVersion(Protocol protocol) throws Exception {
+		List<Protocol> previousVersion = getRDF_XML(new URL(String.format("%s%s",protocol.getResourceURL(),Resources.previous)));
+		if ((previousVersion!=null) && (previousVersion.size()>0)) 
+			protocol.setPreviousVersion(previousVersion.get(0));
+		return previousVersion;
+		//there should be only one previous version!
+	}
+	
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/API_Protocol:RetrieveTemplates">API documentation</a>.
 	 */
