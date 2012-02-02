@@ -70,12 +70,15 @@ public class ProtocolClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 	@Override
 	public void testCreate() throws Exception {
 		//TODO get the user from the token
+		UserClient ucli = tbclient.getUserClient();
+		User myself = ucli.myAccount(new URL(TEST_SERVER));
+				
 		Protocol protocol = new Protocol();
 		protocol.setStatus(STATUS.SOP);
 		protocol.setProject(new Project(new URL(String.format("%s%s/G1",AbstractClientTest.TEST_SERVER,Resources.project))));
 		protocol.setOrganisation(new Organisation(new URL(String.format("%s%s/G1",AbstractClientTest.TEST_SERVER,Resources.organisation))));
-		protocol.setOwner(new User(new URL(String.format("%s%s/U1",AbstractClientTest.TEST_SERVER,Resources.user))));
-		protocol.addAuthor(new User(new URL(String.format("%s%s/U1",AbstractClientTest.TEST_SERVER,Resources.user))));
+		protocol.setOwner(myself);
+		protocol.addAuthor(myself);
 		protocol.setTitle("title");
 		protocol.setAbstract("My \u2122 abstract");
 		protocol.setSearchable(true);
@@ -87,7 +90,12 @@ public class ProtocolClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 		protocol.setDocument(new Document(file));
 		
 		ProtocolClient cli = tbclient.getProtocolClient();
-		URL newProtocol = cli.upload(protocol, new URL(TEST_SERVER_PROTOCOL));
+		AccessRights accessRights = new AccessRights();
+		accessRights.addUserRule(myself, true,true,true,true);
+		User somebodyElse = new User(new URL(String.format("%s%s/U1",AbstractClientTest.TEST_SERVER,Resources.user)));
+		accessRights.addUserRule(somebodyElse, true,false,false,false);
+		
+		URL newProtocol = cli.upload(protocol, new URL(TEST_SERVER_PROTOCOL),accessRights.getRules());
 		Assert.assertNotNull(newProtocol);
 		Assert.assertTrue(newProtocol.toExternalForm().startsWith(TEST_SERVER_PROTOCOL));
 		//now let's download the file 
@@ -109,8 +117,7 @@ public class ProtocolClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 		
 		Assert.assertTrue(newProtocol.toString(),newp.get(0).getAbstract().contains("\u2122"));
 		cli.delete(newProtocol);
-
-		
+		//TODO verify if policies are deleted
 	}
 	
 	@Test
