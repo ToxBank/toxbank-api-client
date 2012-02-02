@@ -15,6 +15,7 @@ import java.util.List;
 
 import net.toxbank.client.exceptions.InvalidInputException;
 import net.toxbank.client.io.rdf.IOClass;
+import net.toxbank.client.io.rdf.TOXBANK;
 import net.toxbank.client.policy.GroupPolicyRule;
 import net.toxbank.client.policy.PolicyRule;
 import net.toxbank.client.policy.UserPolicyRule;
@@ -155,7 +156,7 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 			in = entity.getContent();
 			if (response.getStatusLine().getStatusCode()== HttpStatus.SC_OK) {
 				Model model = ModelFactory.createDefaultModel();
-				model.read(new InputStreamReader(in,"UTF-8"),"");
+				model.read(new InputStreamReader(in,"UTF-8"),TOXBANK.URI);
 				return getIOClass().fromJena(model);
 			} else if (response.getStatusLine().getStatusCode()== HttpStatus.SC_NOT_FOUND) {	
 				return Collections.emptyList();
