@@ -77,6 +77,27 @@ public class PolicyTest extends  AbstractClientTest<Protocol, ProtocolClient> {
 		List<AccessRights> roundTrip = tbclient.readPolicy(url);
 		Assert.assertNotNull(roundTrip);
 		Assert.assertEquals(1,roundTrip.size());
+		Assert.assertEquals(1,roundTrip.get(0).getRules().size());
+		PolicyRule rule = roundTrip.get(0).getRules().get(0);
+		Assert.assertTrue(rule.allowsGET());
+		Assert.assertNull(rule.allowsPUT());
+		Assert.assertNull(rule.allowsPOST());
+		Assert.assertTrue(rule.allowsDELETE());
+		
+		AccessRights newAccessRights = new AccessRights(url);
+		newAccessRights.addUserRule("guest",false,true,false,false);
+		
+		tbclient.updatePolicy(newAccessRights);
+		
+		roundTrip = tbclient.readPolicy(url);
+		Assert.assertNotNull(roundTrip);
+		Assert.assertEquals(1,roundTrip.size());
+		Assert.assertEquals(1,roundTrip.get(0).getRules().size());
+		rule = roundTrip.get(0).getRules().get(0);
+		Assert.assertNull(rule.allowsGET());
+		Assert.assertNull(rule.allowsPUT());
+		Assert.assertTrue(rule.allowsPOST());
+		Assert.assertNull(rule.allowsDELETE());
 	}	
 	
 	@Test

@@ -78,8 +78,8 @@ public class TBPolicyParser  extends PolicyParser<User, Group, PolicyRule, Acces
 	@Override
 	protected PolicyRule createPolicyRule(String name, User user, Group group) {
 		PolicyRule rule = null;
-		if (user != null) rule = new UserPolicyRule<User>(user);
-		else if (group != null) rule = new GroupPolicyRule<Group>(group);
+		if (user != null) rule = new UserPolicyRule<User>(user,null,null,null,null);
+		else if (group != null) rule = new GroupPolicyRule<Group>(group,null,null,null,null);
 		rule.setName(name);
 		return rule;
 	}	
