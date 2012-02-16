@@ -173,9 +173,9 @@ public class UserClient extends AbstractClient<User> {
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/User:RetrieveAlerts">API documentation</a>.
 	 */
-	public List<URL> listAlerts(User user) {
-		// FIXME: implement uploading this protocol to the server
-		return null;
+	public List<URL> listAlerts(User user) throws Exception  {
+		AlertClient cli = new AlertClient(getHttpClient());
+		return cli.listAlerts(user);
 	}
 
 	/**
@@ -183,11 +183,17 @@ public class UserClient extends AbstractClient<User> {
 	 * Equivalent to {@link #listAlerts()} but returns {@link AlertClient}s
 	 * already populated with metadata from the database.
 	 */
-	public List<Alert> getAlerts(User user) {
-		// FIXME: implement uploading this protocol to the server
-		return null;
+	public List<Alert> getAlerts(User user)  throws Exception  {
+		AlertClient cli = new AlertClient(getHttpClient());
+		return cli.getAlerts(user);
 	}
 
+	
+	public RemoteTask addAlert(User user,Alert alert) throws Exception {
+		if (user.getResourceURL()==null) throw new InvalidInputException("No user URI");
+		AlertClient cli = new AlertClient(httpClient);
+		return cli.postAsync(alert,new URL(String.format("%s%s", user.getResourceURL(),Resources.alert)));
+	}
 	/**
 	 * 
 	 * @param serverURL , root URL ; e.g. http://localhost:8080/toxbank
@@ -228,4 +234,7 @@ public class UserClient extends AbstractClient<User> {
 	public RemoteTask addOrganisation(User user,Organisation org) throws Exception {
 		return addGroup(user, org, "organisation_uri", Resources.organisation);
 	}
+
+	
+
 }

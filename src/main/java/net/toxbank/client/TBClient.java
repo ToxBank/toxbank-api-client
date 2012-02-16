@@ -7,14 +7,13 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 
-import javax.activity.InvalidActivityException;
-
 import net.toxbank.client.exceptions.InvalidInputException;
 import net.toxbank.client.policy.AccessRights;
 import net.toxbank.client.policy.GroupPolicyRule;
 import net.toxbank.client.policy.PolicyRule;
 import net.toxbank.client.policy.TBPolicyParser;
 import net.toxbank.client.policy.UserPolicyRule;
+import net.toxbank.client.resource.AlertClient;
 import net.toxbank.client.resource.Group;
 import net.toxbank.client.resource.OrganisationClient;
 import net.toxbank.client.resource.ProjectClient;
@@ -116,7 +115,9 @@ public class TBClient {
 	public OrganisationClient getOrganisationClient() {
 		return new OrganisationClient(getHttpClient());
 	}
-
+	public AlertClient getAlertClient() {
+		return new AlertClient(getHttpClient());
+	}
 	
 	/**
 	 *  Returns true if authorized
