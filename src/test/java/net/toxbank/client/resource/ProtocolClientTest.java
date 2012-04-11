@@ -150,6 +150,21 @@ public class ProtocolClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 		
 	}
 	
+	@Test
+	public void testPublish() throws Exception {
+		ProtocolClient cli = tbclient.getProtocolClient();
+		URL url = readFirst(cli);
+		List<Protocol> protocols = cli.get(url);
+		Protocol protocol = new Protocol();
+		protocol.setResourceURL(protocols.get(0).getResourceURL());
+		
+		RemoteTask task = cli.publishAsync(protocol,true);
+		task.waitUntilCompleted(500);
+		Assert.assertNotNull(task.getResult());
+		//System.out.println(task.getResult());
+		Assert.assertTrue(task.getResult().toExternalForm().startsWith(TEST_SERVER_PROTOCOL));
+	}
+	
 	protected URL readFirst(ProtocolClient cli) throws Exception {
 		User user = tbclient.getUserClient().myAccount(new URL(TEST_SERVER));
 		List<URL> url = tbclient.getProtocolClient().listURI(new URL(String.format("%s%s?page=0&pagesize=1", user.getResourceURL(),Resources.protocol)));
