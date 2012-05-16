@@ -7,6 +7,13 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
 import net.toxbank.client.exceptions.InvalidInputException;
 import net.toxbank.client.policy.AccessRights;
 import net.toxbank.client.policy.GroupPolicyRule;
@@ -261,4 +268,39 @@ public class TBClient {
 		return null;
 		
 	}	
+	/**
+	 * Same as curl -k
+	 * @throws Exception
+	 */
+	public static void insecureConfig() throws Exception {
+		
+		// Create a trust manager that does not validate certificate chains
+		TrustManager[] trustAllCerts = new TrustManager[]{
+		    new X509TrustManager() {
+		        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+		            return null;
+		        }
+		        public void checkClientTrusted(
+		            java.security.cert.X509Certificate[] certs, String authType) {
+		        }
+		        public void checkServerTrusted(
+		            java.security.cert.X509Certificate[] certs, String authType) {
+		        }
+		    }
+		};
+
+		// Install the all-trusting trust manager
+		try {
+		    SSLContext sc = SSLContext.getInstance("SSL");
+		    sc.init(null, trustAllCerts, new java.security.SecureRandom());
+		    HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+		} catch (Exception e) {
+		}
+		HttpsURLConnection.setDefaultHostnameVerifier( 
+				new HostnameVerifier(){
+					public boolean verify(String string,SSLSession ssls) {
+						return true;
+					}
+				});
+	}
 }
