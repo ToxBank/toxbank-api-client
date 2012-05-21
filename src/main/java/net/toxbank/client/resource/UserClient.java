@@ -161,16 +161,6 @@ public class UserClient extends AbstractClient<User> {
 	}
 
 	/**
-	 * Described in this <a href="http://api.toxbank.net/index.php/User:RetrieveStudies">API documentation</a>.
-	 * Equivalent to {@link #listStudies()} but returns {@link StudyClient}s
-	 * already populated with metadata from the database.
-	 */
-	public List<Study> getStudies(User user) {
-		// FIXME: implement uploading this protocol to the server
-		return null;
-	}
-
-	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/User:RetrieveAlerts">API documentation</a>.
 	 */
 	public List<URL> listAlerts(User user) throws Exception  {

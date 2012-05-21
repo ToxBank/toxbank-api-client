@@ -2,38 +2,24 @@ package net.toxbank.client;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.List;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+import java.util.*;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
+import javax.net.ssl.*;
 
 import net.toxbank.client.exceptions.InvalidInputException;
-import net.toxbank.client.policy.AccessRights;
-import net.toxbank.client.policy.GroupPolicyRule;
-import net.toxbank.client.policy.PolicyRule;
-import net.toxbank.client.policy.TBPolicyParser;
-import net.toxbank.client.policy.UserPolicyRule;
-import net.toxbank.client.resource.AlertClient;
-import net.toxbank.client.resource.Group;
-import net.toxbank.client.resource.OrganisationClient;
-import net.toxbank.client.resource.ProjectClient;
-import net.toxbank.client.resource.ProtocolClient;
-import net.toxbank.client.resource.User;
-import net.toxbank.client.resource.UserClient;
+import net.toxbank.client.policy.*;
+import net.toxbank.client.resource.*;
 
-import org.apache.http.HttpException;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpRequestInterceptor;
-import org.apache.http.HttpStatus;
+import org.apache.http.*;
 import org.apache.http.client.HttpClient;
+import org.apache.http.conn.ClientConnectionManager;
+import org.apache.http.conn.scheme.*;
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.SingleClientConnManager;
 import org.apache.http.protocol.HttpContext;
 import org.opentox.aa.IOpenToxUser;
 import org.opentox.aa.OpenToxUser;
@@ -63,23 +49,67 @@ public class TBClient {
 		return httpClient;
 	}
 
+	private ClientConnectionManager createFullyTrustingClientManager() throws Exception {
+    TrustManager[] trustAllCerts = new TrustManager[]{
+        new X509TrustManager() {
+            public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                return null;
+            }
+            public void checkClientTrusted(
+                java.security.cert.X509Certificate[] certs, String authType) {                
+            }
+            public void checkServerTrusted(
+                java.security.cert.X509Certificate[] certs, String authType) {
+            }
+        }
+    };
+    SSLContext sslContext = SSLContext.getInstance("SSL");
+    sslContext.init(null, trustAllCerts, new SecureRandom());
+    
+    SSLSocketFactory sslSocketFactory = new SSLSocketFactory(sslContext, new X509HostnameVerifier() {
+      public void verify(String host, SSLSocket ssl) throws IOException { }
+      public void verify(String host, X509Certificate cert) throws SSLException { }
+      public void verify(String host, String[] cns, String[] subjectAlts) throws SSLException { }
+      public boolean verify(String arg0, SSLSession arg1) {
+        return true;
+      }
+    });
+    Scheme httpsScheme = new Scheme("https", 443, sslSocketFactory);
+    Scheme httpScheme = new Scheme("http", 80, PlainSocketFactory.getSocketFactory());
+    SchemeRegistry schemeRegistry = new SchemeRegistry();
+    schemeRegistry.register(httpsScheme);
+    schemeRegistry.register(httpScheme);
+    
+    ClientConnectionManager cm = new SingleClientConnManager(schemeRegistry);
+
+    return cm;
+	}
+	
 	protected HttpClient createHTTPClient() {
-		HttpClient cli = new DefaultHttpClient();
-		((DefaultHttpClient)cli).addRequestInterceptor(new HttpRequestInterceptor() {
+	  try {
+	    ClientConnectionManager cm = createFullyTrustingClientManager();
+	    DefaultHttpClient cli = new DefaultHttpClient(cm);
+	    cli.addRequestInterceptor(new HttpRequestInterceptor() {
 			@Override
 			public void process(HttpRequest request, HttpContext context)
-					throws HttpException, IOException {
-				if (ssoToken != null)
-					request.addHeader("subjectid",ssoToken.getToken());
+			    throws HttpException, IOException {
+				  if (ssoToken != null)
+				    request.addHeader("subjectid",ssoToken.getToken());
 			}
-		});
-		return cli;
+	    });
+	    return cli;
+	  }
+	  catch (Exception e) {
+	    e.printStackTrace();
+	    return null;
+	  }
 	}
 	
 	public boolean login(String username,String password) throws Exception {
 		//get this from client.properties file
 		return login("http://opensso.in-silico.ch/opensso/identity",username,password);
 	}
+	
 	/**
 	 * Login
 	 * @param username
@@ -124,6 +154,9 @@ public class TBClient {
 	}
 	public AlertClient getAlertClient() {
 		return new AlertClient(getHttpClient());
+	}
+	public InvestigationClient getInvestigationClient() {
+	  return new InvestigationClient(getHttpClient());
 	}
 	
 	/**
@@ -265,42 +298,6 @@ public class TBClient {
 			}
 			return xmlpolicies;
 		}
-		return null;
-		
-	}	
-	/**
-	 * Same as curl -k
-	 * @throws Exception
-	 */
-	public static void insecureConfig() throws Exception {
-		
-		// Create a trust manager that does not validate certificate chains
-		TrustManager[] trustAllCerts = new TrustManager[]{
-		    new X509TrustManager() {
-		        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-		            return null;
-		        }
-		        public void checkClientTrusted(
-		            java.security.cert.X509Certificate[] certs, String authType) {
-		        }
-		        public void checkServerTrusted(
-		            java.security.cert.X509Certificate[] certs, String authType) {
-		        }
-		    }
-		};
-
-		// Install the all-trusting trust manager
-		try {
-		    SSLContext sc = SSLContext.getInstance("SSL");
-		    sc.init(null, trustAllCerts, new java.security.SecureRandom());
-		    HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-		} catch (Exception e) {
-		}
-		HttpsURLConnection.setDefaultHostnameVerifier( 
-				new HostnameVerifier(){
-					public boolean verify(String string,SSLSession ssls) {
-						return true;
-					}
-				});
+		return null;		
 	}
 }

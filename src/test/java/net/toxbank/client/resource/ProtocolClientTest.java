@@ -36,6 +36,7 @@ public class ProtocolClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 	
 	@Override
 	public void testList() throws Exception {
+	  System.out.println("Connecting to: " + TEST_SERVER_PROTOCOL);
 		List<URL> protocols = getToxBackClient().listProtocols(new URL(TEST_SERVER_PROTOCOL));
 		Assert.assertNotNull(protocols);
 		Assert.assertNotSame(0, protocols.size());
