@@ -164,12 +164,15 @@ public class UserClient extends AbstractClient<User> {
 	 * Described in this <a href="http://api.toxbank.net/index.php/User:RetrieveStudies">API documentation</a>.
 	 * Equivalent to {@link #listStudies()} but returns {@link StudyClient}s
 	 * already populated with metadata from the database.
+	 * Study and assay removed as from 
+	 * https://github.com/ToxBank/toxbank-api-beans/commit/fbb72fc168e7f126090725d935ee9d0c810cc17a
 	 */
+	/*
 	public List<Study> getStudies(User user) {
 		// FIXME: implement uploading this protocol to the server
 		return null;
 	}
-
+	*/
 	/**
 	 * Described in this <a href="http://api.toxbank.net/index.php/User:RetrieveAlerts">API documentation</a>.
 	 */

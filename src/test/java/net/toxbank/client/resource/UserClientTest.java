@@ -116,14 +116,6 @@ public class UserClientTest extends AbstractClientTest<User, UserClient>  {
 		Assert.assertNotSame(0, studies.size());
 	}
 	
-	@Test
-	public void testGetStudies() throws Exception {
-		UserClient cli = getToxBackClient();
-		User user = new User(new URL(TEST_SERVER_USER + "user/ab7f235ccd"));
-		List<Study> studies = cli.getStudies(user);
-		Assert.assertNotNull(studies);
-		Assert.assertNotSame(0, studies.size());
-	}
 
 	@Test
 	public void testListAlerts() throws Exception {
