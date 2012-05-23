@@ -101,6 +101,14 @@ public class InvestigationClientTest {
     System.out.println("Posted new investigation: " + postedURL);
     Investigation investigation = getToxBankClient().getInvestigation(postedURL);
     verifyBiiInvestigation(investigation, false);
+    
+    User owner = new User();
+    URL ownerUrl = new URL("http://toxbanktest1.opentox.org:8080/toxbank/user/U115");
+    owner.setResourceURL(ownerUrl);
+    List<URL> userUrls = getToxBankClient().listInvestigationUrls(new URL(TEST_SERVER), owner);
+    Assert.assertTrue("The loaded investigation should be included in the owner's list",
+        userUrls.contains(new URL(postedURL.toString() + "/")));
+    
     System.out.println("Deleting investigation: " + investigation.getResourceURL());
     getToxBankClient().deleteInvestigation(investigation.getResourceURL());
     System.out.println("Deleted investigation: " + investigation.getResourceURL());

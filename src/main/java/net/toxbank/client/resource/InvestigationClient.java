@@ -82,6 +82,36 @@ public class InvestigationClient {
   }
   
   /**
+   * Lists the uris of investigations loaded (owned) by the given user
+   * @param owner the owner of the investigations
+   * @return the list of available investigation urls
+   */
+  public List<URL> listInvestigationUrls(URL rootUrl, User user) throws Exception {
+    String sparqlQuery = String.format(
+        "PREFIX tb:<http://onto.toxbank.net/api/>\n"+
+            "PREFIX isa:<http://onto.toxbank.net/isa/>\n" +
+            "PREFIX dcterms:<http://purl.org/dc/terms/>\n" + 
+            "PREFIX owl: <http://www.w3.org/2002/07/owl#>\n" +
+            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" + 
+            "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
+            "CONSTRUCT {?investigation_url rdf:type isa:Investigation.}\n" +
+            "where {\n" +
+            " ?investigation_url owl:sameAs ?investigation .\n"+
+            " ?investigation rdf:type isa:Investigation .\n" +
+            " ?investigation tb:hasOwner <%s> .\n" +
+            "}",
+        user.getResourceURL().toString());
+    
+    List<URL> urls = new ArrayList<URL>();
+    Model model = querySparql(sparqlQuery, rootUrl);
+    for (ResIterator iter = model.listResourcesWithProperty(RDF.type, TOXBANK_ISA.INVESTIGATION); iter.hasNext(); ) {
+      Resource res = iter.next();
+      urls.add(new URL(res.getURI()));
+    }
+    return urls;
+  }
+  
+  /**
    * Lists the urls of investigations in the given investigation service
    * @param rootUrl the root url of the investigation service
    * @return the list of available investigation urls
