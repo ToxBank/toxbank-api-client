@@ -170,7 +170,6 @@ public class RemoteTask implements Serializable {
 
 		if (isDone()) return true;
 		InputStream in = null;
-		System.out.println("Polling result url: " + result.toString());
 		HttpGet httpGet = new HttpGet(result.toString());
 		httpGet.addHeader("Accept","text/uri-list");
 		try {
