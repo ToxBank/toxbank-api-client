@@ -227,9 +227,6 @@ public class InvestigationClient {
       in = entity.getContent();
       if (response.getStatusLine().getStatusCode()== HttpStatus.SC_OK) {
         model.read(in, rootUrl.toString(), "RDF/XML");
-        StringWriter sw = new StringWriter();
-        model.write(sw, "RDF/XML");
-        System.out.println(sw);
       }
       else {
         throw new RestException(response.getStatusLine().getStatusCode(),response.getStatusLine().getReasonPhrase());
