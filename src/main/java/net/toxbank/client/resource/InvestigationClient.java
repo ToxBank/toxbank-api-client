@@ -83,7 +83,7 @@ public class InvestigationClient {
   
   /**
    * Lists the uris of investigations loaded (owned) by the given user
-   * @param owner the owner of the investigations
+   * @param user the owner of the investigations
    * @return the list of available investigation urls
    */
   public List<URL> listInvestigationUrls(URL rootUrl, User user) throws Exception {
