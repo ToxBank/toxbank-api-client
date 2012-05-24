@@ -312,4 +312,20 @@ public class InvestigationClient {
     RemoteTask task = new RemoteTask(getHttpClient(), rootUrl, "text/uri-list", entity, HttpPost.METHOD_NAME);
     return task;
   }
+  
+  /**
+   * Updates an investigation at the given url
+   * @param zipFile the new investigation zip file
+   * @param investigation the investigation object to update
+   * @return the remote task created
+   */
+  public RemoteTask updateInvestigation(File zipFile, Investigation investigation) throws Exception {
+    if (investigation.getResourceURL() == null) {
+      throw new IllegalArgumentException("investigation has not been assigned a resource url");
+    }
+    MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, null, utf8);
+    entity.addPart(file_param, new FileBody(zipFile, zipFile.getName(), "application/zip", null));
+    RemoteTask task = new RemoteTask(getHttpClient(), investigation.getResourceURL(), "text/uri-list", entity, HttpPost.METHOD_NAME);
+    return task;
+  }
 }
