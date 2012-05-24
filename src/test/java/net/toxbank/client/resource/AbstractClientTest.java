@@ -14,6 +14,7 @@ public abstract class AbstractClientTest<T extends IToxBankResource, C extends A
 	public final static String TEST_SERVER = config();
 	//should be configured in the .m2/settings.xml 
 	protected static final String test_server_property = "toxbank.test.server";
+	protected static final String test_search_server_property = "toxbank.search.test.server";
 	protected static final String aa_server_property = "toxbank.aa.opensso";
 	protected static final String aa_user_property = "toxbank.aa.user";
 	protected static final String aa_pass_property = "toxbank.aa.pass";

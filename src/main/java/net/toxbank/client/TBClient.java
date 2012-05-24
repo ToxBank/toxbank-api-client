@@ -4,18 +4,43 @@ import java.io.IOException;
 import java.net.URL;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.List;
 
-import javax.net.ssl.*;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import net.toxbank.client.exceptions.InvalidInputException;
-import net.toxbank.client.policy.*;
-import net.toxbank.client.resource.*;
+import net.toxbank.client.policy.AccessRights;
+import net.toxbank.client.policy.GroupPolicyRule;
+import net.toxbank.client.policy.PolicyRule;
+import net.toxbank.client.policy.TBPolicyParser;
+import net.toxbank.client.policy.UserPolicyRule;
+import net.toxbank.client.resource.AlertClient;
+import net.toxbank.client.resource.Group;
+import net.toxbank.client.resource.InvestigationClient;
+import net.toxbank.client.resource.OrganisationClient;
+import net.toxbank.client.resource.ProjectClient;
+import net.toxbank.client.resource.ProtocolClient;
+import net.toxbank.client.resource.SearchClient;
+import net.toxbank.client.resource.User;
+import net.toxbank.client.resource.UserClient;
 
-import org.apache.http.*;
+import org.apache.http.HttpException;
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpRequestInterceptor;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.*;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -140,6 +165,10 @@ public class TBClient {
 	
 	public ProtocolClient getProtocolClient() {
 		return new ProtocolClient(getHttpClient());
+	}
+	
+	public SearchClient getSearchClient() {
+		return new SearchClient(getHttpClient());
 	}
 	
 	public ProjectClient getProjectClient() {

@@ -240,7 +240,7 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 	 * @throws IOException
 	 * @throws MalformedURLException
 	 */
-	private List<URL> readURI(InputStream in) throws IOException, MalformedURLException {
+	protected List<URL> readURI(InputStream in) throws IOException, MalformedURLException {
 		List<URL> uris = new ArrayList<URL>();
 		BufferedReader r = new BufferedReader(new InputStreamReader(in));
 		String line = null;
