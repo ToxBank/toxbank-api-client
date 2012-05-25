@@ -165,6 +165,7 @@ public class InvestigationClient {
       throw new RuntimeException("Invalid investigation url: " + urlString);
     }
     String rootUrl = matcher.group(1);
+    String seuratId = "SEURAT-Investigation-" + matcher.group(2);
     
     Model model = ModelFactory.createDefaultModel();
     
@@ -214,7 +215,9 @@ public class InvestigationClient {
       throw new RuntimeException("URL: " + investigationUrl + " yielded more than one investigation");
     }
     else {
-      return investigations.get(0);
+      Investigation investigation = investigations.get(0);
+      investigation.setSeuratId(seuratId);
+      return investigation;
     }
   }
   

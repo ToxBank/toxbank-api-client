@@ -82,13 +82,16 @@ public class InvestigationClientTest {
     Assert.assertNotNull("Should not have null list of urls", urls);
     Assert.assertNotSame("Should have a list of urls", 0, urls.size());
     
-    for (URL url : urls) {
+    int maxUrls = 5;
+
+    for (int i = 0; i < maxUrls && i < urls.size(); i++) {
+      URL url = urls.get(i);
       System.out.println("Retrieving investigation for: " + url);
       Investigation investigation = getToxBankClient().getInvestigation(url);
       Assert.assertNotNull("Should have investigation for url: " + url, investigation);
       if (investigation.getAccessionId().equals(BII_TEST_CASE_ACCESSION_ID)) {
         verifyBiiInvestigation(investigation, true);
-      }
+      }      
     }    
   }
   
