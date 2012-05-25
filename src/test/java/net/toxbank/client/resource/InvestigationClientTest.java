@@ -69,15 +69,15 @@ public class InvestigationClientTest {
     return tbclient.getInvestigationClient();
   }
 
-  @Test
-  public void testList() throws Throwable {
+  // @Test
+  public void donttestList() throws Throwable {
     List<URL> urls = getToxBankClient().listInvestigationUrls(new URL(TEST_SERVER));
     Assert.assertNotNull("Should not have null list of urls", urls);
     Assert.assertNotSame("Should have a list of urls", 0, urls.size());
   }
   
-  @Test
-  public void testGetAll() throws Throwable {
+  //@Test
+  public void donttestGetAll() throws Throwable {
     List<URL> urls = getToxBankClient().listInvestigationUrls(new URL(TEST_SERVER));
     Assert.assertNotNull("Should not have null list of urls", urls);
     Assert.assertNotSame("Should have a list of urls", 0, urls.size());
@@ -92,8 +92,8 @@ public class InvestigationClientTest {
     }    
   }
   
-  @Test
-  public void testPostAndDelete() throws Throwable {
+  // @Test
+  public void donttestPostAndDelete() throws Throwable {
     URL fileUrl = getClass().getClassLoader().getResource("net/toxbank/client/test/BII-I-1.zip");
     RemoteTask task = getToxBankClient().postInvestigation(new File(fileUrl.toURI()), new URL(TEST_SERVER));
     task.waitUntilCompleted(1000);
@@ -130,9 +130,13 @@ public class InvestigationClientTest {
     URL newFileUrl = getClass().getClassLoader().getResource("net/toxbank/client/test/BII-I-1-smiller.zip");
     RemoteTask newTask = getToxBankClient().updateInvestigation(new File(newFileUrl.toURI()), investigation);
     newTask.waitUntilCompleted(1000);
+    URL postedUpdateURL = task.getResult();
+    Assert.assertEquals("Should have same update url as original posted url", postedURL, postedUpdateURL);
     System.out.println("Updated investigation: " + investigation.getResourceURL());
     
     Investigation updatedInvestigation = getToxBankClient().getInvestigation(investigation.getResourceURL());
+    TestCase.assertEquals("Should have new title in updated investigation", 
+        "Growth control of the eukaryote cell: a systems biology study in yeast - updated", updatedInvestigation.getTitle());
     TestCase.assertNotNull("Updated investigation should have owner", updatedInvestigation.getOwner());
     TestCase.assertEquals("http://toxbanktest1.opentox.org:8080/toxbank/user/U72", updatedInvestigation.getOwner().getResourceURL().toString());
     
