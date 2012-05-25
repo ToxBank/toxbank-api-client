@@ -69,15 +69,15 @@ public class InvestigationClientTest {
     return tbclient.getInvestigationClient();
   }
 
-  // @Test
-  public void donttestList() throws Throwable {
+  @Test
+  public void testList() throws Throwable {
     List<URL> urls = getToxBankClient().listInvestigationUrls(new URL(TEST_SERVER));
     Assert.assertNotNull("Should not have null list of urls", urls);
     Assert.assertNotSame("Should have a list of urls", 0, urls.size());
   }
   
-  //@Test
-  public void donttestGetAll() throws Throwable {
+  @Test
+  public void testGetAll() throws Throwable {
     List<URL> urls = getToxBankClient().listInvestigationUrls(new URL(TEST_SERVER));
     Assert.assertNotNull("Should not have null list of urls", urls);
     Assert.assertNotSame("Should have a list of urls", 0, urls.size());
@@ -92,8 +92,8 @@ public class InvestigationClientTest {
     }    
   }
   
-  // @Test
-  public void donttestPostAndDelete() throws Throwable {
+  @Test
+  public void testPostAndDelete() throws Throwable {
     URL fileUrl = getClass().getClassLoader().getResource("net/toxbank/client/test/BII-I-1.zip");
     RemoteTask task = getToxBankClient().postInvestigation(new File(fileUrl.toURI()), new URL(TEST_SERVER));
     task.waitUntilCompleted(1000);
