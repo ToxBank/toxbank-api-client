@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.toxbank</groupId>
@@ -14,6 +14,29 @@
   <ciManagement>
     <url>http://jenkins.toxbank.net/</url>
   </ciManagement>
+  <inceptionYear>2011</inceptionYear>
+  <developers>
+   <developer>
+    	<id>egonw</id>
+    	<name>Egon Willighagen</name>
+    	<url>https://github.com/egonw</url>
+    </developer>
+    <developer>
+      <id>vedina</id>
+      <name>Nina Jeliazkova</name>
+      <url>https://github.com/vedina</url>
+      <organization>IdeaConsult Ltd.</organization>
+      <organizationUrl>http://www.ideaconsult.net</organizationUrl>
+    </developer>
+
+    <developer>
+    	<id>smiller-leadscope</id>
+    	<name>Scott Miller</name>
+    	<url>https://github.com/smiller-leadscope</url>
+    	<organization>Leadscope, Inc.</organization>
+    	<organizationUrl>http://leadscope.com/</organizationUrl>
+    </developer>
+  </developers>  
   <licenses>
     <license>
       <name>LGPL3</name>
@@ -91,15 +114,7 @@
       <artifactId>httpmime</artifactId>
       <version>4.1.3</version>
     </dependency>
-    <!--
-        <dependency>
-                <groupId>org.toxbank</groupId>
-                <artifactId>toxbank-interface</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
-                <type>jar</type>
-                <scope>compile</scope>
-        </dependency>
-         -->
+
     <dependency>
       <groupId>net.toxbank</groupId>
       <artifactId>toxbank-api-beans</artifactId>
