@@ -8,7 +8,7 @@ digraph G {
 	edge [fontname="arial",fontsize=10,labelfontname="arial",labelfontsize=10];
 	node [fontname="arial",fontsize=10,shape=plaintext];
 	// net.toxbank.client.resource.UserClientTest
-	c13 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./UserClientTest.html">
+	c14 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./UserClientTest.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td> UserClientTest </td></tr>
 		</table></td></tr>
@@ -26,23 +26,24 @@ digraph G {
 			<tr><td align="left"> + testGetProjects() </td></tr>
 			<tr><td align="left"> + testGetOrganisations() </td></tr>
 			<tr><td align="left"> + testListStudies() </td></tr>
-			<tr><td align="left"> + testGetStudies() </td></tr>
 			<tr><td align="left"> + testListAlerts() </td></tr>
 			<tr><td align="left"> + testGetAlerts() </td></tr>
 			<tr><td align="left"> + testCreate() </td></tr>
 			<tr><td align="left"> + testDelete() </td></tr>
 			<tr><td align="left"> + testUpdate() </td></tr>
+			<tr><td align="left"> + testAddProject() </td></tr>
 			<tr><td align="left"> + testGetMyAccount() </td></tr>
 		</table></td></tr>
 		</table>>, fontname="arial", fontcolor="black", fontsize=10.0];
 	// net.toxbank.client.resource.AbstractClientTest<T extends net.toxbank.client.resource.IToxBankResource, C extends net.toxbank.client.resource.AbstractClient<T>>
-	c32 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./AbstractClientTest.html">
+	c35 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./AbstractClientTest.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td><font face="ariali"> AbstractClientTest&lt;T extends IToxBankResource, C extends AbstractClient&lt;T&gt;&gt; </font></td></tr>
 		</table></td></tr>
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td align="left"> + TEST_SERVER : String </td></tr>
 			<tr><td align="left"> # test_server_property : String </td></tr>
+			<tr><td align="left"> # test_search_server_property : String </td></tr>
 			<tr><td align="left"> # aa_server_property : String </td></tr>
 			<tr><td align="left"> # aa_user_property : String </td></tr>
 			<tr><td align="left"> # aa_pass_property : String </td></tr>
@@ -63,6 +64,6 @@ digraph G {
 		</table></td></tr>
 		</table>>, fontname="arial", fontcolor="black", fontsize=10.0];
 	//net.toxbank.client.resource.UserClientTest extends net.toxbank.client.resource.AbstractClientTest<net.toxbank.client.resource.User, net.toxbank.client.resource.UserClient>
-	c32:p -> c13:p [dir=back,arrowtail=empty];
+	c35:p -> c14:p [dir=back,arrowtail=empty];
 }
 

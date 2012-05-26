@@ -8,7 +8,7 @@ digraph G {
 	edge [fontname="arial",fontsize=10,labelfontname="arial",labelfontsize=10];
 	node [fontname="arial",fontsize=10,shape=plaintext];
 	// net.toxbank.client.TBClient
-	c125 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./TBClient.html">
+	c153 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./TBClient.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td> TBClient </td></tr>
 		</table></td></tr>
@@ -26,10 +26,23 @@ digraph G {
 			<tr><td align="left"> + logout() </td></tr>
 			<tr><td align="left"> + close() </td></tr>
 			<tr><td align="left"> + getProtocolClient() : ProtocolClient </td></tr>
+			<tr><td align="left"> + getSearchClient() : SearchClient </td></tr>
 			<tr><td align="left"> + getProjectClient() : ProjectClient </td></tr>
 			<tr><td align="left"> + getUserClient() : UserClient </td></tr>
 			<tr><td align="left"> + getOrganisationClient() : OrganisationClient </td></tr>
-			<tr><td align="left"> + getProtocolVersionClient() : ProtocolVersionClient </td></tr>
+			<tr><td align="left"> + getAlertClient() : AlertClient </td></tr>
+			<tr><td align="left"> + getInvestigationClient() : InvestigationClient </td></tr>
+			<tr><td align="left"> + authorize(uri : URL, httpAction : String) : boolean </td></tr>
+			<tr><td align="left"> + isProtocolUploadAllowed(protocolURI : URL) : boolean </td></tr>
+			<tr><td align="left"> + getUserAttributes() : Hashtable&lt;String, String&gt; </td></tr>
+			<tr><td align="left"> # getOpenSSOPolicyInstance() : OpenSSOPolicy </td></tr>
+			<tr><td align="left"> + deletePolicy(accessRights : AccessRights) : int </td></tr>
+			<tr><td align="left"> + deletePolicy(policyID : String) : int </td></tr>
+			<tr><td align="left"> + deleteAllPolicies(url : URL) </td></tr>
+			<tr><td align="left"> + readPolicy(url : URL) : List&lt;AccessRights&gt; </td></tr>
+			<tr><td align="left"> + updatePolicy(accessRights : AccessRights) </td></tr>
+			<tr><td align="left"> + sendPolicy(accessRights : AccessRights) </td></tr>
+			<tr><td align="left"> + createPolicyXML(accessRights : AccessRights) : List&lt;String&gt; </td></tr>
 		</table></td></tr>
 		</table>>, fontname="arial", fontcolor="black", fontsize=10.0];
 }

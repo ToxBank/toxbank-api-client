@@ -8,13 +8,14 @@ digraph G {
 	edge [fontname="arial",fontsize=10,labelfontname="arial",labelfontsize=10];
 	node [fontname="arial",fontsize=10,shape=plaintext];
 	// net.toxbank.client.task.RemoteTask
-	c78 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./RemoteTask.html">
+	c103 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./RemoteTask.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td> RemoteTask </td></tr>
 		</table></td></tr>
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td align="left"> # url : URL </td></tr>
 			<tr><td align="left"> # status : int </td></tr>
+			<tr><td align="left"> # statusLine : String </td></tr>
 			<tr><td align="left"> # result : URL </td></tr>
 			<tr><td align="left"> # error : Exception </td></tr>
 			<tr><td align="left"> # httpclient : HttpClient </td></tr>
@@ -41,7 +42,7 @@ digraph G {
 		</table></td></tr>
 		</table>>, fontname="arial", fontcolor="black", fontsize=10.0];
 	// net.toxbank.client.task.FibonacciSequence
-	c79 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./FibonacciSequence.html">
+	c104 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./FibonacciSequence.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td> FibonacciSequence </td></tr>
 		</table></td></tr>

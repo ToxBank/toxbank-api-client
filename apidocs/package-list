@@ -1,4 +1,5 @@
 net.toxbank.client
 net.toxbank.client.exceptions
+net.toxbank.client.policy
 net.toxbank.client.resource
 net.toxbank.client.task

@@ -8,7 +8,7 @@ digraph G {
 	edge [fontname="arial",fontsize=10,labelfontname="arial",labelfontsize=10];
 	node [fontname="arial",fontsize=10,shape=plaintext];
 	// net.toxbank.client.resource.UserClientTest
-	c132 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./UserClientTest.html">
+	c156 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./UserClientTest.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td> UserClientTest </td></tr>
 		</table></td></tr>
@@ -26,17 +26,17 @@ digraph G {
 			<tr><td align="left"> + testGetProjects() </td></tr>
 			<tr><td align="left"> + testGetOrganisations() </td></tr>
 			<tr><td align="left"> + testListStudies() </td></tr>
-			<tr><td align="left"> + testGetStudies() </td></tr>
 			<tr><td align="left"> + testListAlerts() </td></tr>
 			<tr><td align="left"> + testGetAlerts() </td></tr>
 			<tr><td align="left"> + testCreate() </td></tr>
 			<tr><td align="left"> + testDelete() </td></tr>
 			<tr><td align="left"> + testUpdate() </td></tr>
+			<tr><td align="left"> + testAddProject() </td></tr>
 			<tr><td align="left"> + testGetMyAccount() </td></tr>
 		</table></td></tr>
 		</table>>, fontname="arial", fontcolor="black", fontsize=10.0];
 	// net.toxbank.client.resource.TemplateClientTest
-	c133 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./TemplateClientTest.html">
+	c157 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./TemplateClientTest.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td> TemplateClientTest </td></tr>
 		</table></td></tr>
@@ -47,14 +47,34 @@ digraph G {
 			<tr><td align="left"> + TemplateClientTest() </td></tr>
 			<tr><td align="left"> # getToxBackClient() : ProtocolClient </td></tr>
 			<tr><td align="left"> + testCreate() </td></tr>
+			<tr><td align="left"> # readFirst(cli : ProtocolClient) : URL </td></tr>
 			<tr><td align="left"> + testUpdate() </td></tr>
 			<tr><td align="left"> + testDelete() </td></tr>
 			<tr><td align="left"> + testRead() </td></tr>
 			<tr><td align="left"> + testList() </td></tr>
 		</table></td></tr>
 		</table>>, fontname="arial", fontcolor="black", fontsize=10.0];
+	// net.toxbank.client.resource.SearchClientTest
+	c158 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./SearchClientTest.html">
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+			<tr><td> SearchClientTest </td></tr>
+		</table></td></tr>
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+			<tr><td align="left"> + TEST_SERVER_SEARCH : String </td></tr>
+		</table></td></tr>
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+			<tr><td align="left"> + SearchClientTest() </td></tr>
+			<tr><td align="left"> # getToxBackClient() : SearchClient </td></tr>
+			<tr><td align="left"> + configTestServerSearch() : String </td></tr>
+			<tr><td align="left"> + testList() </td></tr>
+			<tr><td align="left"> + testRead() </td></tr>
+			<tr><td align="left"> + testCreate() </td></tr>
+			<tr><td align="left"> + testUpdate() </td></tr>
+			<tr><td align="left"> + testDelete() </td></tr>
+		</table></td></tr>
+		</table>>, fontname="arial", fontcolor="black", fontsize=10.0];
 	// net.toxbank.client.resource.ProtocolClientTest
-	c135 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./ProtocolClientTest.html">
+	c159 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./ProtocolClientTest.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td> ProtocolClientTest </td></tr>
 		</table></td></tr>
@@ -68,9 +88,12 @@ digraph G {
 			<tr><td align="left"> + compare(f1 : File, f2 : File) </td></tr>
 			<tr><td align="left"> + testCreate() </td></tr>
 			<tr><td align="left"> + testUploadNewVersion() </td></tr>
+			<tr><td align="left"> + testPublish() </td></tr>
+			<tr><td align="left"> # readFirst(cli : ProtocolClient) : URL </td></tr>
 			<tr><td align="left"> + testRead() </td></tr>
 			<tr><td align="left"> + testListFiles() </td></tr>
 			<tr><td align="left"> + testGetTemplates() </td></tr>
+			<tr><td align="left"> + testListPreviousVersion() </td></tr>
 			<tr><td align="left"> + testListVersions() </td></tr>
 			<tr><td align="left"> + testGetVersions() </td></tr>
 			<tr><td align="left"> + testUploadingAndRetrieving() </td></tr>
@@ -81,10 +104,13 @@ digraph G {
 			<tr><td align="left"> + testRoundtripSubmissionDate() </td></tr>
 			<tr><td align="left"> + testDelete() </td></tr>
 			<tr><td align="left"> + testUpdate() </td></tr>
+			<tr><td align="left"> + testUploadAllowed() </td></tr>
+			<tr><td align="left"> + testAccessRights() </td></tr>
+			<tr><td align="left"> + testReadPolicy() </td></tr>
 		</table></td></tr>
 		</table>>, fontname="arial", fontcolor="black", fontsize=10.0];
 	// net.toxbank.client.resource.ProjectClientTest
-	c136 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./ProjectClientTest.html">
+	c160 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./ProjectClientTest.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td> ProjectClientTest </td></tr>
 		</table></td></tr>
@@ -101,8 +127,26 @@ digraph G {
 			<tr><td align="left"> + testUpdate() </td></tr>
 		</table></td></tr>
 		</table>>, fontname="arial", fontcolor="black", fontsize=10.0];
+	// net.toxbank.client.resource.PolicyTest
+	c161 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./PolicyTest.html">
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+			<tr><td> PolicyTest </td></tr>
+		</table></td></tr>
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+			<tr><td align="left">  </td></tr>
+		</table></td></tr>
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+			<tr><td align="left"> + PolicyTest() </td></tr>
+			<tr><td align="left"> # getToxBackClient() : ProtocolClient </td></tr>
+			<tr><td align="left"> + testRead() </td></tr>
+			<tr><td align="left"> + testDelete() </td></tr>
+			<tr><td align="left"> + testCreate() </td></tr>
+			<tr><td align="left"> + testUpdate() </td></tr>
+			<tr><td align="left"> + testList() </td></tr>
+		</table></td></tr>
+		</table>>, fontname="arial", fontcolor="black", fontsize=10.0];
 	// net.toxbank.client.resource.OrganisationClientTest
-	c137 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./OrganisationClientTest.html">
+	c162 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./OrganisationClientTest.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td> OrganisationClientTest </td></tr>
 		</table></td></tr>
@@ -121,7 +165,7 @@ digraph G {
 		</table></td></tr>
 		</table>>, fontname="arial", fontcolor="black", fontsize=10.0];
 	// net.toxbank.client.resource.DocumentClientTest
-	c138 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./DocumentClientTest.html">
+	c164 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./DocumentClientTest.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td> DocumentClientTest </td></tr>
 		</table></td></tr>
@@ -138,14 +182,33 @@ digraph G {
 			<tr><td align="left"> + testList() </td></tr>
 		</table></td></tr>
 		</table>>, fontname="arial", fontcolor="black", fontsize=10.0];
+	// net.toxbank.client.resource.AlertClientTest
+	c165 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./AlertClientTest.html">
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+			<tr><td> AlertClientTest </td></tr>
+		</table></td></tr>
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+			<tr><td align="left">  </td></tr>
+		</table></td></tr>
+		<tr><td><table border="0" cellspacing="0" cellpadding="1">
+			<tr><td align="left"> + AlertClientTest() </td></tr>
+			<tr><td align="left"> # getToxBackClient() : AlertClient </td></tr>
+			<tr><td align="left"> + testList() </td></tr>
+			<tr><td align="left"> + testRead() </td></tr>
+			<tr><td align="left"> + testCreate() </td></tr>
+			<tr><td align="left"> + testDelete() </td></tr>
+			<tr><td align="left"> + testUpdate() </td></tr>
+		</table></td></tr>
+		</table>>, fontname="arial", fontcolor="black", fontsize=10.0];
 	// net.toxbank.client.resource.AbstractClientTest<T extends net.toxbank.client.resource.IToxBankResource, C extends net.toxbank.client.resource.AbstractClient<T>>
-	c142 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./AbstractClientTest.html">
+	c167 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./AbstractClientTest.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td><font face="ariali"> AbstractClientTest&lt;T extends IToxBankResource, C extends AbstractClient&lt;T&gt;&gt; </font></td></tr>
 		</table></td></tr>
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td align="left"> + TEST_SERVER : String </td></tr>
 			<tr><td align="left"> # test_server_property : String </td></tr>
+			<tr><td align="left"> # test_search_server_property : String </td></tr>
 			<tr><td align="left"> # aa_server_property : String </td></tr>
 			<tr><td align="left"> # aa_user_property : String </td></tr>
 			<tr><td align="left"> # aa_pass_property : String </td></tr>
@@ -166,16 +229,22 @@ digraph G {
 		</table></td></tr>
 		</table>>, fontname="arial", fontcolor="black", fontsize=10.0];
 	//net.toxbank.client.resource.UserClientTest extends net.toxbank.client.resource.AbstractClientTest<net.toxbank.client.resource.User, net.toxbank.client.resource.UserClient>
-	c142:p -> c132:p [dir=back,arrowtail=empty];
+	c167:p -> c156:p [dir=back,arrowtail=empty];
 	//net.toxbank.client.resource.TemplateClientTest extends net.toxbank.client.resource.AbstractClientTest<net.toxbank.client.resource.Protocol, net.toxbank.client.resource.ProtocolClient>
-	c142:p -> c133:p [dir=back,arrowtail=empty];
+	c167:p -> c157:p [dir=back,arrowtail=empty];
+	//net.toxbank.client.resource.SearchClientTest extends net.toxbank.client.resource.AbstractClientTest<net.toxbank.client.resource.Protocol, net.toxbank.client.resource.SearchClient>
+	c167:p -> c158:p [dir=back,arrowtail=empty];
 	//net.toxbank.client.resource.ProtocolClientTest extends net.toxbank.client.resource.AbstractClientTest<net.toxbank.client.resource.Protocol, net.toxbank.client.resource.ProtocolClient>
-	c142:p -> c135:p [dir=back,arrowtail=empty];
+	c167:p -> c159:p [dir=back,arrowtail=empty];
 	//net.toxbank.client.resource.ProjectClientTest extends net.toxbank.client.resource.AbstractClientTest<net.toxbank.client.resource.Project, net.toxbank.client.resource.ProjectClient>
-	c142:p -> c136:p [dir=back,arrowtail=empty];
+	c167:p -> c160:p [dir=back,arrowtail=empty];
+	//net.toxbank.client.resource.PolicyTest extends net.toxbank.client.resource.AbstractClientTest<net.toxbank.client.resource.Protocol, net.toxbank.client.resource.ProtocolClient>
+	c167:p -> c161:p [dir=back,arrowtail=empty];
 	//net.toxbank.client.resource.OrganisationClientTest extends net.toxbank.client.resource.AbstractClientTest<net.toxbank.client.resource.Organisation, net.toxbank.client.resource.OrganisationClient>
-	c142:p -> c137:p [dir=back,arrowtail=empty];
+	c167:p -> c162:p [dir=back,arrowtail=empty];
 	//net.toxbank.client.resource.DocumentClientTest extends net.toxbank.client.resource.AbstractClientTest<net.toxbank.client.resource.Protocol, net.toxbank.client.resource.ProtocolClient>
-	c142:p -> c138:p [dir=back,arrowtail=empty];
+	c167:p -> c164:p [dir=back,arrowtail=empty];
+	//net.toxbank.client.resource.AlertClientTest extends net.toxbank.client.resource.AbstractClientTest<net.toxbank.client.resource.Alert, net.toxbank.client.resource.AlertClient>
+	c167:p -> c165:p [dir=back,arrowtail=empty];
 }
 

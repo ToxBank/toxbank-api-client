@@ -1,18 +1,18 @@
 <map id="G" name="G">
-<area shape="rect" id="node1_0" href="./UserClient.html" title="&lt;TABLE&gt;" alt="" coords="16,593,341,890"/>
-<area shape="rect" id="node2_1" href="./UserClient.webform.html" title="&lt;TABLE&gt;" alt="" coords="1187,147,1299,349"/>
-<area shape="rect" id="node3_2" href="./TemplateClient.html" title="&lt;TABLE&gt;" alt="" coords="1345,195,1637,301"/>
-<area shape="rect" id="node4_3" href="./StudyClient.html" title="&lt;TABLE&gt;" alt="" coords="1682,179,1955,317"/>
-<area shape="rect" id="node5_4" href="./ProtocolVersionClient.html" title="&lt;TABLE&gt;" alt="" coords="387,665,696,818"/>
-<area shape="rect" id="node6_5" href="./ProtocolClient.html" title="&lt;TABLE&gt;" alt="" coords="741,545,1155,938"/>
-<area shape="rect" id="node7_6" href="./ProtocolClient.webform.html" title="&lt;TABLE&gt;" alt="" coords="2001,123,2141,373"/>
-<area shape="rect" id="node8_7" href="./ProjectClient.html" title="&lt;TABLE&gt;" alt="" coords="1201,681,1503,802"/>
-<area shape="rect" id="node9_8" href="./ProjectClient.webform.html" title="&lt;TABLE&gt;" alt="" coords="2186,195,2291,301"/>
-<area shape="rect" id="node10_9" href="./OrganisationClient.html" title="&lt;TABLE&gt;" alt="" coords="1549,681,1883,802"/>
-<area shape="rect" id="node11_10" href="./OrganisationClient.webform.html" title="&lt;TABLE&gt;" alt="" coords="2337,195,2442,301"/>
-<area shape="rect" id="node12_11" href="./DocumentClient.html" title="&lt;TABLE&gt;" alt="" coords="2487,235,2601,261"/>
-<area shape="rect" id="node13_12" href="./AssayClient.html" title="&lt;TABLE&gt;" alt="" coords="2647,235,2737,261"/>
-<area shape="rect" id="node14_13" href="./AlertClient.html" title="&lt;TABLE&gt;" alt="" coords="2783,235,2865,261"/>
-<area shape="rect" id="node15_14" href="./AccountClient.html" title="&lt;TABLE&gt;" alt="" coords="2911,235,3012,261"/>
-<area shape="rect" id="node16_15" href="./AbstractClient.html" title="&lt;TABLE&gt;" alt="" coords="755,11,1141,485"/>
+<area shape="rect" id="node1_0" href="./UserClient.html" title="&lt;TABLE&gt;" alt="" coords="16,833,509,1162"/>
+<area shape="rect" id="node2_1" href="./UserClient.webform.html" title="&lt;TABLE&gt;" alt="" coords="1749,227,1861,429"/>
+<area shape="rect" id="node3_2" href="./TemplateClient.html" title="&lt;TABLE&gt;" alt="" coords="1907,275,2199,381"/>
+<area shape="rect" id="node4_3" href="./SearchClient.html" title="&lt;TABLE&gt;" alt="" coords="555,929,1079,1066"/>
+<area shape="rect" id="node5_4" href="./ProtocolClient.html" title="&lt;TABLE&gt;" alt="" coords="1125,705,1725,1290"/>
+<area shape="rect" id="node6_5" href="./ProtocolClient.webform.html" title="&lt;TABLE&gt;" alt="" coords="2245,203,2385,453"/>
+<area shape="rect" id="node7_6" href="./ProjectClient.html" title="&lt;TABLE&gt;" alt="" coords="2315,1350,2552,1439"/>
+<area shape="rect" id="node8_7" href="./OrganisationClient.html" title="&lt;TABLE&gt;" alt="" coords="2597,1350,2867,1439"/>
+<area shape="rect" id="node9_8" href="./InvestigationClient.html" title="&lt;TABLE&gt;" alt="" coords="2430,171,2885,485"/>
+<area shape="rect" id="node10_9" href="./DocumentClient.html" title="&lt;TABLE&gt;" alt="" coords="2930,315,3043,341"/>
+<area shape="rect" id="node11_10" href="./AlertClient.html" title="&lt;TABLE&gt;" alt="" coords="1771,905,2290,1090"/>
+<area shape="rect" id="node12_11" href="./AlertClient.webform.html" title="&lt;TABLE&gt;" alt="" coords="3089,251,3194,405"/>
+<area shape="rect" id="node13_12" href="./AccountClient.html" title="&lt;TABLE&gt;" alt="" coords="3240,315,3341,341"/>
+<area shape="rect" id="node14_13" href="./AbstractGroupClient.html" title="&lt;TABLE&gt;" alt="" coords="2335,937,2830,1058"/>
+<area shape="rect" id="node15_14" href="./AbstractGroupClient.webform.html" title="&lt;TABLE&gt;" alt="" coords="3387,275,3493,381"/>
+<area shape="rect" id="node16_15" href="./AbstractClient.html" title="&lt;TABLE&gt;" alt="" coords="1147,11,1703,645"/>
 </map>

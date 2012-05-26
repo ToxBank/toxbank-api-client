@@ -8,7 +8,7 @@ digraph G {
 	edge [fontname="arial",fontsize=10,labelfontname="arial",labelfontsize=10];
 	node [fontname="arial",fontsize=10,shape=plaintext];
 	// net.toxbank.client.resource.ProjectClientTest
-	c70 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./ProjectClientTest.html">
+	c76 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" bgcolor="lemonChiffon" href="./ProjectClientTest.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td> ProjectClientTest </td></tr>
 		</table></td></tr>
@@ -26,13 +26,14 @@ digraph G {
 		</table></td></tr>
 		</table>>, fontname="arial", fontcolor="black", fontsize=10.0];
 	// net.toxbank.client.resource.AbstractClientTest<T extends net.toxbank.client.resource.IToxBankResource, C extends net.toxbank.client.resource.AbstractClient<T>>
-	c76 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./AbstractClientTest.html">
+	c83 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="./AbstractClientTest.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td><font face="ariali"> AbstractClientTest&lt;T extends IToxBankResource, C extends AbstractClient&lt;T&gt;&gt; </font></td></tr>
 		</table></td></tr>
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td align="left"> + TEST_SERVER : String </td></tr>
 			<tr><td align="left"> # test_server_property : String </td></tr>
+			<tr><td align="left"> # test_search_server_property : String </td></tr>
 			<tr><td align="left"> # aa_server_property : String </td></tr>
 			<tr><td align="left"> # aa_user_property : String </td></tr>
 			<tr><td align="left"> # aa_pass_property : String </td></tr>
@@ -53,6 +54,6 @@ digraph G {
 		</table></td></tr>
 		</table>>, fontname="arial", fontcolor="black", fontsize=10.0];
 	//net.toxbank.client.resource.ProjectClientTest extends net.toxbank.client.resource.AbstractClientTest<net.toxbank.client.resource.Project, net.toxbank.client.resource.ProjectClient>
-	c76:p -> c70:p [dir=back,arrowtail=empty];
+	c83:p -> c76:p [dir=back,arrowtail=empty];
 }
 
