@@ -30,7 +30,7 @@ digraph G {
 	//net.toxbank.client.policy.TBPolicyParser extends org.opentox.aa.policy.PolicyParser<net.toxbank.client.resource.User, net.toxbank.client.resource.Group, net.toxbank.client.policy.PolicyRule, net.toxbank.client.policy.AccessRights>
 	c194:p -> c175:p [dir=back,arrowtail=empty];
 	// org.opentox.aa.policy.PolicyParser<USER, GROUP, POLICYRULE, POLICY>
-	c194 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p">
+	c194 [label=<<table border="0" cellborder="1" cellspacing="0" cellpadding="2" port="p" href="http://java.sun.com/j2se/1.4.2/docs/api/org/opentox/aa/policy/PolicyParser.html">
 		<tr><td><table border="0" cellspacing="0" cellpadding="1">
 			<tr><td><font face="ariali"> PolicyParser&lt;USER, GROUP, POLICYRULE, POLICY&gt; </font></td></tr>
 		</table></td></tr>

@@ -32,6 +32,7 @@ digraph G {
 			<tr><td align="left"> + querySparqlIntoModel(sparqlQuery : String, rootUrl : URL, model : Model) </td></tr>
 			<tr><td align="left"> + deleteInvestigation(url : URL) </td></tr>
 			<tr><td align="left"> + postInvestigation(zipFile : File, rootUrl : URL) : RemoteTask </td></tr>
+			<tr><td align="left"> + updateInvestigation(zipFile : File, investigation : Investigation) : RemoteTask </td></tr>
 		</table></td></tr>
 		</table>>, fontname="arial", fontcolor="black", fontsize=10.0];
 }

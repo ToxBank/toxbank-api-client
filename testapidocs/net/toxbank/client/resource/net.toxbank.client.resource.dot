@@ -187,6 +187,7 @@ digraph G {
 			<tr><td align="left"> + testList() </td></tr>
 			<tr><td align="left"> + testGetAll() </td></tr>
 			<tr><td align="left"> + testPostAndDelete() </td></tr>
+			<tr><td align="left"> + testPostAndUpdate() </td></tr>
 		</table></td></tr>
 		</table>>, fontname="arial", fontcolor="black", fontsize=10.0];
 	// net.toxbank.client.resource.DocumentClientTest
