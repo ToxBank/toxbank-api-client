@@ -40,11 +40,11 @@
   <licenses>
     <license>
       <name>LGPL3</name>
-      <url>http://www.gnu.org/licenses/lgpl.html</url>
+      <url>http://www.gnu.org/licenses/lgpl.txt</url>
       <distribution>repo</distribution>
-      <comments>LGPL 3</comments>
+      <comments />
     </license>
-  </licenses>
+  </licenses>  
   <distributionManagement>
     <snapshotRepository>
       <id>toxbank-snapshots</id>

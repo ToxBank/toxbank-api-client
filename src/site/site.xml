@@ -16,6 +16,7 @@
       <item name="ToxBank plugin for ISAcreator" href="http://toxbank.github.com/toxbank-isa-plugin"/>
       <item name="ISA2RDF" href="http://toxbank.github.com/isa2rdf"/>
       <item name="OpenTox AA" href="http://vedina.github.com/opentox-aa-cli"/>
+      <item name="ToxBank" href="http://toxbank.net"/>
     </links>
 
     <menu name="Toxbank API client">
