@@ -131,8 +131,11 @@ public class InvestigationClient {
         List<URL> investigationUrls = new ArrayList<URL>();
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
         for (String line = br.readLine(); line != null; line = br.readLine()) {
-          URL url = new URL(line);
-          investigationUrls.add(url);
+          line = line.trim();
+          if (line.length() > 0) {
+            URL url = new URL(line);
+            investigationUrls.add(url);
+          }
         }
         return investigationUrls;
       }
