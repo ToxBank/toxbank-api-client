@@ -109,7 +109,7 @@ public class UserClientTest extends AbstractClientTest<User, UserClient>  {
 
         @Test
         public void testListStudies() throws Exception {
-                User user = new User(new URL(TEST_SERVER_USER + "user/ab7f235ccd"));
+                User user = new User(new URL(TEST_SERVER_USER + "/U113"));
                 UserClient cli = getToxBackClient();
                 List<URL> studies = cli.listStudies(user);
                 Assert.assertNotNull(studies);
@@ -117,7 +117,7 @@ public class UserClientTest extends AbstractClientTest<User, UserClient>  {
         }
         @Test
         public void testListAlerts() throws Exception {
-                User user = new User(new URL(TEST_SERVER_USER + "user/ab7f235ccd"));
+                User user = new User(new URL(TEST_SERVER_USER + "/U113"));
                 List<URL> alerts = getToxBackClient().listAlerts(user);
                 Assert.assertNotNull(alerts);
                 Assert.assertNotSame(0, alerts.size());
@@ -125,7 +125,7 @@ public class UserClientTest extends AbstractClientTest<User, UserClient>  {
 
         @Test
         public void testGetAlerts() throws Exception {
-                User user = new User(new URL(TEST_SERVER_USER + "user/ab7f235ccd"));
+                User user = new User(new URL(TEST_SERVER_USER + "/U113"));
                 List<Alert> alerts = getToxBackClient().getAlerts(user);
                 Assert.assertNotNull(alerts);
                 Assert.assertNotSame(0, alerts.size());
