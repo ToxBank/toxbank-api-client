@@ -36,7 +36,8 @@ public class SearchClientTest extends AbstractClientTest<Protocol, SearchClient>
 		Assert.assertNotNull(protocols);
 		Assert.assertNotSame(0, protocols.size());
 		for (URL url : protocols) {
-			Assert.assertTrue(url.toExternalForm().startsWith("http://toxbanktest1.opentox.org:8080/toxbank/protocol/SEURAT-Protocol-"));
+			Assert.assertTrue(url.toExternalForm().startsWith("http://toxbanktest1.opentox.org") ||
+			    url.toExternalForm().startsWith("https://toxbanktest1.opentox.org"));
 		}
 	}
 	
