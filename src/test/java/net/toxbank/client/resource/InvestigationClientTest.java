@@ -2,19 +2,28 @@ package net.toxbank.client.resource;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
 import junit.framework.TestCase;
 import net.toxbank.client.TBClient;
+import net.toxbank.client.policy.AccessRights;
+import net.toxbank.client.policy.GroupPolicyRule;
+import net.toxbank.client.policy.PolicyRule;
+import net.toxbank.client.policy.UserPolicyRule;
 import net.toxbank.client.task.RemoteTask;
 
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 public class InvestigationClientTest {
   public static final String BII_TEST_CASE_ACCESSION_ID = "BII-I-1-test";
   
   //should be configured in the .m2/settings.xml 
+  protected static final String test_user_server_property = "toxbank.test.server"; 
   protected static final String test_server_property = "toxbank.investigation.test.server";
   protected static final String aa_server_property = "toxbank.aa.opensso";
   protected static final String aa_user_property = "toxbank.aa.user";
@@ -22,15 +31,20 @@ public class InvestigationClientTest {
   protected static Properties properties;
   
   protected static String TEST_SERVER;
+  protected static String INVESTIGATION_ROOT;
+  protected static String USER_SERVICE_ROOT;
   
   public final static TBClient tbclient = new TBClient();
+  
+  private static InvestigationClient investigationClient;
+  
   @BeforeClass
   public static void setup() throws Exception {
-    TEST_SERVER = config();
+    config();
     
     String username = properties.getProperty(aa_user_property);
     String pass = properties.getProperty(aa_pass_property);
-    //ensure maven profile properties are configured and set correctly
+    //ensure maven profile properties are configured and set corgrectly
     Assert.assertNotNull(username);
     Assert.assertNotNull(pass);
     if (String.format("${%s}",aa_user_property).equals(username) ||
@@ -38,47 +52,72 @@ public class InvestigationClientTest {
       throw new Exception(String.format("The following properties are not found in the acive Maven profile ${%s} ${%s}",
           aa_user_property,aa_pass_property));
     boolean ok = tbclient.login(username,pass);
+    // FileWriter fw = new FileWriter(new File("InvestigationClientTest-queries.txt"));
+    investigationClient = tbclient.getInvestigationClient();
+    // investigationClient.setQueryDebuggingWriter(fw);
     Assert.assertTrue(ok);
   }
   
 
   @AfterClass
   public static void teardown() throws Exception {
+    try {
+      if (investigationClient.getQueryDebuggingWriter() != null) {
+        investigationClient.getQueryDebuggingWriter().close();
+      }
+    } catch (Exception e) { }
     tbclient.logout();
     tbclient.close();
   }
   
-  private static String config()  {
+  private static String getPropertyUrl(Properties props, String prop) throws Exception {
+    String value = properties.getProperty(prop);
+    if (value == null) {
+      throw new Exception("No " + prop + " was specified");
+    }
+    if (!value.startsWith("http")) {
+      throw new Exception("Invalid " + prop + ": " + value);
+    }
+    if (value.endsWith("/")) {
+      value = value.substring(0, value.length()-1);
+    }
+    return value;
+  }
+  
+  private static void config()  {
     try {
       properties = new Properties();
       properties.load(AbstractClientTest.class.getClassLoader().getResourceAsStream("net/toxbank/client/test/client.properties"));
-      String testServer = properties.getProperty(test_server_property);
-      if (testServer == null) {
-        throw new Exception("No " + test_server_property + " was specified");
-      }
-      if (!testServer.startsWith("http")) {
-        throw new Exception("Invalid test server url: " + testServer);
-      }
-      return testServer;
+      TEST_SERVER = getPropertyUrl(properties, test_server_property);
+      INVESTIGATION_ROOT = TEST_SERVER + "/investigation";
+      USER_SERVICE_ROOT = getPropertyUrl(properties, test_user_server_property) + "/user";
     } catch (Exception x) {
       throw new RuntimeException(x);
     }
   }
 
+  private String getUserUrl() throws Exception {
+    User user = tbclient.getLoggedInUser(USER_SERVICE_ROOT);
+    if (user == null) {
+      throw new RuntimeException("Logged in user could not be found in user service");
+    }
+    return user.getResourceURL().toString();
+  }
+  
   protected InvestigationClient getToxBankClient() {
-    return tbclient.getInvestigationClient();
+    return investigationClient;
   }
 
   @Test
   public void testList() throws Throwable {
-    List<URL> urls = getToxBankClient().listInvestigationUrls(new URL(TEST_SERVER));
+    List<URL> urls = getToxBankClient().listInvestigationUrls(new URL(INVESTIGATION_ROOT));
     Assert.assertNotNull("Should not have null list of urls", urls);
     Assert.assertNotSame("Should have a list of urls", 0, urls.size());
   }
   
   @Test
   public void testGetAll() throws Throwable {
-    List<URL> urls = getToxBankClient().listInvestigationUrls(new URL(TEST_SERVER));
+    List<URL> urls = getToxBankClient().listInvestigationUrls(new URL(INVESTIGATION_ROOT));
     Assert.assertNotNull("Should not have null list of urls", urls);
     Assert.assertNotSame("Should have a list of urls", 0, urls.size());
     
@@ -98,20 +137,21 @@ public class InvestigationClientTest {
   @Test
   public void testPostAndDelete() throws Throwable {
     URL fileUrl = getClass().getClassLoader().getResource("net/toxbank/client/test/BII-I-1.zip");
-    RemoteTask task = getToxBankClient().postInvestigation(new File(fileUrl.toURI()), new URL(TEST_SERVER));
+    RemoteTask task = getToxBankClient().postInvestigation(new File(fileUrl.toURI()), new URL(INVESTIGATION_ROOT), new ArrayList<PolicyRule>(0));
     task.waitUntilCompleted(1000);
     URL postedURL = task.getResult();
     System.out.println("Posted new investigation: " + postedURL);
     Investigation investigation = getToxBankClient().getInvestigation(postedURL);
     verifyBiiInvestigation(investigation, false);
-    
+    String userUrl = getUserUrl();
+        
     TestCase.assertNotNull("Should have owner", investigation.getOwner());
-    TestCase.assertEquals("http://toxbanktest1.opentox.org:8080/toxbank/user/U115", investigation.getOwner().getResourceURL().toString());
+    TestCase.assertEquals(userUrl, investigation.getOwner().getResourceURL().toString());
     
     User owner = new User();
-    URL ownerUrl = new URL("http://toxbanktest1.opentox.org:8080/toxbank/user/U115");
+    URL ownerUrl = new URL(userUrl);
     owner.setResourceURL(ownerUrl);
-    List<URL> userUrls = getToxBankClient().listInvestigationUrls(new URL(TEST_SERVER), owner);
+    List<URL> userUrls = getToxBankClient().listInvestigationUrls(new URL(INVESTIGATION_ROOT), owner);
     Assert.assertTrue("The loaded investigation should be included in the owner's list",
         userUrls.contains(new URL(postedURL.toString() + "/")));
     
@@ -119,11 +159,66 @@ public class InvestigationClientTest {
     getToxBankClient().deleteInvestigation(investigation.getResourceURL());
     System.out.println("Deleted investigation: " + investigation.getResourceURL());
   }
-  
+
+  // @Test
+  private void dontTestPostAndDeleteWithPermissions() throws Throwable {
+    URL fileUrl = getClass().getClassLoader().getResource("net/toxbank/client/test/BII-I-1.zip");    
+    List<PolicyRule> accessRights = createPolicyRules();        
+    RemoteTask task = getToxBankClient().postInvestigation(new File(fileUrl.toURI()), new URL(INVESTIGATION_ROOT), accessRights);
+    task.waitUntilCompleted(1000);
+    URL postedURL = task.getResult();
+    
+    System.out.println("Posted new investigation: " + postedURL);
+    
+    Investigation investigation = getToxBankClient().getInvestigation(postedURL);
+    verifyBiiInvestigation(investigation, false);
+    verifyPolicyRules(investigation);
+    String userUrl = getUserUrl();
+        
+    TestCase.assertNotNull("Should have owner", investigation.getOwner());
+    TestCase.assertEquals(userUrl, investigation.getOwner().getResourceURL().toString());
+    
+    User owner = new User();
+    URL ownerUrl = new URL(userUrl);
+    owner.setResourceURL(ownerUrl);
+    List<URL> userUrls = getToxBankClient().listInvestigationUrls(new URL(INVESTIGATION_ROOT), owner);
+    Assert.assertTrue("The loaded investigation should be included in the owner's list",
+        userUrls.contains(new URL(postedURL.toString() + "/")));
+    
+    System.out.println("Deleting investigation: " + investigation.getResourceURL());
+    getToxBankClient().deleteInvestigation(investigation.getResourceURL());
+    System.out.println("Deleted investigation: " + investigation.getResourceURL());
+  }
+
+  @Test
+  public void testPostPublishAndDelete() throws Throwable {
+    URL fileUrl = getClass().getClassLoader().getResource("net/toxbank/client/test/BII-I-1.zip");
+    RemoteTask task = getToxBankClient().postInvestigation(new File(fileUrl.toURI()), new URL(INVESTIGATION_ROOT), new ArrayList<PolicyRule>(0));
+    task.waitUntilCompleted(1000);
+    URL postedURL = task.getResult();
+    System.out.println("Posted new investigation: " + postedURL);
+    Investigation investigation = getToxBankClient().getInvestigation(postedURL);
+    verifyBiiInvestigation(investigation, false);
+    
+    TestCase.assertNotNull("Should have owner", investigation.getOwner());
+    TestCase.assertEquals(getUserUrl(), investigation.getOwner().getResourceURL().toString());
+    TestCase.assertNotNull("Should have a published status set", investigation.isPublished());
+    TestCase.assertEquals("Should not be published", Boolean.FALSE, investigation.isPublished());
+
+    task = getToxBankClient().publishInvestigation(investigation, true);
+    task.waitUntilCompleted(1000);
+    Investigation updatedInvestigation = getToxBankClient().getInvestigation(postedURL);
+    TestCase.assertEquals(Boolean.TRUE, updatedInvestigation.isPublished());
+    
+    System.out.println("Deleting investigation: " + investigation.getResourceURL());
+    getToxBankClient().deleteInvestigation(investigation.getResourceURL());
+    System.out.println("Deleted investigation: " + investigation.getResourceURL());
+  }
+
   @Test
   public void testPostAndUpdate() throws Throwable {
     URL fileUrl = getClass().getClassLoader().getResource("net/toxbank/client/test/BII-I-1.zip");
-    RemoteTask task = getToxBankClient().postInvestigation(new File(fileUrl.toURI()), new URL(TEST_SERVER));
+    RemoteTask task = getToxBankClient().postInvestigation(new File(fileUrl.toURI()), new URL(INVESTIGATION_ROOT), new ArrayList<PolicyRule>(0));
     task.waitUntilCompleted(1000);
     URL postedURL = task.getResult();
     System.out.println("Posted new investigation: " + postedURL);
@@ -131,7 +226,7 @@ public class InvestigationClientTest {
     verifyBiiInvestigation(investigation, false);
     
     URL newFileUrl = getClass().getClassLoader().getResource("net/toxbank/client/test/BII-I-1-smiller.zip");
-    RemoteTask newTask = getToxBankClient().updateInvestigation(new File(newFileUrl.toURI()), investigation);
+    RemoteTask newTask = getToxBankClient().updateInvestigation(new File(newFileUrl.toURI()), investigation, new ArrayList<PolicyRule>(0));
     newTask.waitUntilCompleted(1000);
     URL postedUpdateURL = task.getResult();
     Assert.assertEquals("Should have same update url as original posted url", postedURL, postedUpdateURL);
@@ -146,6 +241,58 @@ public class InvestigationClientTest {
     System.out.println("Deleting investigation: " + investigation.getResourceURL());
     getToxBankClient().deleteInvestigation(investigation.getResourceURL());
     System.out.println("Deleted investigation: " + investigation.getResourceURL());
+  }
+  
+  private static List<PolicyRule> createPolicyRules() throws Exception {
+    List<PolicyRule> policyRules = new ArrayList<PolicyRule>();
+    
+    User otherUser = new User(new URL("http://toxbanktest1.opentox.org:8080/toxbank/user/U115"));
+    UserPolicyRule otherUserRule = new UserPolicyRule(otherUser, true, false, false, false);
+    policyRules.add(otherUserRule);
+
+    Project otherProject = new Project(new URL("http://toxbanktest1.opentox.org:8080/toxbank/project/G2"));
+    GroupPolicyRule otherProjectRule = new GroupPolicyRule(otherProject, true, false, false, false);
+    policyRules.add(otherProjectRule);
+
+    return policyRules;
+  }
+    
+  private static void verifyPolicyRules(Investigation i) throws Throwable {
+    List<AccessRights> rights = tbclient.readPolicy(i.getResourceURL());
+    List<PolicyRule> rules = new ArrayList<PolicyRule>();
+    for (AccessRights right : rights) {
+      rules.addAll(right.getRules());
+    }
+    
+    List<PolicyRule> testRules = createPolicyRules();
+    PolicyRule ownerRule = new PolicyRule(tbclient.getLoggedInUser(USER_SERVICE_ROOT));
+    testRules.add(ownerRule);
+    for (PolicyRule testRule : testRules) {
+      PolicyRule matchingRule = null;
+      for (PolicyRule rule : rules) {
+        IToxBankResource subject = rule.getSubject();
+        TestCase.assertNotNull("PolicyRule has null subject");
+        TestCase.assertNotNull("PolicyRule subject is null", subject.getResourceURL());
+        IToxBankResource testSubject = testRule.getSubject();
+        if (subject.getResourceURL().equals(testSubject.getResourceURL())) {
+          TestCase.assertEquals("Should have same get", testRule.allowsGET(), rule.allowsGET());
+          TestCase.assertEquals("Should have same put", testRule.allowsPUT(), rule.allowsPUT());
+          TestCase.assertEquals("Should have same post", testRule.allowsPUT(), rule.allowsPOST());
+          TestCase.assertEquals("Should have same delete", testRule.allowsPUT(), rule.allowsDELETE());
+          matchingRule = rule;
+        }
+      }
+      if (matchingRule == null) {
+        TestCase.fail("Did not have a rule for: " + testRule.getSubject().getResourceURL());
+      }
+      else {
+        rules.remove(matchingRule);
+      }
+    }
+    
+    if (rules.size() > 0) {
+      TestCase.fail("Had extraneous rules: " + rules.size() + "\n  " + rules.get(0).getSubject().getResourceURL());
+    }
   }
   
   private static void verifyBiiInvestigation(Investigation i, boolean allowMissingKeywords) throws Throwable {

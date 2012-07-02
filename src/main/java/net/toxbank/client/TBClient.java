@@ -2,6 +2,7 @@ package net.toxbank.client;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -329,4 +330,29 @@ public class TBClient {
 		}
 		return null;		
 	}
+	
+  /**
+   * Attempts to get a user-service user for the currently logged in user
+   * @param userServerURL the root url of the user service
+   * @return the user that is logged in - null if not logged in or if the user does not exist in the service
+   */
+  public User getLoggedInUser(String userServerURL) throws Exception {
+    if (ssoToken == null) {
+      return null;
+    }	  
+    Hashtable<String, String> results = new Hashtable<String, String>();
+    if (!ssoToken.getAttributes(new String[] {"uid"},results)) {
+      return null;
+    }
+    
+    String username = results.get("uid");
+    URL userUrl = new URL(userServerURL + "?username=" + URLEncoder.encode(username, "UTF-8"));
+    List<User> userResult = getUserClient().get(userUrl);
+    if (userResult.size() == 0) {
+      return null;
+    }
+    else {
+      return userResult.get(0);
+    }
+  }
 }

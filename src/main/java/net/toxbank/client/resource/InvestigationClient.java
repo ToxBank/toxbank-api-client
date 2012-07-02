@@ -9,6 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.toxbank.client.io.rdf.*;
+import net.toxbank.client.policy.PolicyRule;
 import net.toxbank.client.task.RemoteTask;
 
 import org.apache.http.*;
@@ -17,6 +18,7 @@ import org.apache.http.client.methods.*;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
 import org.opentox.rest.RestException;
 
 import com.hp.hpl.jena.rdf.model.*;
@@ -31,6 +33,9 @@ public class InvestigationClient {
   protected static final String mime_rdfxml = "application/rdf+xml";  
   protected static final String query_param = "query";
   protected static final String file_param = "file";
+  protected static final String published_param = "published";
+  
+  private Writer queryDebuggingWriter;
   
   protected HttpClient httpClient;
   
@@ -54,6 +59,14 @@ public class InvestigationClient {
     return new InvestigationIO();
   }
  
+  public void setQueryDebuggingWriter(Writer queryDebuggingWriter) {
+    this.queryDebuggingWriter = queryDebuggingWriter;
+  }
+  
+  public Writer getQueryDebuggingWriter() {
+    return queryDebuggingWriter;
+  }
+  
   /**
    * Lists the uris of investigations in the given investigation service
    * @param rootUrl the root url of the investigation service
@@ -64,8 +77,6 @@ public class InvestigationClient {
     String sparqlQuery = 
         "PREFIX tb:<http://onto.toxbank.net/api/>\n"+
         "PREFIX isa:<http://onto.toxbank.net/isa/>\n" +
-        "PREFIX dcterms:<http://purl.org/dc/terms/>\n" + 
-        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" + 
         "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
         "CONSTRUCT {?investigation rdf:type isa:Investigation.}\n" +
         "where {\n" +
@@ -90,13 +101,9 @@ public class InvestigationClient {
     String sparqlQuery = String.format(
         "PREFIX tb:<http://onto.toxbank.net/api/>\n"+
             "PREFIX isa:<http://onto.toxbank.net/isa/>\n" +
-            "PREFIX dcterms:<http://purl.org/dc/terms/>\n" + 
-            "PREFIX owl: <http://www.w3.org/2002/07/owl#>\n" +
-            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" + 
             "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
-            "CONSTRUCT {?investigation_url rdf:type isa:Investigation.}\n" +
+            "CONSTRUCT {?investigation rdf:type isa:Investigation.}\n" +
             "where {\n" +
-            " ?investigation_url owl:sameAs ?investigation .\n"+
             " ?investigation rdf:type isa:Investigation .\n" +
             " ?investigation tb:hasOwner <%s> .\n" +
             "}",
@@ -153,7 +160,7 @@ public class InvestigationClient {
     }
   }
   
-  private static Pattern investigationUrlPattern = Pattern.compile("(.*)/([0-9]+)");
+  private static Pattern investigationUrlPattern = Pattern.compile("(.*)/([0-9\\-a-f]+)");
   
   /**
    * Creates an investigation meta data object associated with the given url
@@ -176,12 +183,11 @@ public class InvestigationClient {
         "PREFIX : <%s/>\n" +
         "PREFIX owl: <http://www.w3.org/2002/07/owl#>\n" +
         "CONSTRUCT {\n" +
-        "  ?investigation ?investigation_pred ?investigation_obj .\n" +
+        "  : ?investigation_pred ?investigation_obj .\n" +
         "}\n" +
         "FROM <%s>\n" +
         "WHERE {\n" +
-        "  : owl:sameAs ?investigation .\n"+
-        "  ?investigation ?investigation_pred ?investigation_obj . \n"+
+        "  : ?investigation_pred ?investigation_obj . \n"+
         "}\n",
         investigationUrl.toString(),
         investigationUrl.toString());
@@ -191,7 +197,6 @@ public class InvestigationClient {
         "PREFIX : <%s/>\n" +  
         "PREFIX tb: <%s>\n" +
         "PREFIX isa: <%s>\n" +
-        "PREFIX owl: <http://www.w3.org/2002/07/owl#>\n" +
         "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
         "CONSTRUCT {\n" +
         "  ?study isa:hasProtocol ?protocol .\n" +
@@ -199,8 +204,7 @@ public class InvestigationClient {
         "}\n" +
         "FROM <%s>\n" +
         "WHERE {\n" +
-        "  : owl:sameAs ?investigation .\n"+
-        "  ?investigation isa:hasStudy ?study . \n"+
+        "  : isa:hasStudy ?study . \n"+
         "  ?study isa:hasProtocol ?protocol . \n"+
         "  ?protocol rdf:type tb:Protocol . \n"+
         "}\n",
@@ -255,6 +259,12 @@ public class InvestigationClient {
     HttpGet httpGet = new HttpGet(queryUrl);
     httpGet.addHeader("Accept", mime_rdfxml);
     httpGet.addHeader("Accept-Charset", "utf-8");
+
+    if (queryDebuggingWriter != null) {
+      queryDebuggingWriter.write("--------------------\n");
+      queryDebuggingWriter.write(sparqlQuery);
+      queryDebuggingWriter.write("\n---\n");
+    }
     
     InputStream in = null;
     try {
@@ -262,7 +272,18 @@ public class InvestigationClient {
       HttpEntity entity  = response.getEntity();
       in = entity.getContent();
       if (response.getStatusLine().getStatusCode()== HttpStatus.SC_OK) {
-        model.read(in, rootUrl.toString(), "RDF/XML");
+        StringBuilder sb = new StringBuilder();
+        BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+        for (String line = br.readLine(); line != null; line = br.readLine()) {
+          sb.append(line);
+          sb.append("\n");
+        }
+        String result = sb.toString();
+        if (queryDebuggingWriter != null) {
+          queryDebuggingWriter.write(result);
+          queryDebuggingWriter.write("\n---------------------\n");
+        }
+        model.read(new StringReader(result), rootUrl.toString(), "RDF/XML");
       }
       else {
         throw new RestException(response.getStatusLine().getStatusCode(),response.getStatusLine().getReasonPhrase());
@@ -312,26 +333,46 @@ public class InvestigationClient {
    * @param rootUrl the root url of the service
    * @return the remote task created
    */
-  public RemoteTask postInvestigation(File zipFile, URL rootUrl) throws Exception {
+  public RemoteTask postInvestigation(File zipFile, URL rootUrl, List<PolicyRule> accessRights) throws Exception {
     MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, null, utf8);
     entity.addPart(file_param, new FileBody(zipFile, zipFile.getName(), "application/zip", null));
+    AbstractClient.addPolicyRules(entity, accessRights);
     RemoteTask task = new RemoteTask(getHttpClient(), rootUrl, "text/uri-list", entity, HttpPost.METHOD_NAME);
     return task;
   }
   
+  /**
+   * Sets the published status for an investigation
+   * @param investigation the investigation to update - only url is used
+   * @param published true iff the investigation should be published
+   */
+  public RemoteTask publishInvestigation(Investigation investigation, boolean published) throws Exception {
+    if (investigation.getResourceURL() == null) {
+      throw new IllegalArgumentException("investigation has not been assigned a resource url");
+    }
+    MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, null, utf8);
+    entity.addPart(published_param, new StringBody(String.valueOf(published)));
+    RemoteTask task = new RemoteTask(getHttpClient(), investigation.getResourceURL(), "text/uri-list", entity, HttpPut.METHOD_NAME);
+    return task;
+  }
+
   /**
    * Updates an investigation at the given url
    * @param zipFile the new investigation zip file
    * @param investigation the investigation object to update
    * @return the remote task created
    */
-  public RemoteTask updateInvestigation(File zipFile, Investigation investigation) throws Exception {
+  public RemoteTask updateInvestigation(File zipFile, Investigation investigation, List<PolicyRule> accessRights) throws Exception {
     if (investigation.getResourceURL() == null) {
       throw new IllegalArgumentException("investigation has not been assigned a resource url");
     }
     MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, null, utf8);
     entity.addPart(file_param, new FileBody(zipFile, zipFile.getName(), "application/zip", null));
-    RemoteTask task = new RemoteTask(getHttpClient(), investigation.getResourceURL(), "text/uri-list", entity, HttpPost.METHOD_NAME);
+    AbstractClient.addPolicyRules(entity, accessRights);
+    if (investigation.isPublished() != null) {
+      entity.addPart(published_param, new StringBody(investigation.isPublished().toString()));
+    }
+    RemoteTask task = new RemoteTask(getHttpClient(), investigation.getResourceURL(), "text/uri-list", entity, HttpPut.METHOD_NAME);
     return task;
   }
 }
