@@ -118,7 +118,7 @@
     <dependency>
       <groupId>net.toxbank</groupId>
       <artifactId>toxbank-api-beans</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
+      <version>0.0.1</version>
       <type>jar</type>
       <scope>compile</scope>
     </dependency>
