@@ -66,51 +66,17 @@ public class InvestigationClient {
   public Writer getQueryDebuggingWriter() {
     return queryDebuggingWriter;
   }
-  
-  /**
-   * Lists the uris of investigations in the given investigation service
-   * @param rootUrl the root url of the investigation service
-   * @return the list of available investigation urls
-   * @throws Exception
-   */
-  public List<String> listInvestigationFullUrls(URL rootUrl) throws Exception {
-    String sparqlQuery = 
-        "PREFIX tb:<http://onto.toxbank.net/api/>\n"+
-        "PREFIX isa:<http://onto.toxbank.net/isa/>\n" +
-        "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
-        "CONSTRUCT {?investigation rdf:type isa:Investigation.}\n" +
-        "where {\n" +
-        " ?investigation rdf:type isa:Investigation.\n" +
-        "}";
     
-    List<String> uris = new ArrayList<String>();
-    Model model = querySparql(sparqlQuery, rootUrl);
-    for (ResIterator iter = model.listResourcesWithProperty(RDF.type, TOXBANK_ISA.INVESTIGATION); iter.hasNext(); ) {
-      Resource res = iter.next();
-      uris.add(res.getURI());
-    }
-    return uris;
-  }
-  
   /**
    * Lists the uris of investigations loaded (owned) by the given user
    * @param user the owner of the investigations
    * @return the list of available investigation urls
    */
   public List<URL> listInvestigationUrls(URL rootUrl, User user) throws Exception {
-    String sparqlQuery = String.format(
-        "PREFIX tb:<http://onto.toxbank.net/api/>\n"+
-            "PREFIX isa:<http://onto.toxbank.net/isa/>\n" +
-            "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
-            "CONSTRUCT {?investigation rdf:type isa:Investigation.}\n" +
-            "where {\n" +
-            " ?investigation rdf:type isa:Investigation .\n" +
-            " ?investigation tb:hasOwner <%s> .\n" +
-            "}",
-        user.getResourceURL().toString());
-    
     List<URL> urls = new ArrayList<URL>();
-    Model model = querySparql(sparqlQuery, rootUrl);
+    Map<String, String> additionalHeaders = new HashMap<String, String>();
+    additionalHeaders.put("user", user.getResourceURL().toString());
+    Model model = requestToModel(rootUrl);
     for (ResIterator iter = model.listResourcesWithProperty(RDF.type, TOXBANK_ISA.INVESTIGATION); iter.hasNext(); ) {
       Resource res = iter.next();
       urls.add(new URL(res.getURI()));
@@ -174,45 +140,13 @@ public class InvestigationClient {
     if (!matcher.matches()) {
       throw new RuntimeException("Invalid investigation url: " + urlString);
     }
+    String investigationId = matcher.group(2);
     String rootUrl = matcher.group(1);
-    String seuratId = "SEURAT-Investigation-" + matcher.group(2);
+    String seuratId = "SEURAT-Investigation-" + investigationId;
     
     Model model = ModelFactory.createDefaultModel();
-    
-    String investigationQuery = String.format(
-        "PREFIX : <%s/>\n" +
-        "PREFIX owl: <http://www.w3.org/2002/07/owl#>\n" +
-        "CONSTRUCT {\n" +
-        "  : ?investigation_pred ?investigation_obj .\n" +
-        "}\n" +
-        "FROM <%s>\n" +
-        "WHERE {\n" +
-        "  : ?investigation_pred ?investigation_obj . \n"+
-        "}\n",
-        investigationUrl.toString(),
-        investigationUrl.toString());
-    querySparqlIntoModel(investigationQuery, new URL(rootUrl), model);
-    
-    String protocolQuery = String.format(
-        "PREFIX : <%s/>\n" +  
-        "PREFIX tb: <%s>\n" +
-        "PREFIX isa: <%s>\n" +
-        "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
-        "CONSTRUCT {\n" +
-        "  ?study isa:hasProtocol ?protocol .\n" +
-        "  ?protocol rdf:type tb:Protocol .\n" + 
-        "}\n" +
-        "FROM <%s>\n" +
-        "WHERE {\n" +
-        "  : isa:hasStudy ?study . \n"+
-        "  ?study isa:hasProtocol ?protocol . \n"+
-        "  ?protocol rdf:type tb:Protocol . \n"+
-        "}\n",
-        investigationUrl.toString(),
-        TOXBANK.URI,
-        TOXBANK_ISA.URI,
-        investigationUrl.toString());
-    querySparqlIntoModel(protocolQuery, new URL(rootUrl), model);        
+    requestIntoModel(new URL(rootUrl + "/" + investigationId + "/metadata"), model);
+    requestIntoModel(new URL(rootUrl + "/" + investigationId + "/protocol"), model);        
             
     List<Investigation> investigations = getIOClass().fromJena(model);
     if (investigations.size() == 0) {
@@ -295,7 +229,91 @@ public class InvestigationClient {
       }
     }    
   }
+
+  /**
+   * Runs the given request. The results are then loaded into
+   * a newly created model and returned
+   * @param url the url where the query should be performed
+   * @return a new model populated with the results of the query
+   * @throws Exception
+   */
+  public Model requestToModel(URL url) throws Exception {
+    Model model = ModelFactory.createDefaultModel();
+    requestIntoModel(url, model);
+    return model;
+  }
   
+  /**
+   * Runs the given request. The results are then loaded into
+   * a newly created model and returned
+   * @param url the url where the query should be performed
+   * @param additionalHeaders additional headers that should be included in the request
+   * @return a new model populated with the results of the query
+   * @throws Exception
+   */
+  public Model requestToModel(URL url, Map<String, String> additionalHeaders) throws Exception {
+    Model model = ModelFactory.createDefaultModel();
+    requestIntoModel(url, model, additionalHeaders);
+    return model;
+  }
+  
+  /**
+   * Runs the given request, and the results are then loaded into
+   * the provided model
+   * @param url the url which will provide the rdf data
+   * @param model the model to populated with the results of the query
+   * @throws Exception
+   */
+  public void requestIntoModel(URL url, Model model) throws Exception {
+    requestIntoModel(url, model, new HashMap<String, String>(0));
+  }
+  
+  /**
+   * Runs the given request, and the results are then loaded into
+   * the provided model
+   * @param url the url which will provide the rdf data
+   * @param model the model to populated with the results of the query
+   * @param additionalHeaders additional headers that should be included in the request
+   * @throws Exception
+   */
+  public void requestIntoModel(URL url, Model model, Map<String, String> additionalHeaders) throws Exception {    
+    HttpGet httpGet = new HttpGet(url.toString());
+    httpGet.addHeader("Accept", mime_rdfxml);
+    httpGet.addHeader("Accept-Charset", "utf-8");
+    for (String header : additionalHeaders.keySet()) {
+      httpGet.addHeader(header, additionalHeaders.get(header));
+    }
+
+    InputStream in = null;
+    try {
+      HttpResponse response = getHttpClient().execute(httpGet);
+      HttpEntity entity  = response.getEntity();
+      in = entity.getContent();
+      if (response.getStatusLine().getStatusCode()== HttpStatus.SC_OK) {
+        StringBuilder sb = new StringBuilder();
+        BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+        for (String line = br.readLine(); line != null; line = br.readLine()) {
+          sb.append(line);
+          sb.append("\n");
+        }
+        String result = sb.toString();
+        if (queryDebuggingWriter != null) {
+          queryDebuggingWriter.write(result);
+          queryDebuggingWriter.write("\n---------------------\n");
+        }
+        model.read(new StringReader(result), url.toString(), "RDF/XML");
+      }
+      else {
+        throw new RestException(response.getStatusLine().getStatusCode(),response.getStatusLine().getReasonPhrase());
+      }
+    }
+    finally {
+      if (in != null) {
+        try { in.close(); } catch (Exception e) { }
+      }
+    }    
+  }
+
   /**
    * Deletes the investigation at the given url
    * @param url the url of the investigation to delete 

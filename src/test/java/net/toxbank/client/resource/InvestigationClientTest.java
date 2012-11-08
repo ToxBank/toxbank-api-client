@@ -33,6 +33,8 @@ public class InvestigationClientTest {
   protected static String TEST_SERVER;
   protected static String INVESTIGATION_ROOT;
   protected static String USER_SERVICE_ROOT;
+  protected static String ORGANISATION_SERVICE_ROOT;
+  protected static String PROJECT_SERVICE_ROOT;
   
   public final static TBClient tbclient = new TBClient();
   
@@ -91,6 +93,8 @@ public class InvestigationClientTest {
       TEST_SERVER = getPropertyUrl(properties, test_server_property);
       INVESTIGATION_ROOT = TEST_SERVER + "/investigation";
       USER_SERVICE_ROOT = getPropertyUrl(properties, test_user_server_property) + "/user";
+      PROJECT_SERVICE_ROOT = getPropertyUrl(properties, test_user_server_property) + "/project";
+      ORGANISATION_SERVICE_ROOT = getPropertyUrl(properties, test_user_server_property) + "/organisation";
     } catch (Exception x) {
       throw new RuntimeException(x);
     }
@@ -160,8 +164,8 @@ public class InvestigationClientTest {
     System.out.println("Deleted investigation: " + investigation.getResourceURL());
   }
 
-  // @Test
-  private void dontTestPostAndDeleteWithPermissions() throws Throwable {
+  @Test
+  public void testPostAndDeleteWithPermissions() throws Throwable {
     URL fileUrl = getClass().getClassLoader().getResource("net/toxbank/client/test/BII-I-1.zip");    
     List<PolicyRule> accessRights = createPolicyRules();        
     RemoteTask task = getToxBankClient().postInvestigation(new File(fileUrl.toURI()), new URL(INVESTIGATION_ROOT), accessRights);
@@ -265,20 +269,20 @@ public class InvestigationClientTest {
     }
     
     List<PolicyRule> testRules = createPolicyRules();
-    PolicyRule ownerRule = new PolicyRule(tbclient.getLoggedInUser(USER_SERVICE_ROOT));
+    PolicyRule ownerRule = new PolicyRule(tbclient.getLoggedInUser(USER_SERVICE_ROOT), true, true, true, true);
     testRules.add(ownerRule);
     for (PolicyRule testRule : testRules) {
       PolicyRule matchingRule = null;
       for (PolicyRule rule : rules) {
+        fillInSubject(rule);
         IToxBankResource subject = rule.getSubject();
-        TestCase.assertNotNull("PolicyRule has null subject");
         TestCase.assertNotNull("PolicyRule subject is null", subject.getResourceURL());
         IToxBankResource testSubject = testRule.getSubject();
         if (subject.getResourceURL().equals(testSubject.getResourceURL())) {
-          TestCase.assertEquals("Should have same get", testRule.allowsGET(), rule.allowsGET());
-          TestCase.assertEquals("Should have same put", testRule.allowsPUT(), rule.allowsPUT());
-          TestCase.assertEquals("Should have same post", testRule.allowsPUT(), rule.allowsPOST());
-          TestCase.assertEquals("Should have same delete", testRule.allowsPUT(), rule.allowsDELETE());
+          TestCase.assertEquals("Should have same get for " + testSubject.getResourceURL(), testRule.allowsGET(), rule.allowsGET());
+          TestCase.assertEquals("Should have same put for " + testSubject.getResourceURL(), testRule.allowsPUT(), rule.allowsPUT());
+          TestCase.assertEquals("Should have same post for " + testSubject.getResourceURL(), testRule.allowsPUT(), rule.allowsPOST());
+          TestCase.assertEquals("Should have same delete for " + testSubject.getResourceURL(), testRule.allowsPUT(), rule.allowsDELETE());
           matchingRule = rule;
         }
       }
@@ -294,7 +298,54 @@ public class InvestigationClientTest {
       TestCase.fail("Had extraneous rules: " + rules.size() + "\n  " + rules.get(0).getSubject().getResourceURL());
     }
   }
+    
+  private static void fillInSubject(PolicyRule rule) throws Throwable {
+    if (rule instanceof UserPolicyRule) {
+      User user = ((UserPolicyRule<User>)rule).getSubject();
+      User filledInUser = tbclient.getUserByUsername(USER_SERVICE_ROOT, user.getUserName());
+      if (filledInUser == null) {
+        throw new RuntimeException("Could not find real user for: " + user.getUserName());
+      }
+      rule.setSubject(filledInUser);
+    }
+    else if (rule instanceof GroupPolicyRule) {
+      Group group = ((GroupPolicyRule<? extends Group>)rule).getSubject();
+      Project filledInProject = getProjectByGroupName(group.getGroupName());
+      if (filledInProject != null) {
+        rule.setSubject(filledInProject);
+      }
+      else {
+        Organisation filledInOrg = getOrganisationByGroupName(group.getGroupName());
+        if (filledInOrg != null) {
+          rule.setSubject(filledInOrg);
+        }
+        else {
+          throw new RuntimeException("Could not find project or organisation for group name: " + group.getGroupName());
+        }
+      }
+    }
+  }
   
+  private static Project getProjectByGroupName(String groupName) throws Exception {
+    List<Project> allProjects = tbclient.getProjectClient().get(new URL(PROJECT_SERVICE_ROOT));
+    for (Project project : allProjects) {
+      if (groupName.equals(project.getGroupName())) {
+        return project;
+      }
+    }
+    return null;
+  }
+  
+  private static Organisation getOrganisationByGroupName(String groupName) throws Exception {
+    List<Organisation> allOrgs = tbclient.getOrganisationClient().get(new URL(ORGANISATION_SERVICE_ROOT));
+    for (Organisation org : allOrgs) {
+      if (groupName.equals(org.getGroupName())) {
+        return org;
+      }
+    }
+    return null;
+  }
+
   private static void verifyBiiInvestigation(Investigation i, boolean allowMissingKeywords) throws Throwable {
     TestCase.assertEquals(BII_TEST_CASE_ACCESSION_ID, i.getAccessionId());
     TestCase.assertEquals("Growth control of the eukaryote cell: a systems biology study in yeast", i.getTitle());

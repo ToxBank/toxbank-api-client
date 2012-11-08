@@ -355,4 +355,22 @@ public class TBClient {
       return userResult.get(0);
     }
   }
+  
+  /**
+   * Gets the full user object for the given user name
+   * @param userServerURL root url of the server
+   * @param username the user name of interest
+   * @return the filled in user
+   * @throws Exception
+   */
+  public User getUserByUsername(String userServerURL, String username) throws Exception {
+    URL userUrl = new URL(userServerURL + "?username=" + URLEncoder.encode(username, "UTF-8"));
+    List<User> userResult = getUserClient().get(userUrl);
+    if (userResult.size() == 0) {
+      return null;
+    }
+    else {
+      return userResult.get(0);
+    }
+  }
 }
