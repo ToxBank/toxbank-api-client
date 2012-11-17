@@ -76,7 +76,7 @@ public class ProtocolClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 				
 		Protocol protocol = new Protocol();
 		protocol.setStatus(STATUS.SOP);
-		protocol.setProject(new Project(new URL(String.format("%s%s/G1",AbstractClientTest.TEST_SERVER,Resources.project))));
+		protocol.addProject(new Project(new URL(String.format("%s%s/G1",AbstractClientTest.TEST_SERVER,Resources.project))));
 		protocol.setOrganisation(new Organisation(new URL(String.format("%s%s/G1",AbstractClientTest.TEST_SERVER,Resources.organisation))));
 		protocol.setOwner(myself);
 		protocol.addAuthor(myself);
@@ -112,9 +112,10 @@ public class ProtocolClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 		List<Protocol> newp = cli.get(newProtocol);
 		Assert.assertEquals(1,newp.size());
 		Assert.assertEquals(STATUS.SOP,newp.get(0).getStatus());
-		System.out.println(newp.get(0).getProject());
-		Assert.assertNotNull(newp.get(0).getProject().getTitle());
-		Assert.assertNotNull(newp.get(0).getProject().getGroupName());
+		Assert.assertNotNull(newp.get(0).getProjects());
+		Assert.assertEquals(1,newp.get(0).getProjects().size());
+		Assert.assertNotNull(newp.get(0).getProjects().get(0).getTitle());
+		Assert.assertNotNull(newp.get(0).getProjects().get(0).getGroupName());
 		
 		Assert.assertTrue(newProtocol.toString(),newp.get(0).getAbstract().contains("\u2122"));
 		cli.delete(newProtocol);
@@ -191,7 +192,9 @@ public class ProtocolClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 		Protocol protocol = cli.download(url);
 		Assert.assertNotNull(protocol);
 		Assert.assertNotNull(protocol.getOrganisation().getResourceURL());
-		Assert.assertNotNull(protocol.getProject().getResourceURL());
+		Assert.assertNotNull(protocol.getProjects());
+		Assert.assertEquals(1,protocol.getProjects().size());
+		Assert.assertNotNull(protocol.getProjects().get(0).getResourceURL());
 		Assert.assertNotNull(protocol.getAbstract());
 		Assert.assertNotNull(protocol.getDocument());
 		Assert.assertNotNull(protocol.getTitle());
