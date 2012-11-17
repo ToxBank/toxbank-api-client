@@ -77,8 +77,12 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 		}
 
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE,null,utf8);
-		if ((protocol.getProject()==null) || (protocol.getProject().getResourceURL()==null)) throw new InvalidInputException("No Project URI!");
-		entity.addPart(webform.project_uri.name(), new StringBody(protocol.getProject().getResourceURL().toString(),utf8));
+		
+		if (protocol.getProjects()!=null)
+			for (Project project: protocol.getProjects()) 
+				if ((project!=null) && (project.getResourceURL()!=null)) 
+					entity.addPart(webform.project_uri.name(), new StringBody(project.getResourceURL().toString(),utf8));
+
 		if ((protocol.getOrganisation()==null) || (protocol.getOrganisation().getResourceURL()==null)) throw new InvalidInputException("No Organisation URI!");
 		entity.addPart(webform.organisation_uri.name(), new StringBody(protocol.getOrganisation().getResourceURL().toString(),utf8));
 		if ((protocol.getOwner()==null) || (protocol.getOwner().getResourceURL()==null)) throw new InvalidInputException("No User URI!");
@@ -115,8 +119,10 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 	protected HttpEntity createPUTEntity(Protocol protocol,List<PolicyRule> accessRights) throws Exception {
 		MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE,null,utf8);
 		
-		if ((protocol.getProject()!=null) && (protocol.getProject().getResourceURL()!=null)) 
-			entity.addPart(webform.project_uri.name(), new StringBody(protocol.getProject().getResourceURL().toString(),utf8));
+		if (protocol.getProjects()!=null)
+			for (Project project: protocol.getProjects()) 
+				if ((project!=null) && (project.getResourceURL()!=null)) 
+					entity.addPart(webform.project_uri.name(), new StringBody(project.getResourceURL().toString(),utf8));
 		
 		if ((protocol.getOrganisation()!=null) && (protocol.getOrganisation().getResourceURL()!=null))
 			entity.addPart(webform.organisation_uri.name(), new StringBody(protocol.getOrganisation().getResourceURL().toString(),utf8));
