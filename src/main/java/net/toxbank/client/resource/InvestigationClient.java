@@ -1,27 +1,52 @@
 package net.toxbank.client.resource;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.io.Writer;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.toxbank.client.io.rdf.*;
+import net.toxbank.client.io.rdf.IOClass;
+import net.toxbank.client.io.rdf.InvestigationIO;
+import net.toxbank.client.io.rdf.TOXBANK_ISA;
+import net.toxbank.client.policy.GroupPolicyRule;
 import net.toxbank.client.policy.PolicyRule;
+import net.toxbank.client.policy.UserPolicyRule;
 import net.toxbank.client.task.RemoteTask;
 
-import org.apache.http.*;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.*;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
+import org.opentox.aa.policy.Method;
 import org.opentox.rest.RestException;
 
-import com.hp.hpl.jena.rdf.model.*;
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.ResIterator;
+import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
@@ -376,7 +401,7 @@ public class InvestigationClient {
 
   /**
    * Updates an investigation at the given url
-   * @param zipFile the new investigation zip file
+   * @param zipFile the new investigation zip file - null indicates that the zip file should remain unchanged
    * @param investigation the investigation object to update
    * @return the remote task created
    */
@@ -385,12 +410,62 @@ public class InvestigationClient {
       throw new IllegalArgumentException("investigation has not been assigned a resource url");
     }
     MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, null, utf8);
-    entity.addPart(file_param, new FileBody(zipFile, zipFile.getName(), "application/zip", null));
-    AbstractClient.addPolicyRules(entity, accessRights);
+    if (zipFile != null) {
+      entity.addPart(file_param, new FileBody(zipFile, zipFile.getName(), "application/zip", null));
+    }
+    
+    addPolicyRules(entity, accessRights);
+
     if (investigation.isPublished() != null) {
       entity.addPart(published_param, new StringBody(investigation.isPublished().toString()));
     }
     RemoteTask task = new RemoteTask(getHttpClient(), investigation.getResourceURL(), "text/uri-list", entity, HttpPut.METHOD_NAME);
     return task;
+  }
+  
+  public void addPolicyRules(MultipartEntity entity, List<PolicyRule> accessRights) throws Exception {
+    HashSet<String> emptyFields = new HashSet<String>();
+    
+    for (Method method : Method.values()) {
+      for (Boolean allows : Arrays.asList(Boolean.TRUE, Boolean.FALSE)) {
+        String userField = AbstractClient.getPolicyRuleWebField(new User(),method,allows);
+        String groupField = AbstractClient.getPolicyRuleWebField(new Group(),method,allows);
+        emptyFields.add(userField);
+        emptyFields.add(groupField);
+      }
+    }
+        
+    if (accessRights != null) {
+      for (PolicyRule rule : accessRights) {
+        for (Method method: Method.values()) {
+          Boolean allows = rule.allows(method.name());
+          if (allows==null) continue;
+          String field = null;
+          if (rule instanceof  UserPolicyRule) 
+            field = AbstractClient.getPolicyRuleWebField((User)rule.getSubject(),method,allows); 
+          else if (rule instanceof GroupPolicyRule) 
+            field = AbstractClient.getPolicyRuleWebField((Group)rule.getSubject(),method,allows);
+          if (field==null) continue;
+          entity.addPart(field, new StringBody(rule.getSubject().getResourceURL().toExternalForm(),utf8));
+          emptyFields.remove(field);
+        }
+      }
+    }
+    
+    // add placeholders for fields that were not defined to ensure the investigation service
+    // deletes any old ones
+    for (String field : emptyFields) {
+      entity.addPart(field, new StringBody("",utf8));
+    }
+  }
+  
+  /**
+   * Updates an investigation at the given url without changing the file
+   * @param zipFile the new investigation zip file
+   * @param investigation the investigation object to update
+   * @return the remote task created
+   */
+  public RemoteTask updateInvestigation(Investigation investigation, List<PolicyRule> accessRights) throws Exception {
+    return updateInvestigation(null, investigation, accessRights);
   }
 }

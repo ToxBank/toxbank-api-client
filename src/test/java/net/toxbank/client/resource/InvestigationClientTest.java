@@ -240,13 +240,46 @@ public class InvestigationClientTest {
     TestCase.assertEquals("Should have new title in updated investigation", 
         "Growth control of the eukaryote cell: a systems biology study in yeast - updated", updatedInvestigation.getTitle());
     TestCase.assertNotNull("Updated investigation should have owner", updatedInvestigation.getOwner());
-    TestCase.assertEquals("http://toxbanktest1.opentox.org:8080/toxbank/user/U72", updatedInvestigation.getOwner().getResourceURL().toString());
+    TestCase.assertEquals("Updated investigation should have same owner", getUserUrl(), 
+        updatedInvestigation.getOwner().getResourceURL().toString());
     
     System.out.println("Deleting investigation: " + investigation.getResourceURL());
     getToxBankClient().deleteInvestigation(investigation.getResourceURL());
     System.out.println("Deleted investigation: " + investigation.getResourceURL());
   }
-  
+
+  @Test
+  public void testPostAndUpdateRemovingPermissions() throws Throwable {
+    URL fileUrl = getClass().getClassLoader().getResource("net/toxbank/client/test/BII-I-1.zip");
+    List<PolicyRule> accessRights = createPolicyRules();
+    RemoteTask task = getToxBankClient().postInvestigation(new File(fileUrl.toURI()), new URL(INVESTIGATION_ROOT), accessRights);
+    task.waitUntilCompleted(1000);
+    URL postedURL = task.getResult();
+    System.out.println("Posted new investigation: " + postedURL);
+    Investigation investigation = getToxBankClient().getInvestigation(postedURL);
+    verifyBiiInvestigation(investigation, false);
+    verifyPolicyRules(investigation);
+    
+    RemoteTask newTask = getToxBankClient().updateInvestigation(investigation, new ArrayList<PolicyRule>(0));
+    newTask.waitUntilCompleted(1000);
+    URL postedUpdateURL = task.getResult();
+    Assert.assertEquals("Should have same update url as original posted url", postedURL, postedUpdateURL);
+    System.out.println("Updated investigation: " + investigation.getResourceURL());
+
+    Investigation updatedInvestigation = getToxBankClient().getInvestigation(investigation.getResourceURL());
+    verifyBiiInvestigation(updatedInvestigation, false);
+    
+    TestCase.assertNotNull("Updated investigation should have owner", updatedInvestigation.getOwner());
+    TestCase.assertEquals("Updated investigation should have same owner", getUserUrl(), 
+        updatedInvestigation.getOwner().getResourceURL().toString());
+    
+    verifyOwnerOnlyPolicyRules(updatedInvestigation);
+    
+    System.out.println("Deleting investigation: " + investigation.getResourceURL());
+    getToxBankClient().deleteInvestigation(investigation.getResourceURL());
+    System.out.println("Deleted investigation: " + investigation.getResourceURL());
+  }
+
   private static List<PolicyRule> createPolicyRules() throws Exception {
     List<PolicyRule> policyRules = new ArrayList<PolicyRule>();
     
@@ -262,15 +295,26 @@ public class InvestigationClientTest {
   }
     
   private static void verifyPolicyRules(Investigation i) throws Throwable {
+    List<PolicyRule> testRules = createPolicyRules();
+    PolicyRule ownerRule = new PolicyRule(tbclient.getLoggedInUser(USER_SERVICE_ROOT), true, true, true, true);
+    testRules.add(ownerRule);    
+    verifyPolicyRules(i, testRules);
+  }
+
+  private static void verifyOwnerOnlyPolicyRules(Investigation i) throws Throwable {
+    List<PolicyRule> testRules = new ArrayList<PolicyRule>();
+    PolicyRule ownerRule = new PolicyRule(tbclient.getLoggedInUser(USER_SERVICE_ROOT), true, true, true, true);
+    testRules.add(ownerRule);    
+    verifyPolicyRules(i, testRules);
+  }
+
+  private static void verifyPolicyRules(Investigation i, List<PolicyRule> testRules) throws Throwable {
     List<AccessRights> rights = tbclient.readPolicy(i.getResourceURL());
     List<PolicyRule> rules = new ArrayList<PolicyRule>();
     for (AccessRights right : rights) {
       rules.addAll(right.getRules());
     }
-    
-    List<PolicyRule> testRules = createPolicyRules();
-    PolicyRule ownerRule = new PolicyRule(tbclient.getLoggedInUser(USER_SERVICE_ROOT), true, true, true, true);
-    testRules.add(ownerRule);
+
     for (PolicyRule testRule : testRules) {
       PolicyRule matchingRule = null;
       for (PolicyRule rule : rules) {
@@ -295,10 +339,16 @@ public class InvestigationClientTest {
     }
     
     if (rules.size() > 0) {
-      TestCase.fail("Had extraneous rules: " + rules.size() + "\n  " + rules.get(0).getSubject().getResourceURL());
+      StringBuilder sb = new StringBuilder();
+      for (PolicyRule rule : rules) {
+        sb.append(rule.getSubject().getResourceURL());
+        sb.append("\n");
+      }
+      TestCase.fail("Had extraneous rules: " + rules.size() + "\n  " + sb.toString());
     }
   }
-    
+
+  
   private static void fillInSubject(PolicyRule rule) throws Throwable {
     if (rule instanceof UserPolicyRule) {
       User user = ((UserPolicyRule<User>)rule).getSubject();

@@ -410,7 +410,7 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 	 * Policies in a web form
 	 */
 	
-	private static String getPolicyRuleWebField(User user, Method method, Boolean value) {
+	public static String getPolicyRuleWebField(User user, Method method, Boolean value) {
 		if (value == null) return null;
 		switch (method) {
 		case GET: return value?webform.allowReadByUser.toString():webform.denyReadByUser.toString();
@@ -422,7 +422,7 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 	}
 	
 	
-	private static String getPolicyRuleWebField(Group group,Method method, Boolean value) {
+	public static String getPolicyRuleWebField(Group group,Method method, Boolean value) {
 		if (value == null) return null;
 		switch (method) {
 		case GET: return value?GroupPolicyRule.webform.allowReadByGroup.toString():GroupPolicyRule.webform.denyReadByGroup.toString();
