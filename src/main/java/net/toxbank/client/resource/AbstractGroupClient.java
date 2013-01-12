@@ -20,7 +20,7 @@ import org.apache.http.message.BasicNameValuePair;
  */
 public abstract class AbstractGroupClient<PO extends Group> extends AbstractClient<PO> {
 	protected enum webform {
-		name,ldapgroup
+		name,ldapgroup,cluster
 	}
 	
 
@@ -39,6 +39,9 @@ public abstract class AbstractGroupClient<PO extends Group> extends AbstractClie
 			formparams.add(new BasicNameValuePair(webform.name.name(), object.getTitle()));
 		if (object.getGroupName()!=null)
 			formparams.add(new BasicNameValuePair(webform.ldapgroup.name(), object.getGroupName()));
+		if (object.getCluster()!=null)
+			formparams.add(new BasicNameValuePair(webform.cluster.name(), object.getCluster().toExternalForm()));
+		
 		if (formparams.size()==0) throw new InvalidInputException("No content!");
 		return new UrlEncodedFormEntity(formparams, "UTF-8");
 	}
@@ -52,6 +55,9 @@ public abstract class AbstractGroupClient<PO extends Group> extends AbstractClie
 			formparams.add(new BasicNameValuePair(webform.name.name(), object.getTitle()));
 		if (object.getGroupName()!=null)
 			formparams.add(new BasicNameValuePair(webform.ldapgroup.name(), object.getGroupName()));
+		if (object.getCluster()!=null)
+			formparams.add(new BasicNameValuePair(webform.cluster.name(), object.getCluster().toExternalForm()));
+		
 		if (formparams.size()==0) throw new InvalidInputException("Nothing to update!");
 		return new UrlEncodedFormEntity(formparams, "UTF-8");
 	}
