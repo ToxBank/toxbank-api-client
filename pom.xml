@@ -4,7 +4,7 @@
   <groupId>net.toxbank</groupId>
   <artifactId>toxbank-client-java</artifactId>
   <name>ToxBank Java Client</name>
-  <version>0.0.3</version>
+  <version>0.0.4-SNAPSHOT</version>
   <description>The Java ToxBank API client software.</description>
   <url>http://toxbank.net</url>
   <issueManagement>
@@ -17,9 +17,9 @@
   <inceptionYear>2011</inceptionYear>
   <developers>
    <developer>
-    	<id>egonw</id>
-    	<name>Egon Willighagen</name>
-    	<url>https://github.com/egonw</url>
+        <id>egonw</id>
+        <name>Egon Willighagen</name>
+        <url>https://github.com/egonw</url>
     </developer>
     <developer>
       <id>vedina</id>
@@ -30,13 +30,13 @@
     </developer>
 
     <developer>
-    	<id>smiller-leadscope</id>
-    	<name>Scott Miller</name>
-    	<url>https://github.com/smiller-leadscope</url>
-    	<organization>Leadscope, Inc.</organization>
-    	<organizationUrl>http://leadscope.com/</organizationUrl>
+        <id>smiller-leadscope</id>
+        <name>Scott Miller</name>
+        <url>https://github.com/smiller-leadscope</url>
+        <organization>Leadscope, Inc.</organization>
+        <organizationUrl>http://leadscope.com/</organizationUrl>
     </developer>
-  </developers>  
+  </developers>
   <licenses>
     <license>
       <name>LGPL3</name>
@@ -44,7 +44,7 @@
       <distribution>repo</distribution>
       <comments />
     </license>
-  </licenses>  
+  </licenses>
   <distributionManagement>
     <snapshotRepository>
       <id>toxbank-snapshots</id>
@@ -194,7 +194,7 @@
             </nonFilteredFileExtensions>
           </configuration>
         </plugin>
- 	 <plugin>
+         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
           <version>2.2</version>
@@ -202,7 +202,7 @@
             <releaseProfiles>release</releaseProfiles>
             <remoteTagging>true</remoteTagging>
             <autoVersionSubmodules>true</autoVersionSubmodules>
-            <!--               		<preparationGoals>clean install</preparationGoals> -->
+            <!--                        <preparationGoals>clean install</preparationGoals> -->
           </configuration>
         </plugin>
       </plugins>

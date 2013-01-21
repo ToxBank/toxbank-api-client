@@ -59,6 +59,7 @@ public class InvestigationClient {
   protected static final String query_param = "query";
   protected static final String file_param = "file";
   protected static final String published_param = "published";
+  protected static final String searchable_param = "summarySearchable";
   
   private Writer queryDebuggingWriter;
   
@@ -376,9 +377,10 @@ public class InvestigationClient {
    * @param rootUrl the root url of the service
    * @return the remote task created
    */
-  public RemoteTask postInvestigation(File zipFile, URL rootUrl, List<PolicyRule> accessRights) throws Exception {
+  public RemoteTask postInvestigation(File zipFile, URL rootUrl, List<PolicyRule> accessRights, boolean searchable) throws Exception {
     MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, null, utf8);
     entity.addPart(file_param, new FileBody(zipFile, zipFile.getName(), "application/zip", null));
+    entity.addPart(searchable_param, new StringBody(String.valueOf(searchable)));
     AbstractClient.addPolicyRules(entity, accessRights);
     RemoteTask task = new RemoteTask(getHttpClient(), rootUrl, "text/uri-list", entity, HttpPost.METHOD_NAME);
     return task;
@@ -418,6 +420,9 @@ public class InvestigationClient {
 
     if (investigation.isPublished() != null) {
       entity.addPart(published_param, new StringBody(investigation.isPublished().toString()));
+    }
+    if (investigation.isSearchable() != null) {
+      entity.addPart(searchable_param, new StringBody(investigation.isSearchable().toString()));
     }
     RemoteTask task = new RemoteTask(getHttpClient(), investigation.getResourceURL(), "text/uri-list", entity, HttpPut.METHOD_NAME);
     return task;

@@ -141,7 +141,7 @@ public class InvestigationClientTest {
   @Test
   public void testPostAndDelete() throws Throwable {
     URL fileUrl = getClass().getClassLoader().getResource("net/toxbank/client/test/BII-I-1.zip");
-    RemoteTask task = getToxBankClient().postInvestigation(new File(fileUrl.toURI()), new URL(INVESTIGATION_ROOT), new ArrayList<PolicyRule>(0));
+    RemoteTask task = getToxBankClient().postInvestigation(new File(fileUrl.toURI()), new URL(INVESTIGATION_ROOT), new ArrayList<PolicyRule>(0), false);
     task.waitUntilCompleted(1000);
     URL postedURL = task.getResult();
     System.out.println("Posted new investigation: " + postedURL);
@@ -168,7 +168,7 @@ public class InvestigationClientTest {
   public void testPostAndDeleteWithPermissions() throws Throwable {
     URL fileUrl = getClass().getClassLoader().getResource("net/toxbank/client/test/BII-I-1.zip");    
     List<PolicyRule> accessRights = createPolicyRules();        
-    RemoteTask task = getToxBankClient().postInvestigation(new File(fileUrl.toURI()), new URL(INVESTIGATION_ROOT), accessRights);
+    RemoteTask task = getToxBankClient().postInvestigation(new File(fileUrl.toURI()), new URL(INVESTIGATION_ROOT), accessRights, false);
     task.waitUntilCompleted(1000);
     URL postedURL = task.getResult();
     
@@ -197,7 +197,7 @@ public class InvestigationClientTest {
   @Test
   public void testPostPublishAndDelete() throws Throwable {
     URL fileUrl = getClass().getClassLoader().getResource("net/toxbank/client/test/BII-I-1.zip");
-    RemoteTask task = getToxBankClient().postInvestigation(new File(fileUrl.toURI()), new URL(INVESTIGATION_ROOT), new ArrayList<PolicyRule>(0));
+    RemoteTask task = getToxBankClient().postInvestigation(new File(fileUrl.toURI()), new URL(INVESTIGATION_ROOT), new ArrayList<PolicyRule>(0), false);
     task.waitUntilCompleted(1000);
     URL postedURL = task.getResult();
     System.out.println("Posted new investigation: " + postedURL);
@@ -222,7 +222,7 @@ public class InvestigationClientTest {
   @Test
   public void testPostAndUpdate() throws Throwable {
     URL fileUrl = getClass().getClassLoader().getResource("net/toxbank/client/test/BII-I-1.zip");
-    RemoteTask task = getToxBankClient().postInvestigation(new File(fileUrl.toURI()), new URL(INVESTIGATION_ROOT), new ArrayList<PolicyRule>(0));
+    RemoteTask task = getToxBankClient().postInvestigation(new File(fileUrl.toURI()), new URL(INVESTIGATION_ROOT), new ArrayList<PolicyRule>(0), false);
     task.waitUntilCompleted(1000);
     URL postedURL = task.getResult();
     System.out.println("Posted new investigation: " + postedURL);
@@ -252,7 +252,7 @@ public class InvestigationClientTest {
   public void testPostAndUpdateRemovingPermissions() throws Throwable {
     URL fileUrl = getClass().getClassLoader().getResource("net/toxbank/client/test/BII-I-1.zip");
     List<PolicyRule> accessRights = createPolicyRules();
-    RemoteTask task = getToxBankClient().postInvestigation(new File(fileUrl.toURI()), new URL(INVESTIGATION_ROOT), accessRights);
+    RemoteTask task = getToxBankClient().postInvestigation(new File(fileUrl.toURI()), new URL(INVESTIGATION_ROOT), accessRights, false);
     task.waitUntilCompleted(1000);
     URL postedURL = task.getResult();
     System.out.println("Posted new investigation: " + postedURL);
