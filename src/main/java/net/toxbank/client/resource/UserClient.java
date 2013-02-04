@@ -94,7 +94,7 @@ public class UserClient extends AbstractClient<User> {
                 return new UrlEncodedFormEntity(formparams, "UTF-8");
         }
         @Override
-        IOClass<User> getIOClass() {
+        protected IOClass<User> getIOClass() {
                 return new UserIO();
         }
         /**

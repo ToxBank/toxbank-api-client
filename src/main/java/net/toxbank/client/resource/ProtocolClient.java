@@ -62,7 +62,7 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 	}
 	
 	@Override
-	IOClass<Protocol> getIOClass() {
+	protected IOClass<Protocol> getIOClass() {
 		return new ProtocolIO();
 	}
 

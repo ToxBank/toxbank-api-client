@@ -32,6 +32,7 @@ import net.toxbank.client.resource.ProtocolClient;
 import net.toxbank.client.resource.SearchClient;
 import net.toxbank.client.resource.User;
 import net.toxbank.client.resource.UserClient;
+import net.toxbank.client.task.TaskClient;
 
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
@@ -187,6 +188,10 @@ public class TBClient {
 	}
 	public InvestigationClient getInvestigationClient() {
 	  return new InvestigationClient(getHttpClient());
+	}
+	
+	public TaskClient getTaskClient() {
+		return new TaskClient(getHttpClient());
 	}
 	
 	/**

@@ -167,6 +167,20 @@ public class ProtocolClientTest  extends AbstractClientTest<Protocol, ProtocolCl
 		Assert.assertTrue(task.getResult().toExternalForm().startsWith(TEST_SERVER_PROTOCOL));
 	}
 	
+	@Test
+	public void testPublishWithoutSettingRights() throws Exception {
+		ProtocolClient cli = tbclient.getProtocolClient();
+		Protocol proto = cli.download(new URL("http://localhost:8080/toxbank/protocol/SEURAT-Protocol-13-1"));
+		proto.setPublished(true);
+		proto.setDocument(null);
+		RemoteTask task = cli.putAsync(proto, null);
+		
+		task.waitUntilCompleted(500);
+		Assert.assertNotNull(task.getResult());
+		//System.out.println(task.getResult());
+		Assert.assertTrue(task.getResult().toExternalForm().startsWith(TEST_SERVER_PROTOCOL));
+	}
+	
 	protected URL readFirst(ProtocolClient cli) throws Exception {
 		User user = tbclient.getUserClient().myAccount(new URL(TEST_SERVER));
 		List<URL> url = tbclient.getProtocolClient().listURI(new URL(String.format("%s%s?page=0&pagesize=1", user.getResourceURL(),Resources.protocol)));

@@ -24,7 +24,7 @@ public class OrganisationClient extends AbstractGroupClient<Organisation> {
 	
 	
 	@Override
-	IOClass<Organisation> getIOClass() {
+	protected IOClass<Organisation> getIOClass() {
 		return new OrganisationIO();
 	}
 

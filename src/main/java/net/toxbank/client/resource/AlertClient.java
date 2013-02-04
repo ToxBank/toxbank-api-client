@@ -83,7 +83,7 @@ public class AlertClient extends AbstractClient<Alert> {
 	}
 
 	@Override
-	IOClass<Alert> getIOClass() {
+	protected IOClass<Alert> getIOClass() {
 		return new AlertIO();
 	}
 	

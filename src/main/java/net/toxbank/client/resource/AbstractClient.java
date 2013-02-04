@@ -143,7 +143,7 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 	 * @throws RestException
 	 * @throws IOException
 	 */
-	protected List<T> get(URL url,String mediaType,String... params) throws RestException, IOException {
+	public List<T> get(URL url,String mediaType,String... params) throws RestException, IOException {
 		String address = prepareParams(url, params);
 		HttpGet httpGet = new HttpGet(address);
 		httpGet.addHeader("Accept",mediaType);
@@ -395,7 +395,7 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 	public void delete(T object) throws Exception {
 		delete(object.getResourceURL());
 	}
-	abstract IOClass<T> getIOClass();
+	protected abstract IOClass<T> getIOClass();
 	
 	public static OpenSSOToken login(String username,String password) throws Exception {
 		OpenSSOToken token = new OpenSSOToken(AAServicesConfig.getSingleton().getOpenSSOService());

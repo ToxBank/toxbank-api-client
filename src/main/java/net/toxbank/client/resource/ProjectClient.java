@@ -22,7 +22,7 @@ public class ProjectClient extends AbstractGroupClient<Project> {
 	}
 	
 	@Override
-	IOClass<Project> getIOClass() {
+	protected IOClass<Project> getIOClass() {
 		return new ProjectIO();
 	}
 	
