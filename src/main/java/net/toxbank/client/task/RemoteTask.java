@@ -53,7 +53,11 @@ public class RemoteTask implements Serializable {
 	protected URL result = null;
 	protected Exception error = null;
 	protected HttpClient httpclient;
+	protected URL taskURL = null; 
 	
+	public URL getTaskURL() {
+		return taskURL;
+	}
 	public HttpClient getHttpclient() {
 		if (httpclient==null) {
 			httpclient = new DefaultHttpClient();
@@ -115,6 +119,7 @@ public class RemoteTask implements Serializable {
 			}
 			in = entity.getContent();
 			result = handleOutput(in,status,null);
+			if (HttpStatus.SC_OK!=status) taskURL = result;
 		} catch (RestException x) {
 			status = x.getStatus();
 			try { 
