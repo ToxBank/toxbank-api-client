@@ -32,12 +32,12 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.StringBody;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.opentox.aa.opensso.AAServicesConfig;
 import org.opentox.aa.opensso.OpenSSOToken;
 import org.opentox.aa.policy.Method;
 import org.opentox.rest.RestException;
-
-import org.json.JSONObject;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
@@ -212,7 +212,7 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 	 * @param url
 	 * @return the returned json object - null if not found
 	 */
-	public JSONObject getJson(URL url) throws RestException, IOException {
+	public JSONObject getJson(URL url) throws RestException, IOException, JSONException {
 	  HttpGet httpGet = new HttpGet(prepareParams(url));
     httpGet.addHeader("Accept","application/json");
 
@@ -228,7 +228,7 @@ public abstract class AbstractClient<T extends IToxBankResource> {
           sb.append(line);
           sb.append("\n");
         }
-        return new JSONObject(in);
+        return new JSONObject(sb.toString());
       } else if (response.getStatusLine().getStatusCode()== HttpStatus.SC_NOT_FOUND) {  
         return null;       
       } else throw new RestException(response.getStatusLine().getStatusCode(),response.getStatusLine().getReasonPhrase());
