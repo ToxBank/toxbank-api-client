@@ -37,6 +37,8 @@ import org.opentox.aa.opensso.OpenSSOToken;
 import org.opentox.aa.policy.Method;
 import org.opentox.rest.RestException;
 
+import org.json.JSONObject;
+
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 
@@ -204,6 +206,38 @@ public abstract class AbstractClient<T extends IToxBankResource> {
 	public List<URL> searchURI(URL url,String query) throws  RestException, IOException {
 		return listURI(url, new String[] {search_param,query});
 	}
+	
+	/**
+	 * Gets a json object from the given url
+	 * @param url
+	 * @return the returned json object - null if not found
+	 */
+	public JSONObject getJson(URL url) throws RestException, IOException {
+	  HttpGet httpGet = new HttpGet(prepareParams(url));
+    httpGet.addHeader("Accept","application/json");
+
+    InputStream in = null;
+    try {
+      HttpResponse response = getHttpClient().execute(httpGet);
+      HttpEntity entity  = response.getEntity();
+      in = entity.getContent();
+      if (response.getStatusLine().getStatusCode()== HttpStatus.SC_OK) {
+        BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+        StringBuilder sb = new StringBuilder();
+        for (String line = br.readLine(); line != null; line = br.readLine()) {
+          sb.append(line);
+          sb.append("\n");
+        }
+        return new JSONObject(in);
+      } else if (response.getStatusLine().getStatusCode()== HttpStatus.SC_NOT_FOUND) {  
+        return null;       
+      } else throw new RestException(response.getStatusLine().getStatusCode(),response.getStatusLine().getReasonPhrase());
+
+    } finally {
+      try {if (in !=null) in.close();} catch (Exception x) {}
+    }
+	}
+	
 	/**
 	 * 
 	 * @param url

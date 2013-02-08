@@ -31,6 +31,10 @@ import org.apache.http.entity.mime.content.StringBody;
 import org.opentox.rest.HTTPClient;
 import org.opentox.rest.RestException;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONException;
+
 /**
  * ToxBank <a href="http://api.toxbank.net/index.php/Protocol">Protocol</a> client,
  * implementing REST operations on {@link Protocol}. 
@@ -217,6 +221,20 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 	}
 	public List<URL> listProtocols(User user) throws IOException, RestException {
 		return listURI(new URL(String.format("%s%s", user.getResourceURL(),Resources.protocol)));
+	}
+	
+	public List<TimestampedUrl> listTimestampedProtocols(User user) throws IOException, RestException, JSONException {
+	  JSONObject obj =  getJson(new URL(String.format("%s%s", user.getResourceURL(),Resources.protocol)));
+	  JSONArray protocols = obj.getJSONArray("protocols");
+	  List<TimestampedUrl> urls = new ArrayList<TimestampedUrl>();
+	  for (int i = 0; i < protocols.length(); i++) {
+	    JSONObject protocol = protocols.getJSONObject(i);
+	    String uri = protocol.getString("uri");
+	    long timestamp = protocol.getLong("updated");
+	    TimestampedUrl url = new TimestampedUrl(new URL(uri), timestamp);
+	    urls.add(url);
+	  }
+	  return urls;
 	}
 	
 	public List<Protocol> getProtocols(User user) throws Exception {
