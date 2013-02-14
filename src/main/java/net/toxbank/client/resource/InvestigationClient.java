@@ -102,7 +102,7 @@ public class InvestigationClient {
     List<URL> urls = new ArrayList<URL>();
     Map<String, String> additionalHeaders = new HashMap<String, String>();
     additionalHeaders.put("user", user.getResourceURL().toString());
-    Model model = requestToModel(rootUrl);
+    Model model = requestToModel(rootUrl, additionalHeaders);
     for (ResIterator iter = model.listResourcesWithProperty(RDF.type, TOXBANK_ISA.INVESTIGATION); iter.hasNext(); ) {
       Resource res = iter.next();
       urls.add(new URL(res.getURI()));
