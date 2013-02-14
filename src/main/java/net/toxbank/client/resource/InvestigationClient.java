@@ -22,7 +22,6 @@ import java.util.regex.Pattern;
 
 import net.toxbank.client.io.rdf.IOClass;
 import net.toxbank.client.io.rdf.InvestigationIO;
-import net.toxbank.client.io.rdf.TOXBANK_ISA;
 import net.toxbank.client.policy.GroupPolicyRule;
 import net.toxbank.client.policy.PolicyRule;
 import net.toxbank.client.policy.UserPolicyRule;
@@ -40,14 +39,13 @@ import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.opentox.aa.policy.Method;
 import org.opentox.rest.RestException;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.rdf.model.ResIterator;
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.vocabulary.RDF;
 
 /**
  * A client for accessing investigation resources. This does not inherit from AbstractClient as
@@ -98,15 +96,52 @@ public class InvestigationClient {
    * @param user the owner of the investigations
    * @return the list of available investigation urls
    */
-  public List<URL> listInvestigationUrls(URL rootUrl, User user) throws Exception {
-    List<URL> urls = new ArrayList<URL>();
-    Map<String, String> additionalHeaders = new HashMap<String, String>();
-    additionalHeaders.put("user", user.getResourceURL().toString());
-    Model model = requestToModel(rootUrl, additionalHeaders);
-    for (ResIterator iter = model.listResourcesWithProperty(RDF.type, TOXBANK_ISA.INVESTIGATION); iter.hasNext(); ) {
-      Resource res = iter.next();
-      urls.add(new URL(res.getURI()));
+  public List<TimestampedUrl> listTimestampedInvestigations(URL rootUrl, User user) throws Exception {
+    List<TimestampedUrl> urls = new ArrayList<TimestampedUrl>();
+    HttpGet httpGet = new HttpGet(rootUrl.toString());
+    httpGet.addHeader("user", user.getResourceURL().toString());
+    httpGet.addHeader("Accept", "application/json");
+    httpGet.addHeader("Accept-Charset", "utf-8");
+    
+    InputStream in = null;
+    try {
+      HttpResponse response = getHttpClient().execute(httpGet);
+      HttpEntity entity  = response.getEntity();
+      in = entity.getContent();
+      if (response.getStatusLine().getStatusCode()== HttpStatus.SC_OK) {
+        BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+        StringBuilder sb = new StringBuilder();
+        for (String line = br.readLine(); line != null; line = br.readLine()) {
+          sb.append(line);
+          sb.append("\n");
+        }
+        JSONObject obj = new JSONObject(sb.toString());
+        if (obj != null) {
+          JSONObject results = obj.getJSONObject("results");
+          if (results != null) {
+            JSONArray investigations = results.getJSONArray("bindings");
+            for (int i = 0; i < investigations.length(); i++) {
+              JSONObject investigation = investigations.getJSONObject(i);
+              JSONObject uri = investigation.getJSONObject("uri");
+              JSONObject timestamp = investigation.getJSONObject("updated");
+              String uriValue = uri.getString("value");
+              if (uriValue.endsWith("/")) {
+                uriValue = uriValue.substring(0, uriValue.length()-1);
+              }
+              long timestampValue = timestamp.getLong("value");
+              TimestampedUrl url = new TimestampedUrl(new URL(uriValue), timestampValue);
+              urls.add(url);
+            }
+          }
+        }            
+      } else if (response.getStatusLine().getStatusCode()== HttpStatus.SC_NOT_FOUND) {  
+        return null;       
+      } else throw new RestException(response.getStatusLine().getStatusCode(),response.getStatusLine().getReasonPhrase());
+
+    } finally {
+      try {if (in !=null) in.close();} catch (Exception x) {}
     }
+    
     return urls;
   }
   

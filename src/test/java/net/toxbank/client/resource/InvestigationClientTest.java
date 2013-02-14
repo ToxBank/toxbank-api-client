@@ -155,9 +155,15 @@ public class InvestigationClientTest {
     User owner = new User();
     URL ownerUrl = new URL(userUrl);
     owner.setResourceURL(ownerUrl);
-    List<URL> userUrls = getToxBankClient().listInvestigationUrls(new URL(INVESTIGATION_ROOT), owner);
+    List<TimestampedUrl> userUrls = getToxBankClient().listTimestampedInvestigations(new URL(INVESTIGATION_ROOT), owner);
+    boolean hasPostedUrl = false;
+    for (TimestampedUrl url : userUrls) {
+      if ((postedURL.toString() + "/").equals(url.getUrl().toString())) {
+        hasPostedUrl = true;
+      }
+    }
     Assert.assertTrue("The loaded investigation should be included in the owner's list",
-        userUrls.contains(new URL(postedURL.toString() + "/")));
+        hasPostedUrl);
     
     System.out.println("Deleting investigation: " + investigation.getResourceURL());
     getToxBankClient().deleteInvestigation(investigation.getResourceURL());
@@ -185,9 +191,15 @@ public class InvestigationClientTest {
     User owner = new User();
     URL ownerUrl = new URL(userUrl);
     owner.setResourceURL(ownerUrl);
-    List<URL> userUrls = getToxBankClient().listInvestigationUrls(new URL(INVESTIGATION_ROOT), owner);
+    List<TimestampedUrl> userUrls = getToxBankClient().listTimestampedInvestigations(new URL(INVESTIGATION_ROOT), owner);
+    boolean hasPostedUrl = false;
+    for (TimestampedUrl url : userUrls) {
+      if ((postedURL.toString() + "/").equals(url.getUrl().toString())) {
+        hasPostedUrl = true;
+      }
+    }
     Assert.assertTrue("The loaded investigation should be included in the owner's list",
-        userUrls.contains(new URL(postedURL.toString() + "/")));
+        hasPostedUrl);
     
     System.out.println("Deleting investigation: " + investigation.getResourceURL());
     getToxBankClient().deleteInvestigation(investigation.getResourceURL());
@@ -402,14 +414,7 @@ public class InvestigationClientTest {
     TestCase.assertEquals("Background Cell growth underlies many key cellular and developmental processes, yet a limited number of studies have been carried out on cell-growth regulation. Comprehensive studies at the transcriptional, proteomic and metabolic levels under defined controlled conditions are currently lacking. Results Metabolic control analysis is being exploited in a systems biology study of the eukaryotic cell. Using chemostat culture, we have measured the impact of changes in flux (growth rate) on the transcriptome, proteome, endometabolome and exometabolome of the yeast Saccharomyces cerevisiae. Each functional genomic level shows clear growth-rate-associated trends and discriminates between carbon-sufficient and carbon-limited conditions. Genes consistently and significantly upregulated with increasing growth rate are frequently essential and encode evolutionarily conserved proteins of known function that participate in many protein-protein interactions. In contrast, more unknown, and fewer essential, genes are downregulated with increasing growth rate; their protein products rarely interact with one another. A large proportion of yeast genes under positive growth-rate control share orthologs with other eukaryotes, including humans. Significantly, transcription of genes encoding components of the TOR complex (a major controller of eukaryotic cell growth) is not subject to growth-rate regulation. Moreover, integrative studies reveal the extent and importance of post-transcriptional control, patterns of control of metabolic fluxes at the level of enzyme synthesis, and the relevance of specific enzymatic reactions in the control of metabolic fluxes during cell growth. Conclusion This work constitutes a first comprehensive systems biology study on growth-rate control in the eukaryotic cell. The results have direct implications for advanced studies on cell growth, in vivo regulation of metabolic fluxes for comprehensive metabolic engineering, and for the design of genome-scale systems biology models of the eukaryotic cell.",
         i.getAbstract());
     TestCase.assertNotNull("Should have organisation", i.getOrganisation());
-    TestCase.assertEquals("http://toxbanktest1.opentox.org:8080/toxbank/organisation/G176", i.getOrganisation().getResourceURL().toString());
     TestCase.assertNotNull("Should have project", i.getProject());
-    TestCase.assertEquals("http://toxbanktest1.opentox.org:8080/toxbank/project/G2", i.getProject().getResourceURL().toString());
-    TestCase.assertTrue("Should have one or more toxbank protocols", i.getProtocols().size() >= 1);
-    for (Protocol protocol : i.getProtocols()) {
-      TestCase.assertTrue("Should really be a toxbank protocol: " + protocol.getResourceURL(), 
-          protocol.getResourceURL().toString().contains("protocol/SEURAT"));
-    }
     if (!allowMissingKeywords) {
       TestCase.assertEquals("Should have 3 keywords", 3, i.getKeywords().size());
       TestCase.assertTrue("Should contain the cell migrations keyword", 
