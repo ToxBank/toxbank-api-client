@@ -224,15 +224,17 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 	}
 	
 	public List<TimestampedUrl> listTimestampedProtocols(User user) throws IOException, RestException, JSONException {
+    List<TimestampedUrl> urls = new ArrayList<TimestampedUrl>();
 	  JSONObject obj =  getJson(new URL(String.format("%s%s", user.getResourceURL(),Resources.protocol)));
-	  JSONArray protocols = obj.getJSONArray("protocols");
-	  List<TimestampedUrl> urls = new ArrayList<TimestampedUrl>();
-	  for (int i = 0; i < protocols.length(); i++) {
-	    JSONObject protocol = protocols.getJSONObject(i);
-	    String uri = protocol.getString("uri");
-	    long timestamp = protocol.getLong("updated");
-	    TimestampedUrl url = new TimestampedUrl(new URL(uri), timestamp);
-	    urls.add(url);
+	  if (obj != null) {
+	    JSONArray protocols = obj.getJSONArray("protocols");
+	    for (int i = 0; i < protocols.length(); i++) {
+	      JSONObject protocol = protocols.getJSONObject(i);
+	      String uri = protocol.getString("uri");
+	      long timestamp = protocol.getLong("updated");
+	      TimestampedUrl url = new TimestampedUrl(new URL(uri), timestamp);
+	      urls.add(url);
+	    }
 	  }
 	  return urls;
 	}
