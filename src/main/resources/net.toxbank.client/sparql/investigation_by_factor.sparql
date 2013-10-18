@@ -1,0 +1,20 @@
+#Investigation service query
+#Retrieves investigation URI given a factor value URI (e.g. compound URI)
+#
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix isa:   <http://onto.toxbank.net/isa/>
+prefix dcterms: <http://purl.org/dc/terms/>
+
+SELECT distinct ?inv ?factorname ?value WHERE {
+ ?inv rdf:type isa:Investigation.
+ ?inv isa:hasStudy ?study.
+ ?node isa:hasStudy ?study.
+ ?node rdf:type isa:MaterialNode.
+ ?node isa:hasMaterial ?sample.
+ ?sample isa:hasFactorValue ?factorValue.
+ ?factorValue isa:hasOntologyTerm  <http://purl.obolibrary.org/chebi/CHEBI:39867>.
+ ?factorValue isa:hasValue  ?value.
+ ?factorValue isa:hasFactor ?factor. 
+ ?factor dcterms:title ?factorname.
+} order by ?inv

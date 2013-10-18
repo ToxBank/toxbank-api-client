@@ -1,0 +1,22 @@
+#Investigation service query
+#Retrieves investigation URI containing any of the factor value URI (e.g. two compound URIs)
+#
+
+SELECT distinct ?inv ?factorname ?value WHERE {
+ ?inv rdf:type isa:Investigation.
+ ?inv isa:hasStudy ?study.
+ ?node isa:hasStudy ?study.
+ ?node rdf:type isa:MaterialNode.
+ ?node isa:hasMaterial ?sample.
+ ?sample isa:hasFactorValue ?factorValue.
+ {
+  { ?factorValue isa:hasOntologyTerm  <http://purl.obolibrary.org/chebi/CHEBI:39867> } 
+ UNION
+  {?factorValue isa:hasOntologyTerm  
+<http://toxbanktest2.toxbank.net:8080/ambit2/compound/GJPICJJJRGTNOD-UHFFFAOYSA-N>
+  }
+ }.
+ ?factorValue isa:hasValue  ?value.
+ ?factorValue isa:hasFactor ?factor. 
+ ?factor dcterms:title ?factorname.
+} order by ?inv
