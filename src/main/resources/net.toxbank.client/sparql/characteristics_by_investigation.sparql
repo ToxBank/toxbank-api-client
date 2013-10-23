@@ -1,0 +1,21 @@
+#Investigation service query
+#Retrieves all characteristics by investigation URI 
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix isa:   <http://onto.toxbank.net/isa/>
+prefix dcterms: <http://purl.org/dc/terms/>
+prefix tb:    <http://onto.toxbank.net/api/> 
+
+
+SELECT distinct ?study ?propname ?value ?ontouri WHERE {
+ <https://services.toxbank.net/investigation/02d910d9-a3bb-4275-8ae0-dc2b3a1555fe/> isa:hasStudy ?study.
+ ?node isa:hasStudy ?study.
+ ?node rdf:type isa:MaterialNode.
+ ?node isa:hasMaterial ?sample.
+ ?sample isa:hasCharacteristicValue ?propValue.
+ ?propValue isa:hasOntologyTerm ?ontouri . 
+ ?propValue isa:hasValue  ?value.
+ ?propValue isa:hasProperty ?property. 
+ ?property dcterms:title ?propname.
+} order by ?study
