@@ -1,0 +1,22 @@
+#Investigation service query
+#Retrieves investigation URI given characteristic value URI (e.g. HepaRG cell line URI)
+#
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix isa:   <http://onto.toxbank.net/isa/>
+prefix dcterms: <http://purl.org/dc/terms/>
+prefix tb:    <http://onto.toxbank.net/api/> 
+
+
+SELECT distinct ?inv ?propname ?ontoURI WHERE {
+ ?inv rdf:type isa:Investigation.
+ ?inv isa:hasStudy ?study.
+ ?node isa:hasStudy ?study.
+ ?node rdf:type isa:MaterialNode.
+ ?node isa:hasMaterial ?sample.
+ ?sample isa:hasCharacteristicValue ?propValue.
+ ?propValue isa:hasOntologyTerm ?ontoURI. 
+ ?propValue isa:hasValue  "HepaRG".
+ ?propValue isa:hasProperty ?property. 
+ ?property dcterms:title ?propname.
+} order by ?inv
