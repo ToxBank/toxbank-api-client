@@ -3,9 +3,8 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 prefix isa:   <http://onto.toxbank.net/isa/>
 prefix dcterms: <http://purl.org/dc/terms/>
 
-SELECT * WHERE {
- ?investigation rdf:type isa:Investigation.
- ?investigation isa:hasStudy ?study.
+SELECT ?study ?studytitle ?assay ?assay ?endpoint ?technology WHERE {
+ <https://services.toxbank.net/investigation/02d910d9-a3bb-4275-8ae0-dc2b3a1555fe/> isa:hasStudy ?study.
  ?study rdf:type isa:Study.
  ?study dcterms:title ?studytitle.
  ?study isa:hasAssay ?assay.

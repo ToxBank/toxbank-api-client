@@ -1,6 +1,10 @@
 #Investigation service query
 #Retrieves investigation URI containing any of the factor value URI (e.g. two compound URIs)
 #
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix isa:   <http://onto.toxbank.net/isa/>
+prefix dcterms: <http://purl.org/dc/terms/>
 
 SELECT distinct ?inv ?factorname ?value WHERE {
  ?inv rdf:type isa:Investigation.
