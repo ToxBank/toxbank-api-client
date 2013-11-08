@@ -12,8 +12,9 @@ SELECT distinct ?factorname ?value ?ontouri WHERE {
  ?node rdf:type isa:MaterialNode.
  ?node isa:hasMaterial ?sample.
  ?sample isa:hasFactorValue ?factorValue.
- ?factorValue isa:hasOntologyTerm  ?ontouri.
+ OPTIONAL {?factorValue isa:hasOntologyTerm  ?ontouri }.
  ?factorValue isa:hasValue  ?value.
  ?factorValue isa:hasFactor ?factor. 
  ?factor dcterms:title ?factorname.
 } 
+
