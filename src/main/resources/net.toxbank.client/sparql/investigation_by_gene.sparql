@@ -1,0 +1,40 @@
+PREFIX ot:<http://www.opentox.org/api/1.1#>
+PREFIX isa:<http://onto.toxbank.net/isa/>
+PREFIX dcterms:<http://purl.org/dc/terms/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX skos:<http://www.w3.org/2004/02/skos/core#>
+PREFIX owl:<http://www.w3.org/2002/07/owl#>
+PREFIX entrez:<http://onto.toxbank.net/isa/Entrez/>
+PREFIX uniprot:<http://purl.uniprot.org/uniprot/>
+PREFIX genesymbol: <http://onto.toxbank.net/isa/Symbol/>
+PREFIX unigene: <http://onto.toxbank.net/isa/Unigene/>
+PREFIX refseq:<http://onto.toxbank.net/isa/RefSeq/>
+
+SELECT distinct ?investigation ?datatype ?title ?valuetype ?value where {
+
+   ?dataentry ot:values ?fv.
+   {
+   {?dataentry skos:closeMatch uniprot:P10809.}
+   UNION 
+   {?dataentry skos:closeMatch genesymbol:HSPD1.}
+   UNION
+   {?dataentry skos:closeMatch unigene:Hs.595053.}
+   UNION
+   {?dataentry skos:closeMatch refseq:NM_002156.}
+   UNION
+   {?dataentry skos:closeMatch entrez:3329.}
+   }
+   ?fv ot:feature ?feature.
+   ?fv ot:value ?value.
+   ?feature dcterms:title ?title.
+   ?feature owl:sameAs ?valuetype.
+   ?feature ot:hasSource ?data.
+   ?data isa:hasOntologyTerm ?datatype.
+   ?datanode isa:hasData ?data.  
+   ?datanode rdf:type isa:DataNode.
+   ?datanode isa:hasStudy ?study.
+   ?study rdf:type isa:Study.
+   ?investigation isa:hasStudy ?study.
+   ?investigation rdf:type isa:Investigation.
+}  
