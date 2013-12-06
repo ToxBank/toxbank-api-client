@@ -1,0 +1,16 @@
+PREFIX ot:<http://www.opentox.org/api/1.1#>
+PREFIX isa:<http://onto.toxbank.net/isa/>
+PREFIX dcterms:<http://purl.org/dc/terms/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+SELECT distinct ?investigation ?file ?term where {
+  ?investigation rdf:type isa:Investigation.
+  ?investigation isa:hasStudy ?study.
+  ?study rdf:type isa:Study.
+  ?datanode isa:hasStudy ?study.
+  ?datanode rdf:type isa:DataNode.
+  ?datanode isa:hasData ?data.
+  ?data rdf:type isa:Data.
+  ?data isa:hasOntologyTerm ?term.
+  ?data rdfs:seeAlso ?file.
+}  order by ?investigation
