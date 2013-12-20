@@ -98,49 +98,26 @@ public class InvestigationClient {
    */
   public List<TimestampedUrl> listTimestampedInvestigations(URL rootUrl, User user) throws Exception {
     List<TimestampedUrl> urls = new ArrayList<TimestampedUrl>();
-    HttpGet httpGet = new HttpGet(rootUrl.toString());
-    httpGet.addHeader("user", user.getResourceURL().toString());
-    httpGet.addHeader("Accept", "application/json");
-    httpGet.addHeader("Accept-Charset", "utf-8");
-    
-    InputStream in = null;
-    try {
-      HttpResponse response = getHttpClient().execute(httpGet);
-      HttpEntity entity  = response.getEntity();
-      in = entity.getContent();
-      if (response.getStatusLine().getStatusCode()== HttpStatus.SC_OK) {
-        BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-        StringBuilder sb = new StringBuilder();
-        for (String line = br.readLine(); line != null; line = br.readLine()) {
-          sb.append(line);
-          sb.append("\n");
-        }
-        JSONObject obj = new JSONObject(sb.toString());
-        if (obj != null) {
-          JSONObject results = obj.getJSONObject("results");
-          if (results != null) {
-            JSONArray investigations = results.getJSONArray("bindings");
-            for (int i = 0; i < investigations.length(); i++) {
-              JSONObject investigation = investigations.getJSONObject(i);
-              JSONObject uri = investigation.getJSONObject("uri");
-              JSONObject timestamp = investigation.getJSONObject("updated");
-              String uriValue = uri.getString("value");
-              if (uriValue.endsWith("/")) {
-                uriValue = uriValue.substring(0, uriValue.length()-1);
-              }
-              long timestampValue = timestamp.getLong("value");
-              TimestampedUrl url = new TimestampedUrl(new URL(uriValue), timestampValue);
-              urls.add(url);
-            }
-          }
-        }            
-      } else if (response.getStatusLine().getStatusCode()== HttpStatus.SC_NOT_FOUND) {  
-        return null;       
-      } else throw new RestException(response.getStatusLine().getStatusCode(),response.getStatusLine().getReasonPhrase());
 
-    } finally {
-      try {if (in !=null) in.close();} catch (Exception x) {}
-    }
+    JSONObject obj = requestToJson(rootUrl, user);
+    if (obj != null) {
+      JSONObject results = obj.getJSONObject("results");
+      if (results != null) {
+        JSONArray investigations = results.getJSONArray("bindings");
+        for (int i = 0; i < investigations.length(); i++) {
+          JSONObject investigation = investigations.getJSONObject(i);
+          JSONObject uri = investigation.getJSONObject("uri");
+          JSONObject timestamp = investigation.getJSONObject("updated");
+          String uriValue = uri.getString("value");
+          if (uriValue.endsWith("/")) {
+            uriValue = uriValue.substring(0, uriValue.length()-1);
+          }
+          long timestampValue = timestamp.getLong("value");
+          TimestampedUrl url = new TimestampedUrl(new URL(uriValue), timestampValue);
+          urls.add(url);
+        }
+      }
+    }            
     
     return urls;
   }
@@ -208,7 +185,7 @@ public class InvestigationClient {
     Model model = ModelFactory.createDefaultModel();
     requestIntoModel(new URL(rootUrl + "/" + investigationId + "/metadata"), model);
     requestIntoModel(new URL(rootUrl + "/" + investigationId + "/protocol"), model);        
-            
+      
     List<Investigation> investigations = getIOClass().fromJena(model);
     if (investigations.size() == 0) {
       return null;
@@ -220,6 +197,131 @@ public class InvestigationClient {
       Investigation investigation = investigations.get(0);
       investigation.setSeuratId(seuratId);
       return investigation;
+    }
+  }
+  
+  /**
+   * Gets adjunct info for the given investigation url
+   * @parma investigationUrl the url of the investigation to query
+   * @return the adjunct info
+   */
+  public AdjunctInvestigationInfo getAdjunctInvestigationInfo(URL investigationUrl) throws Exception {
+    String urlString = investigationUrl.toString();
+    Matcher matcher = investigationUrlPattern.matcher(urlString.toString());
+    if (!matcher.matches()) {
+      throw new RuntimeException("Invalid investigation url: " + urlString);
+    }
+    String investigationId = matcher.group(2);
+    String rootUrl = matcher.group(1);
+    
+    AdjunctInvestigationInfo info = new AdjunctInvestigationInfo(investigationId);
+    
+    URL factorsUrl = new URL(rootUrl + "/" + investigationId + "/sparql/factors_by_investigation");
+    JSONArray factorsJson = requestToJsonBindings(factorsUrl, null);
+    for (int i = 0; i < factorsJson.length(); i++) {
+      JSONObject factorJson = factorsJson.getJSONObject(i);
+      AdjunctInvestigationInfo.Datum factor = factorFromJson(factorJson);
+      if (factor != null) {
+        info.addFactor(factor);
+      }
+    }
+    
+    URL characteristicsUrl = new URL(rootUrl + "/" + investigationId + "/sparql/characteristics_by_investigation");
+    JSONArray characteristicsJson = requestToJsonBindings(characteristicsUrl, null);
+    for (int i = 0; i < characteristicsJson.length(); i++) {
+      JSONObject characteristicJson = characteristicsJson.getJSONObject(i);
+      AdjunctInvestigationInfo.Datum characteristic = characteristicFromJson(characteristicJson);
+      if (characteristic != null) {
+        info.addCharacteristic(characteristic);
+      }
+    }
+    
+    URL detailsUrl = new URL(rootUrl + "/" + investigationId + "/sparql/investigation_details");
+    JSONArray detailsJson = requestToJsonBindings(detailsUrl, null);
+    for (int i = 0; i < detailsJson.length(); i++) {
+      JSONObject detailJson = detailsJson.getJSONObject(i);
+      AdjunctInvestigationInfo.Datum endpoint = labeledDetailFromJson(detailJson, "endpoint");
+      if (endpoint != null) {
+        info.addDetail(endpoint);
+      }
+      AdjunctInvestigationInfo.Datum technology = labeledDetailFromJson(detailJson, "technology");
+      if (technology != null) {
+        info.addDetail(technology);
+      }
+    }
+
+    return info;
+  }
+  
+  private AdjunctInvestigationInfo.Datum factorFromJson(JSONObject jsonObj) throws Exception {
+    String name = jsonObj.getJSONObject("factorname").getString("value");
+    JSONObject valueObj = jsonObj.optJSONObject("value");
+    String value = null;
+    if (valueObj != null) {
+      if ("literal".equals(valueObj.getString("type"))) {
+        value = valueObj.getString("value");
+        JSONObject unitObj = jsonObj.optJSONObject("unit");
+        if (unitObj != null && unitObj.optString("value", null) != null) {
+          value = value + " " + unitObj.getString("value"); 
+        }
+      }
+    }
+    JSONObject uriObj = jsonObj.optJSONObject("ontouri");
+    String uri = null;
+    if (uriObj != null) {
+      uri = uriObj.optString("value", null);
+    }
+    if (value == null && uriObj == null) {
+      return null;
+    }
+    else {
+      return new AdjunctInvestigationInfo.Datum(name, value, uri);
+    }
+  }
+
+  private AdjunctInvestigationInfo.Datum characteristicFromJson(JSONObject jsonObj) throws Exception {
+    String name = jsonObj.getJSONObject("propname").getString("value");
+    JSONObject valueObj = jsonObj.optJSONObject("value");
+    String value = null;
+    if (valueObj != null) {
+      if ("literal".equals(valueObj.getString("type"))) {
+        value = valueObj.getString("value");
+        JSONObject unitObj = jsonObj.optJSONObject("unit");
+        if (unitObj != null && unitObj.optString("value", null) != null) {
+          value = value + " " + unitObj.getString("value"); 
+        }
+      }
+    }
+    JSONObject uriObj = jsonObj.optJSONObject("ontouri");
+    String uri = null;
+    if (uriObj != null) {
+      uri = uriObj.optString("value", null);
+    }
+    if (value == null && uriObj == null) {
+      return null;
+    }
+    else {
+      return new AdjunctInvestigationInfo.Datum(name, value, uri);
+    }
+  }
+  
+  private AdjunctInvestigationInfo.Datum labeledDetailFromJson(JSONObject jsonObj, String name) throws Exception {
+    String label = null;
+    String uri = null;
+    JSONObject uriObj = jsonObj.optJSONObject(name);
+    if (uriObj != null) {
+      uri = uriObj.optString("value", null);
+    }    
+    JSONObject labelObj = jsonObj.optJSONObject(name + "Label");
+    if (labelObj != null) {
+      label = labelObj.optString("value", null);
+    }
+    
+    if (label != null) {
+      return new AdjunctInvestigationInfo.Datum(name, label, uri);
+    }
+    else {
+      return null;
     }
   }
   
@@ -304,6 +406,59 @@ public class InvestigationClient {
     return model;
   }
   
+  /**
+   * Runs the given request. The results are returned as a json array
+   * of sparql bindings
+   * @param url the url where the query should be performed
+   * @param user an optional user parameter
+   * @return the bindings result
+   */
+  public JSONArray requestToJsonBindings(URL url, User user) throws Exception {
+    JSONObject jsonObj = requestToJson(url, user);
+    JSONObject resultsJson = jsonObj.getJSONObject("results");
+    return resultsJson.getJSONArray("bindings");
+  }
+  
+  /**
+   * Runs the given request. The results are returned as a json object
+   * @param url the url where the query should be performed
+   * @param user an optional user parameter
+   * @return the json object with the results
+   */
+  public JSONObject requestToJson(URL url, User user) throws Exception {
+    HttpGet httpGet = new HttpGet(url.toString());
+    if (user != null) {
+      httpGet.addHeader("user", user.getResourceURL().toString());
+    }
+    httpGet.addHeader("Accept", "application/json");
+    httpGet.addHeader("Accept-Charset", "utf-8");
+    
+    InputStream in = null;
+    try {
+      HttpResponse response = getHttpClient().execute(httpGet);
+      HttpEntity entity  = response.getEntity();
+      in = entity.getContent();
+      if (response.getStatusLine().getStatusCode()== HttpStatus.SC_OK) {
+        BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+        StringBuilder sb = new StringBuilder();
+        for (String line = br.readLine(); line != null; line = br.readLine()) {
+          sb.append(line);
+          sb.append("\n");
+        }
+        System.out.println(sb.toString());
+        JSONObject obj = new JSONObject(sb.toString());
+        return obj;
+      } else if (response.getStatusLine().getStatusCode()== HttpStatus.SC_NOT_FOUND) {   
+        return null;       
+      } else {
+        throw new RestException(response.getStatusLine().getStatusCode(),response.getStatusLine().getReasonPhrase());
+      }
+
+    } finally {
+      try {if (in !=null) in.close();} catch (Exception x) {}
+    }
+  }
+      
   /**
    * Runs the given request. The results are then loaded into
    * a newly created model and returned
