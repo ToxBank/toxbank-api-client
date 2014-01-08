@@ -214,7 +214,7 @@ public class InvestigationClient {
     String investigationId = matcher.group(2);
     String rootUrl = matcher.group(1);
     
-    AdjunctInvestigationInfo info = new AdjunctInvestigationInfo(investigationId);
+    AdjunctInvestigationInfo info = new AdjunctInvestigationInfo(urlString, investigationId);
     
     URL factorsUrl = new URL(rootUrl + "/" + investigationId + "/sparql/factors_by_investigation");
     JSONArray factorsJson = requestToJsonBindings(factorsUrl, null);
@@ -323,6 +323,26 @@ public class InvestigationClient {
     else {
       return null;
     }
+  }
+  
+  /**
+   * Gets the list of isatab entries for the given investigation url
+   * @param url the url of the investigation
+   * @return the list of isatab entry urls
+   */
+  public List<InvestigationIsaTabFile> getIsaTabEntries(String investigationUrl) throws Exception {
+    List<InvestigationIsaTabFile> entries = new ArrayList<InvestigationIsaTabFile>();
+    JSONArray bindings = requestToJsonBindings(new URL(investigationUrl + "/sparql/files_by_investigation"), null);
+    for (int i = 0; i < bindings.length(); i++) {
+      JSONObject binding = bindings.getJSONObject(i);
+      if (binding.optJSONObject("file") != null &&
+          binding.optJSONObject("term") != null) {
+        String filename = binding.getJSONObject("file").getString("value");
+        String typeUri = binding.getJSONObject("term").getString("value");
+        entries.add(new InvestigationIsaTabFile(typeUri, filename));
+      }
+    }
+    return entries;
   }
   
   /**
@@ -445,7 +465,7 @@ public class InvestigationClient {
           sb.append(line);
           sb.append("\n");
         }
-        System.out.println(sb.toString());
+        // System.out.println(sb.toString());
         JSONObject obj = new JSONObject(sb.toString());
         return obj;
       } else if (response.getStatusLine().getStatusCode()== HttpStatus.SC_NOT_FOUND) {   

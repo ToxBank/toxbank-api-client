@@ -21,13 +21,19 @@ public class AdjunctInvestigationInfo {
   public static final String ENDPOINT = "endpoint";
   public static final String TECHNOLOGY = "technology";
   
+  private String url;
   private String id;
   private List<Datum> details = new ArrayList<Datum>();
   private List<Datum> factors = new ArrayList<Datum>();
   private List<Datum> characteristics = new ArrayList<Datum>();
   
-  public AdjunctInvestigationInfo(String id) {
+  public AdjunctInvestigationInfo(String url, String id) {
+    this.url = url;
     this.id = id;
+  }
+  
+  public String getUrl() {
+    return url;
   }
   
   public String getId() {
