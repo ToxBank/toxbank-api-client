@@ -1,28 +1,37 @@
+# Retrieves investigation URI given gene identifier 
+# e.G.: uniprot:P10809 or genesymbol:HSPD1
+
 PREFIX ot:<http://www.opentox.org/api/1.1#>
 PREFIX isa:<http://onto.toxbank.net/isa/>
 PREFIX dcterms:<http://purl.org/dc/terms/>
-PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX skos:<http://www.w3.org/2004/02/skos/core#>
 PREFIX owl:<http://www.w3.org/2002/07/owl#>
-PREFIX tb:<http://onto.toxbank.net/api/>
+PREFIX entrez:<http://onto.toxbank.net/isa/Entrez/>
+PREFIX uniprot:<http://purl.uniprot.org/uniprot/>
+PREFIX genesymbol: <http://onto.toxbank.net/isa/Symbol/>
+PREFIX unigene: <http://onto.toxbank.net/isa/Unigene/>
+PREFIX refseq:<http://onto.toxbank.net/isa/RefSeq/>
+PREFIX tb:    <http://onto.toxbank.net/api/>
 
-SELECT DISTINCT ?investigation ?gene WHERE {
+SELECT DISTINCT ?investigation ?datatype ?title ?valuetype ?value WHERE {
    ?investigation rdf:type isa:Investigation.
    ?investigation isa:hasStudy ?study.
    ?investigation tb:isPublished "true"^^<http://www.w3.org/2001/XMLSchema#boolean>.
    ?investigation tb:isSummarySearchable "true"^^<http://www.w3.org/2001/XMLSchema#boolean>.
-   ?gene rdf:type isa:Gene.
-   ?s skos:closeMatch ?gene.
-   ?s ot:values ?fv.
+   ?dataentry ot:values ?fv.
+   {
+     %{Values}
+   }
    ?fv ot:feature ?feature.
    ?fv ot:value ?value.
    ?feature dcterms:title ?title.
-   ?feature owl:sameAs <http://onto.toxbank.net/isa/FC>.
+   ?feature owl:sameAs ?valuetype.
    ?feature ot:hasSource ?data.
+   ?data isa:hasOntologyTerm ?datatype.
    ?datanode isa:hasData ?data.
    ?datanode rdf:type isa:DataNode.
    ?datanode isa:hasStudy ?study.
    ?study rdf:type isa:Study.
-   FILTER( ?value > %{value} ).
 }

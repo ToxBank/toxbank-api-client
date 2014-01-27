@@ -3,12 +3,15 @@
 #
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-prefix isa:   <http://onto.toxbank.net/isa/>
-prefix dcterms: <http://purl.org/dc/terms/>
+PREFIX isa:   <http://onto.toxbank.net/isa/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX tb:    <http://onto.toxbank.net/api/>
 
-SELECT distinct ?inv ?factorname ?value ?ontouri WHERE {
- ?inv rdf:type isa:Investigation.
- ?inv isa:hasStudy ?study.
+SELECT DISTINCT ?investigation ?factorname ?value ?ontouri WHERE {
+ ?investigation rdf:type isa:Investigation.
+ ?investigation isa:hasStudy ?study.
+ ?investigation tb:isPublished "true"^^<http://www.w3.org/2001/XMLSchema#boolean>.
+ ?investigation tb:isSummarySearchable "true"^^<http://www.w3.org/2001/XMLSchema#boolean>.
  ?node isa:hasStudy ?study.
  ?node rdf:type isa:MaterialNode.
  ?node isa:hasMaterial ?sample.
@@ -17,4 +20,4 @@ SELECT distinct ?inv ?factorname ?value ?ontouri WHERE {
  ?factorValue isa:hasValue  ?value.
  ?factorValue isa:hasFactor ?factor. 
  ?factor dcterms:title ?factorname.
-} order by ?inv
+} ORDER BY ?investigation

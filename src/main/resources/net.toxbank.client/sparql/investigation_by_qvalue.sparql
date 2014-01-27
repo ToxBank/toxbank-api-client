@@ -1,12 +1,17 @@
 PREFIX ot:<http://www.opentox.org/api/1.1#>
 PREFIX isa:<http://onto.toxbank.net/isa/>
 PREFIX dcterms:<http://purl.org/dc/terms/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX skos:<http://www.w3.org/2004/02/skos/core#>
 PREFIX owl:<http://www.w3.org/2002/07/owl#>
+PREFIX tb:<http://onto.toxbank.net/api/>
 
-SELECT distinct ?investigation ?gene  where {
+SELECT DISTINCT ?investigation ?gene WHERE {
+   ?investigation rdf:type isa:Investigation.
+   ?investigation isa:hasStudy ?study.
+   ?investigation tb:isPublished "true"^^<http://www.w3.org/2001/XMLSchema#boolean>.
+   ?investigation tb:isSummarySearchable "true"^^<http://www.w3.org/2001/XMLSchema#boolean>.
    ?gene rdf:type isa:Gene.
    ?s skos:closeMatch ?gene.
    ?s ot:values ?fv.
@@ -15,11 +20,9 @@ SELECT distinct ?investigation ?gene  where {
    ?feature dcterms:title ?title.
    ?feature owl:sameAs <http://onto.toxbank.net/isa/qvalue>.
    ?feature ot:hasSource ?data.
-   ?datanode isa:hasData ?data.  
+   ?datanode isa:hasData ?data.
    ?datanode rdf:type isa:DataNode.
    ?datanode isa:hasStudy ?study.
    ?study rdf:type isa:Study.
-   ?investigation isa:hasStudy ?study.
-   ?investigation rdf:type isa:Investigation.
-   FILTER( ?value <= 0.05 )
-}  
+   FILTER( ?value <= %{value} ).
+} 

@@ -3,18 +3,22 @@
 #
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-prefix isa:   <http://onto.toxbank.net/isa/>
-prefix dcterms: <http://purl.org/dc/terms/>
+PREFIX isa:   <http://onto.toxbank.net/isa/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
 
-SELECT distinct ?factorname ?value ?ontouri WHERE {
- <https://services.toxbank.net/investigation/02d910d9-a3bb-4275-8ae0-dc2b3a1555fe/> isa:hasStudy ?study.
+SELECT DISTINCT ?factorname ?value ?ontouri ?unitOnto ?unit ?unitID WHERE {
+ <%{investigation_uri}> isa:hasStudy ?study.
  ?node isa:hasStudy ?study.
  ?node rdf:type isa:MaterialNode.
  ?node isa:hasMaterial ?sample.
  ?sample isa:hasFactorValue ?factorValue.
  OPTIONAL {?factorValue isa:hasOntologyTerm  ?ontouri }.
  ?factorValue isa:hasValue  ?value.
+ OPTIONAL {
+  ?factorValue isa:hasUnit ?unitOnto. 
+  ?unitOnto rdfs:label ?unit.
+  ?unitOnto isa:hasAccessionID ?unitID.
+ }
  ?factorValue isa:hasFactor ?factor. 
  ?factor dcterms:title ?factorname.
-} 
-
+}
