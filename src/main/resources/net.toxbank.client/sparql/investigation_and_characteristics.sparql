@@ -16,7 +16,7 @@ SELECT DISTINCT ?investigation ?propname ?propValue ?ontouri WHERE {
  ?node rdf:type isa:MaterialNode.
  ?node isa:hasMaterial ?sample.
  ?sample isa:hasCharacteristicValue ?propValue.
- ?propValue isa:hasOntologyTerm ?ontouri . 
+ OPTIONAL {?propValue isa:hasOntologyTerm ?ontouri .} 
  ?propValue isa:hasValue  ?value.
  ?propValue isa:hasProperty ?property. 
  ?property dcterms:title ?propname.
