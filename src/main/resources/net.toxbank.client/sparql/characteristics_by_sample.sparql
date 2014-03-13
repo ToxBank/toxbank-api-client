@@ -9,10 +9,10 @@ PREFIX isa:   <http://onto.toxbank.net/isa/>
 PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX tb:    <http://onto.toxbank.net/api/>
 
-SELECT DISTINCT ?study ?propname ?value ?ontouri WHERE {
+SELECT DISTINCT ?propname ?value ?ontouri WHERE {
  <%{sample_uri}> isa:hasCharacteristicValue ?propValue.
  OPTIONAL {?propValue isa:hasOntologyTerm ?ontouri . }
  ?propValue isa:hasValue  ?value.
  ?propValue isa:hasProperty ?property. 
  ?property dcterms:title ?propname.
-} ORDER BY ?study
+} 
