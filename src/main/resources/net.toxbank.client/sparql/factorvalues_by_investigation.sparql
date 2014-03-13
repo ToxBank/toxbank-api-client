@@ -6,12 +6,17 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX isa:   <http://onto.toxbank.net/isa/>
 PREFIX dcterms: <http://purl.org/dc/terms/>
 
-SELECT DISTINCT ?sample ?factorname ?value ?ontouri ?unitOnto ?unit ?unitID WHERE {
+SELECT distinct ?biosample ?sample ?factorname ?value ?ontouri ?unitOnto ?unit ?unitID WHERE {
  <%{investigation_uri}> isa:hasStudy ?study.
- ?node isa:hasStudy ?study.
- ?node rdf:type isa:MaterialNode.
- ?node isa:hasMaterial ?sample.
- ?sample isa:hasFactorValue ?factorValue.
+ ?node1 rdf:type isa:MaterialNode.
+ ?node1 isa:hasMaterial ?biosample.
+ ?mp isa:hasInputNode ?node1.
+ ?mp isa:hasOutputNode ?node2 .
+ ?node2 isa:hasMaterial ?sample.
+ ?node2 isa:hasStudy ?study.
+ ?node2 rdf:type isa:MaterialNode.
+
+?sample isa:hasFactorValue ?factorValue.
  OPTIONAL {?factorValue isa:hasOntologyTerm  ?ontouri }.
  ?factorValue isa:hasValue  ?value.
  OPTIONAL {
@@ -21,4 +26,8 @@ SELECT DISTINCT ?sample ?factorname ?value ?ontouri ?unitOnto ?unit ?unitID WHER
  }
  ?factorValue isa:hasFactor ?factor. 
  ?factor dcterms:title ?factorname.
-} order by ?sample ?factorname
+
+ MINUS { 
+   ?mp isa:hasOutputNode ?node1.
+ }
+} order by ?biosample ?sample ?factorname
