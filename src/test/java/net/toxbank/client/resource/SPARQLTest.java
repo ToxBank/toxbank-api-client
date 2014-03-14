@@ -26,16 +26,58 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 
 
 public class SPARQLTest {
-	private static final String demo = "tggates";
+	private enum _test {
+		tggates {
+			@Override
+			public String getInvestigationURI() {
+				return "https://services.toxbank.net/investigation/6c81b6f9-1684-41e6-ae02-e1b45ef60741/I2";
+			}
+		},
+		notox {
+			@Override
+			public String getInvestigationURI() {
+				 return "https://services.toxbank.net/investigation/3e78e694-4656-42c5-a26b-77b00c306633/I67";
+			}
+		},
+		dium {
+			@Override
+			public String getInvestigationURI() {
+				return "https://services.toxbank.net/investigation/d230d110-9630-4263-bdaf-0936dcdf582f/I1";
+			}
+		};
+		public abstract String getInvestigationURI();
+
+	}
+	private static _test demo = _test.tggates;
 	static protected Model model;
+
+	@Test
+	public void test_endpoint_and_technology_by_investigation() throws Exception {
+		Assert.assertNotNull(model);
+		String sparqlQuery = String.format(
+				loadQuery("endpoint_and_technology_by_investigation","{investigation_uri}"),
+				demo.getInvestigationURI());
+		Assert.assertTrue(execQuery(sparqlQuery)>0);
+
+	}
 	
+	@Test
+	public void test_files_by_investigation() throws Exception {
+		Assert.assertNotNull(model);
+		if (demo.equals(_test.tggates)) return ; //no files there?
+		String sparqlQuery = String.format(
+				loadQuery("files_by_investigation","{investigation_uri}"),
+				demo.getInvestigationURI());
+		Assert.assertTrue(execQuery(sparqlQuery)>0);
+
+	}
 	
 	@Test
 	public void test_characteristics_by_investigation() throws Exception {
 		Assert.assertNotNull(model);
 		String sparqlQuery = String.format(
 				loadQuery("characteristics_by_investigation","{investigation_uri}"),
-				"https://services.toxbank.net/investigation/6c81b6f9-1684-41e6-ae02-e1b45ef60741/I2");
+				demo.getInvestigationURI());
 		Assert.assertTrue(execQuery(sparqlQuery)>0);
 	}
 	
@@ -60,14 +102,9 @@ public class SPARQLTest {
 	public void test_factorvalues_by_investigation() throws Exception {
 		Assert.assertNotNull(model);
 		String sparqlQuery = null;
-		if ("notox".equals(demo))
 			sparqlQuery = String.format(
 				loadQuery("factorvalues_by_investigation","{investigation_uri}"),
-				"https://services.toxbank.net/investigation/3e78e694-4656-42c5-a26b-77b00c306633/I67");
-		else //tggates 
-			sparqlQuery = String.format(
-				loadQuery("factorvalues_by_investigation","{investigation_uri}"),
-			"https://services.toxbank.net/investigation/6c81b6f9-1684-41e6-ae02-e1b45ef60741/I2");
+				demo.getInvestigationURI());
 
 		Assert.assertTrue(
 				execQuery(sparqlQuery, new ProcessSolution() {
@@ -115,7 +152,7 @@ public class SPARQLTest {
 	}
 	@BeforeClass
 	public static void loadModel() throws Exception {	
-		InputStream in = SPARQLTest.class.getClassLoader().getResourceAsStream(String.format("net/toxbank/metadata/%s/isatab.n3",demo));
+		InputStream in = SPARQLTest.class.getClassLoader().getResourceAsStream(String.format("net/toxbank/metadata/%s/isatab.n3",demo.name()));
 		try {
 			Assert.assertNotNull(in);
 			model = ModelFactory.createDefaultModel();
