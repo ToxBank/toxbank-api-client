@@ -26,6 +26,7 @@ import com.hp.hpl.jena.vocabulary.RDFS;
 
 
 public class SPARQLTest {
+	private static final String demo = "tggates";
 	static protected Model model;
 	
 	
@@ -58,11 +59,16 @@ public class SPARQLTest {
 	@Test
 	public void test_factorvalues_by_investigation() throws Exception {
 		Assert.assertNotNull(model);
-		String sparqlQuery = String.format(
+		String sparqlQuery = null;
+		if ("notox".equals(demo))
+			sparqlQuery = String.format(
 				loadQuery("factorvalues_by_investigation","{investigation_uri}"),
-				"https://services.toxbank.net/investigation/6c81b6f9-1684-41e6-ae02-e1b45ef60741/I2");
-	
-		
+				"https://services.toxbank.net/investigation/3e78e694-4656-42c5-a26b-77b00c306633/I67");
+		else //tggates 
+			sparqlQuery = String.format(
+				loadQuery("factorvalues_by_investigation","{investigation_uri}"),
+			"https://services.toxbank.net/investigation/6c81b6f9-1684-41e6-ae02-e1b45ef60741/I2");
+
 		Assert.assertTrue(
 				execQuery(sparqlQuery, new ProcessSolution() {
 					void process(ResultSet rs, QuerySolution qs) {
@@ -109,7 +115,7 @@ public class SPARQLTest {
 	}
 	@BeforeClass
 	public static void loadModel() throws Exception {	
-		InputStream in = SPARQLTest.class.getClassLoader().getResourceAsStream("net/toxbank/metadata/tggates/isatab.n3");
+		InputStream in = SPARQLTest.class.getClassLoader().getResourceAsStream(String.format("net/toxbank/metadata/%s/isatab.n3",demo));
 		try {
 			Assert.assertNotNull(in);
 			model = ModelFactory.createDefaultModel();
