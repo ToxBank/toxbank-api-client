@@ -1,0 +1,79 @@
+{
+    "query": [
+        {
+            "sparql": "characteristics_by_investigation"
+        },
+        {
+            "sparql": "characteristics_by_sample"
+        },
+        {
+            "sparql": "endpoint_and_technology_by_investigation"
+        },
+        {
+            "sparql": "factors_by_investigation"
+        },
+        {
+            "sparql": "factorvalues_by_investigation"
+        },
+        {
+            "sparql": "files_by_investigation"
+        },
+        {
+            "sparql": "investigations_and_factors"
+        },
+        {
+            "sparql": "investigations_and_protocols"
+        },
+        {
+            "sparql": "investigation_and_characteristics"
+        },
+        {
+            "sparql": "investigation_and_data_files"
+        },
+        {
+            "sparql": "investigation_by_characteristic"
+        },
+        {
+            "sparql": "investigation_by_characteristic_name"
+        },
+        {
+            "sparql": "investigation_by_characteristic_value"
+        },
+        {
+            "sparql": "investigation_by_factor"
+        },
+        {
+            "sparql": "investigation_by_factors"
+        },
+        {
+            "sparql": "investigation_by_foldchange"
+        },
+        {
+            "sparql": "investigation_by_gene"
+        },
+        {
+            "sparql": "investigation_by_genes"
+        },
+        {
+            "sparql": "investigation_by_gene_and_pvalue"
+        },
+        {
+            "sparql": "investigation_by_pvalue"
+        },
+        {
+            "sparql": "investigation_by_qvalue"
+        },
+        {
+            "sparql": "investigation_details"
+        },
+        {
+            "sparql": "investigation_endpoint_technology"
+        },
+        {
+            "sparql": "invetsigation_by_factors"
+        },
+        {
+            "sparql": "protocols_by_factors"
+        }
+    ]
+}
