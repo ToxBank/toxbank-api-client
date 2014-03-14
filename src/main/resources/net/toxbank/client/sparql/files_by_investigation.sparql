@@ -12,9 +12,9 @@ SELECT DISTINCT ?assay ?assayFile ?endpoint ?endpointLabel ?platform ?technology
   ?data rdf:type isa:Data.
   ?data isa:hasOntologyTerm ?term.
   ?data rdfs:seeAlso ?file.
-  ?mp isa:hasOutputNode ?datanode.  
-  ?mp isa:hasInputNode ?materialnode.
   OPTIONAL {
+    ?mp isa:hasOutputNode ?datanode.  
+    ?mp isa:hasInputNode ?materialnode.
   	?materialnode isa:hasMaterial ?material.
   	?assay isa:uses ?material; 
   	isa:hasEndpoint ?endpoint;
