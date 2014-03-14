@@ -3,7 +3,7 @@ PREFIX isa:<http://onto.toxbank.net/isa/>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
-SELECT DISTINCT ?file ?term WHERE {
+SELECT DISTINCT ?assay ?assayFile ?endpoint ?endpointLabel ?platform ?technology ?techLabel ?file ?term WHERE {
   <%{investigation_uri}> isa:hasStudy ?study.
   ?study rdf:type isa:Study.
   ?datanode isa:hasStudy ?study.
@@ -12,4 +12,16 @@ SELECT DISTINCT ?file ?term WHERE {
   ?data rdf:type isa:Data.
   ?data isa:hasOntologyTerm ?term.
   ?data rdfs:seeAlso ?file.
-}
+  ?mp isa:hasOutputNode ?datanode.  
+  ?mp isa:hasInputNode ?materialnode.
+  OPTIONAL {
+  	?materialnode isa:hasMaterial ?material.
+  	?assay isa:uses ?material; 
+  	isa:hasEndpoint ?endpoint;
+  	rdfs:seeAlso ?assayFile.
+	OPTIONAL {?endpoint rdfs:label ?endpointLabel.}
+	OPTIONAL {?assay isa:usesPlatform ?platform.}
+	?assay isa:usesTechnology ?technology.
+	OPTIONAL {?technology rdfs:label ?techLabel.}
+  }
+}  order by ?assay ?endpoint ?technology
