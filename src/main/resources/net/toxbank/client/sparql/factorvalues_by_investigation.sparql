@@ -17,7 +17,7 @@ SELECT distinct ?biosample ?sample ?factorname ?value ?ontouri ?unitOnto ?unit ?
  ?node2 rdf:type isa:MaterialNode.
 
 ?sample isa:hasFactorValue ?factorValue.
- OPTIONAL {?factorValue isa:hasOntologyTerm  ?ontouri }.
+ OPTIONAL {?factorValue isa:hasOntologyTerm  ?ontouri. }.
  ?factorValue isa:hasValue  ?value.
  OPTIONAL {
   ?factorValue isa:hasUnit ?unitOnto. 
