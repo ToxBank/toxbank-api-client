@@ -35,8 +35,24 @@ public class SPARQLTest {
 		String sparqlQuery = String.format(
 				loadQuery("characteristics_by_investigation","{investigation_uri}"),
 				"https://services.toxbank.net/investigation/6c81b6f9-1684-41e6-ae02-e1b45ef60741/I2");
+		Assert.assertTrue(execQuery(sparqlQuery)>0);
+	}
+	
+	@Test
+	public void test_characteristics_by_sample() throws Exception {
+		Assert.assertNotNull(model);
+		String sparqlQuery = String.format(
+				loadQuery("characteristics_by_sample","{sample_uri}"),
+				"https://services.toxbank.net/investigation/6c81b6f9-1684-41e6-ae02-e1b45ef60741/source417");
+		Assert.assertTrue(execQuery(sparqlQuery)>0);
+		
+		sparqlQuery = String.format(
+				loadQuery("characteristics_by_sample","{sample_uri}"),
+				"https://services.toxbank.net/investigation/6c81b6f9-1684-41e6-ae02-e1b45ef60741/source405");
+
 	
 		Assert.assertTrue(execQuery(sparqlQuery)>0);
+		
 	}
 	
 	@Test
@@ -46,29 +62,35 @@ public class SPARQLTest {
 				loadQuery("factorvalues_by_investigation","{investigation_uri}"),
 				"https://services.toxbank.net/investigation/6c81b6f9-1684-41e6-ae02-e1b45ef60741/I2");
 	
-		Assert.assertTrue(execQuery(sparqlQuery)>0);
+		
+		Assert.assertTrue(
+				execQuery(sparqlQuery, new ProcessSolution() {
+					void process(ResultSet rs, QuerySolution qs) {
+						String biosample = qs.getResource("biosample").getURI();
+						try {
+							String subSelect = String.format(
+									loadQuery("characteristics_by_sample","{sample_uri}"),
+									biosample);
+							Assert.assertTrue(execQuery(subSelect)>0);
+						} catch (Exception x) {
+							x.printStackTrace();
+						}
+						super.process(rs, qs);						
+					};
+				}
+				)>0);		
 	}
 	
 	protected int execQuery(String sparqlQuery) {
+		return execQuery(sparqlQuery,new ProcessSolution());
+	}
+	protected int execQuery(String sparqlQuery,ProcessSolution processor) {
 		Query query = QueryFactory.create(sparqlQuery);
 		QueryExecution qe = QueryExecutionFactory.create(query,model);
 		int records = 0;
 		try {
 			ResultSet rs = qe.execSelect();
-			int n = 0;
-			while (rs.hasNext()) {
-				records++;
-				QuerySolution qs = rs.next();
-				for (String name : rs.getResultVars()) {
-					RDFNode node = qs.get(name);
-					if (node ==null) ;
-					else if (node.isLiteral()) System.out.print(node.asLiteral().getString());
-					else if (node.isResource()) System.out.print(node.asResource().getURI());
-					else System.out.print(node.asNode().getName());
-					 System.out.print("\t");
-				}
-				System.out.println();
-			}	
+			records = processor.process(rs);
 		} finally {
 			qe.close();	
 		}
@@ -76,7 +98,6 @@ public class SPARQLTest {
 	}
 	public String loadQuery(String sparqlQuery,String param) throws Exception {
 		String q = String.format("net/toxbank/client/sparql/%s.sparql", sparqlQuery);
-		System.out.println(q);
 		InputStream in = TBClient.class.getClassLoader().getResourceAsStream(q);
 		Assert.assertNotNull(in);
 		try {
@@ -110,4 +131,34 @@ public class SPARQLTest {
 		if (model!=null) model.close(); 
 	}
 	
+}
+
+class ProcessSolution {
+	public int process(ResultSet rs) {
+		int records = 0;
+		System.out.println();
+		while (rs.hasNext()) {
+			records++;
+			QuerySolution qs = rs.next();
+			process(rs,qs);
+		}
+		return records;
+	}
+	void processHeader(ResultSet rs) {
+		for (String name : rs.getResultVars()) {
+			System.out.print(name);
+			System.out.print("\t");
+		}		
+	}
+	void process(ResultSet rs,QuerySolution qs) {
+		for (String name : rs.getResultVars()) {
+			RDFNode node = qs.get(name);
+			if (node ==null) ;
+			else if (node.isLiteral()) System.out.print(node.asLiteral().getString());
+			else if (node.isResource()) System.out.print(node.asResource().getURI());
+			else System.out.print(node.asNode().getName());
+			 System.out.print("\t");
+		}
+		System.out.println();
+	}
 }
