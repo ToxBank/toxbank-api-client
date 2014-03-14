@@ -3,6 +3,7 @@ package net.toxbank.client.resource;
 import java.io.InputStream;
 
 import junit.framework.Assert;
+import net.toxbank.client.TBClient;
 import net.toxbank.client.io.rdf.TOXBANK;
 
 import org.junit.AfterClass;
@@ -24,8 +25,22 @@ public class SPARQLTest {
 	@Test
 	public void test() throws Exception {
 		Assert.assertNotNull(model);
+		String query = loadQuery("characteristics_by_investigation");
+		System.out.println(query);
 	}
 	
+	public String loadQuery(String query) throws Exception {
+		String q = String.format("net/toxbank/client/sparql/%s.sparql", query);
+		System.out.println(q);
+		InputStream in = TBClient.class.getClassLoader().getResourceAsStream(q);
+		Assert.assertNotNull(in);
+		try {
+	        //Z means: "The end of the input but for the final terminator, if any"
+	     return new java.util.Scanner(in,"UTF8").useDelimiter("\\Z").next();
+		} finally {
+			if (in!=null) in.close();
+		}
+	}
 	@BeforeClass
 	public static void loadModel() throws Exception {	
 		InputStream in = SPARQLTest.class.getClassLoader().getResourceAsStream("net/toxbank/metadata/isatab.n3");
