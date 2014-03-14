@@ -10,8 +10,15 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.hp.hpl.jena.query.Query;
+import com.hp.hpl.jena.query.QueryExecution;
+import com.hp.hpl.jena.query.QueryExecutionFactory;
+import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.QuerySolution;
+import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.vocabulary.DCTerms;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDF;
@@ -23,27 +30,65 @@ public class SPARQLTest {
 	
 	
 	@Test
-	public void test() throws Exception {
+	public void test_characteristics_by_investigation() throws Exception {
 		Assert.assertNotNull(model);
-		String query = loadQuery("characteristics_by_investigation");
-		System.out.println(query);
+		String sparqlQuery = String.format(
+				loadQuery("characteristics_by_investigation","{investigation_uri}"),
+				"https://services.toxbank.net/investigation/6c81b6f9-1684-41e6-ae02-e1b45ef60741/I2");
+	
+		Assert.assertTrue(execQuery(sparqlQuery)>0);
 	}
 	
-	public String loadQuery(String query) throws Exception {
-		String q = String.format("net/toxbank/client/sparql/%s.sparql", query);
+	@Test
+	public void test_factorvalues_by_investigation() throws Exception {
+		Assert.assertNotNull(model);
+		String sparqlQuery = String.format(
+				loadQuery("factorvalues_by_investigation","{investigation_uri}"),
+				"https://services.toxbank.net/investigation/6c81b6f9-1684-41e6-ae02-e1b45ef60741/I2");
+	
+		Assert.assertTrue(execQuery(sparqlQuery)>0);
+	}
+	
+	protected int execQuery(String sparqlQuery) {
+		Query query = QueryFactory.create(sparqlQuery);
+		QueryExecution qe = QueryExecutionFactory.create(query,model);
+		int records = 0;
+		try {
+			ResultSet rs = qe.execSelect();
+			int n = 0;
+			while (rs.hasNext()) {
+				records++;
+				QuerySolution qs = rs.next();
+				for (String name : rs.getResultVars()) {
+					RDFNode node = qs.get(name);
+					if (node ==null) ;
+					else if (node.isLiteral()) System.out.print(node.asLiteral().getString());
+					else if (node.isResource()) System.out.print(node.asResource().getURI());
+					else System.out.print(node.asNode().getName());
+					 System.out.print("\t");
+				}
+				System.out.println();
+			}	
+		} finally {
+			qe.close();	
+		}
+		return records;
+	}
+	public String loadQuery(String sparqlQuery,String param) throws Exception {
+		String q = String.format("net/toxbank/client/sparql/%s.sparql", sparqlQuery);
 		System.out.println(q);
 		InputStream in = TBClient.class.getClassLoader().getResourceAsStream(q);
 		Assert.assertNotNull(in);
 		try {
 	        //Z means: "The end of the input but for the final terminator, if any"
-	     return new java.util.Scanner(in,"UTF8").useDelimiter("\\Z").next();
+	     return new java.util.Scanner(in,"UTF8").useDelimiter("\\Z").next().replace(param,"s");
 		} finally {
 			if (in!=null) in.close();
 		}
 	}
 	@BeforeClass
 	public static void loadModel() throws Exception {	
-		InputStream in = SPARQLTest.class.getClassLoader().getResourceAsStream("net/toxbank/metadata/isatab.n3");
+		InputStream in = SPARQLTest.class.getClassLoader().getResourceAsStream("net/toxbank/metadata/tggates/isatab.n3");
 		try {
 			Assert.assertNotNull(in);
 			model = ModelFactory.createDefaultModel();
