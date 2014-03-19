@@ -11,10 +11,12 @@ public class InvestigationIsaTabFile {
   private String typeUri;
   private String type;
   private String filename;
+  private String downloadUri;
 
-  public InvestigationIsaTabFile(String typeUri, String filename) {
+  public InvestigationIsaTabFile(String typeUri, String filename, String downloadUri) {
     this.typeUri = typeUri;
     this.filename = filename;
+    this.downloadUri = downloadUri;
     
     type = typeUri.substring(typeUri.lastIndexOf('/')+1);
     String[] typeTerms = type.split("_");
@@ -43,6 +45,10 @@ public class InvestigationIsaTabFile {
     return filename;
   }
 
+  public String getDownloadUri() {
+    return downloadUri;
+  }
+  
   private String mapTypeTerm(String s) {
     if ("ms".equals(s)) {
       return "Mass";

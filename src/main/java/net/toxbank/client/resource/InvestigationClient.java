@@ -52,12 +52,17 @@ import com.hp.hpl.jena.rdf.model.ModelFactory;
  * the investigation service operates significantly different from the other services. 
  */
 public class InvestigationClient {
+  public static enum ValueType {foldChange, qValue, pValue};
+  
   protected static final Charset utf8 = Charset.forName("UTF-8");
   protected static final String mime_rdfxml = "application/rdf+xml";  
   protected static final String query_param = "query";
   protected static final String file_param = "file";
   protected static final String published_param = "published";
   protected static final String searchable_param = "summarySearchable";
+  
+  private static List<String> doseFactorNames = Arrays.asList("dose", "concentration");
+  private static List<String> timeFactorNames = Arrays.asList("sample timepoint", "duration of exposure");
   
   private Writer queryDebuggingWriter;
   
@@ -216,13 +221,17 @@ public class InvestigationClient {
     
     AdjunctInvestigationInfo info = new AdjunctInvestigationInfo(urlString, investigationId);
     
-    URL factorsUrl = new URL(rootUrl + "/" + investigationId + "/sparql/factors_by_investigation");
+    URL factorsUrl = new URL(rootUrl + "/" + investigationId + "/sparql/factorvalues_by_investigation");
     JSONArray factorsJson = requestToJsonBindings(factorsUrl, null);
-    for (int i = 0; i < factorsJson.length(); i++) {
-      JSONObject factorJson = factorsJson.getJSONObject(i);
-      AdjunctInvestigationInfo.Datum factor = factorFromJson(factorJson);
-      if (factor != null) {
-        info.addFactor(factor);
+    addSamples(info.getBioSamples(), factorsJson);
+    
+    for (InvestigationBioSample bioSample : info.getBioSamples().getBioSamples()) {
+      URL characteristicsBySampleUrl = new URL(rootUrl + "/" + investigationId + "/sparql/characteristics_by_sample/" + bioSample.getId());
+      JSONArray characteristicsBySampleJson = requestToJsonBindings(characteristicsBySampleUrl, null);
+      for (int i = 0; i < characteristicsBySampleJson.length(); i++) {
+        JSONObject characteristicJson = characteristicsBySampleJson.getJSONObject(i);
+        AdjunctInvestigationDatum characteristic = characteristicFromJson(characteristicJson);
+        bioSample.addCharacteristic(characteristic);
       }
     }
     
@@ -230,7 +239,7 @@ public class InvestigationClient {
     JSONArray characteristicsJson = requestToJsonBindings(characteristicsUrl, null);
     for (int i = 0; i < characteristicsJson.length(); i++) {
       JSONObject characteristicJson = characteristicsJson.getJSONObject(i);
-      AdjunctInvestigationInfo.Datum characteristic = characteristicFromJson(characteristicJson);
+      AdjunctInvestigationDatum characteristic = characteristicFromJson(characteristicJson);
       if (characteristic != null) {
         info.addCharacteristic(characteristic);
       }
@@ -240,11 +249,11 @@ public class InvestigationClient {
     JSONArray detailsJson = requestToJsonBindings(detailsUrl, null);
     for (int i = 0; i < detailsJson.length(); i++) {
       JSONObject detailJson = detailsJson.getJSONObject(i);
-      AdjunctInvestigationInfo.Datum endpoint = labeledDetailFromJson(detailJson, "endpoint");
+      AdjunctInvestigationDatum endpoint = labeledDetailFromJson(detailJson, "endpoint");
       if (endpoint != null) {
         info.addDetail(endpoint);
       }
-      AdjunctInvestigationInfo.Datum technology = labeledDetailFromJson(detailJson, "technology");
+      AdjunctInvestigationDatum technology = labeledDetailFromJson(detailJson, "technology");
       if (technology != null) {
         info.addDetail(technology);
       }
@@ -253,16 +262,96 @@ public class InvestigationClient {
     return info;
   }
   
-  private AdjunctInvestigationInfo.Datum factorFromJson(JSONObject jsonObj) throws Exception {
+  private boolean isDoseFactor(AdjunctInvestigationDatum factor) {
+    for (String name : doseFactorNames) {
+      if (name.equalsIgnoreCase(factor.getName())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private boolean isTimeFactor(AdjunctInvestigationDatum factor) {
+    for (String name : timeFactorNames) {
+      if (name.equalsIgnoreCase(factor.getName())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private void addSamples(InvestigationBioSamples bioSamples, JSONArray factorBindings) throws Exception {
+    String bioSampleUri = null;
+    String sampleUri = null;
+    String compoundUri = null;
+    String compoundName = null;
+    Float doseValue = null;
+    String doseUnits = null;
+    Float timeValue = null;
+    String timeUnits = null;
+    
+    for (int i = 0; i < factorBindings.length(); i++) {
+      JSONObject factorJson = factorBindings.getJSONObject(i);
+      AdjunctInvestigationDatum factor = factorFromJson(factorJson);
+      if (sampleUri == null) {
+        sampleUri = factor.getSampleUri();
+      }
+      else if (!sampleUri.equals(factor.getSampleUri())) {
+        bioSamples.addFactor(
+            bioSampleUri,
+            compoundUri,
+            compoundName,
+            sampleUri,
+            doseValue,
+            doseUnits,
+            timeValue,
+            timeUnits);
+      }
+      
+      bioSampleUri = factor.getBioSampleUri();
+      if ("compound".equalsIgnoreCase(factor.getName())) {
+        compoundName = factor.getValue();
+        compoundUri = factor.getUri();
+      }
+      else if (isDoseFactor(factor)) {
+        if (factor.getValue() != null) {
+          doseValue = Float.parseFloat(factor.getValue());
+          doseUnits = factor.getUnits();
+        }
+      }
+      else if (isTimeFactor(factor)) {
+        if (factor.getValue() != null) {
+          timeValue = Float.parseFloat(factor.getValue());
+          timeUnits = factor.getUnits();
+        }
+      }
+    }
+    
+    if (sampleUri != null) {
+      bioSamples.addFactor(
+          bioSampleUri,
+          compoundUri,
+          compoundName,
+          sampleUri,
+          doseValue,
+          doseUnits,
+          timeValue,
+          timeUnits);
+    }
+    
+  }
+  
+  private AdjunctInvestigationDatum factorFromJson(JSONObject jsonObj) throws Exception {
     String name = jsonObj.getJSONObject("factorname").getString("value");
     JSONObject valueObj = jsonObj.optJSONObject("value");
     String value = null;
+    String units = null;
     if (valueObj != null) {
       if ("literal".equals(valueObj.getString("type"))) {
         value = valueObj.getString("value");
         JSONObject unitObj = jsonObj.optJSONObject("unit");
-        if (unitObj != null && unitObj.optString("value", null) != null) {
-          value = value + " " + unitObj.getString("value"); 
+        if (unitObj != null) {
+          units = unitObj.optString("value", null);
         }
       }
     }
@@ -271,15 +360,34 @@ public class InvestigationClient {
     if (uriObj != null) {
       uri = uriObj.optString("value", null);
     }
+    
+    String bioSampleId = null;
+    JSONObject bioSampleObj = jsonObj.optJSONObject("biosample");
+    if (bioSampleObj != null) {
+      bioSampleId = bioSampleObj.optString("value", null);
+      if (bioSampleId != null) {
+        bioSampleId = bioSampleId.substring(bioSampleId.lastIndexOf('/')+1, bioSampleId.length());
+        if (bioSampleId.length() == 0) {
+          bioSampleId = null;
+        }
+      }
+    }
+
+    String sampleId = null;
+    JSONObject sampleObj = jsonObj.optJSONObject("sample");
+    if (sampleObj != null) {
+      sampleId = sampleObj.optString("value", null);
+    }
+    
     if (value == null && uriObj == null) {
       return null;
     }
     else {
-      return new AdjunctInvestigationInfo.Datum(name, value, uri);
+      return new AdjunctInvestigationDatum(sampleId, bioSampleId, name, value, uri, units);
     }
   }
 
-  private AdjunctInvestigationInfo.Datum characteristicFromJson(JSONObject jsonObj) throws Exception {
+  private AdjunctInvestigationDatum characteristicFromJson(JSONObject jsonObj) throws Exception {
     String name = jsonObj.getJSONObject("propname").getString("value");
     JSONObject valueObj = jsonObj.optJSONObject("value");
     String value = null;
@@ -301,11 +409,11 @@ public class InvestigationClient {
       return null;
     }
     else {
-      return new AdjunctInvestigationInfo.Datum(name, value, uri);
+      return new AdjunctInvestigationDatum(null, null, name, value, uri, null);
     }
   }
   
-  private AdjunctInvestigationInfo.Datum labeledDetailFromJson(JSONObject jsonObj, String name) throws Exception {
+  private AdjunctInvestigationDatum labeledDetailFromJson(JSONObject jsonObj, String name) throws Exception {
     String label = null;
     String uri = null;
     JSONObject uriObj = jsonObj.optJSONObject(name);
@@ -318,7 +426,7 @@ public class InvestigationClient {
     }
     
     if (label != null) {
-      return new AdjunctInvestigationInfo.Datum(name, label, uri);
+      return new AdjunctInvestigationDatum(null, null, name, label, uri, null);
     }
     else {
       return null;
@@ -339,12 +447,126 @@ public class InvestigationClient {
           binding.optJSONObject("term") != null) {
         String filename = binding.getJSONObject("file").getString("value");
         String typeUri = binding.getJSONObject("term").getString("value");
-        entries.add(new InvestigationIsaTabFile(typeUri, filename));
+        String downloadUri = null;
+        JSONObject downloadUriObj = binding.optJSONObject("downloaduri");
+        if (downloadUriObj != null) {
+          downloadUri = downloadUriObj.optString("value", null);        }
+        entries.add(new InvestigationIsaTabFile(typeUri, filename, downloadUri));
       }
     }
     return entries;
   }
   
+  /**
+   * Gets the list of investigation urls that match the given characteristic values
+   * @param rootUrl the root url of the investigation service
+   * @param value the value to search by
+   * @return the list of invetigation entries
+   */
+  public List<TimestampedUrl> findByCharacteristicValue(URL rootUrl, String value) throws Exception {
+    value = URLEncoder.encode(value, "UTF-8");
+    JSONArray bindings = requestToJsonBindings(new URL(rootUrl + "/sparql/investigation_by_characteristic_value?value="+value), null);
+    List<TimestampedUrl> results = new ArrayList<TimestampedUrl>();
+    for (int i = 0; i < bindings.length(); i++) {
+      JSONObject binding = bindings.getJSONObject(i);
+      JSONObject invObj = binding.optJSONObject("investigation");
+      if (invObj != null) {
+        String invUrl = invObj.optString("value", null);
+        if (invUrl != null) {
+          results.add(new TimestampedUrl(new URL(invUrl), 0l));
+        }
+      }
+    }
+    return results;
+  }
+
+  /**
+   * Gets the list of investigation urls that match the given characteristic names
+   * @param rootUrl the root url of the investigation service
+   * @param factorValues the list of factors to search by
+   * @return the list of investigation entries
+   */
+  public List<TimestampedUrl> findByFactors(URL rootUrl, List<String> factorValues) throws Exception {
+    StringBuilder sb = new StringBuilder();
+    for (String factorValue : factorValues) {
+      String value = URLEncoder.encode(factorValue, "UTF-8");
+      if (sb.length() > 0) {
+        sb.append(",");
+      }
+      sb.append(value);      
+    }
+
+    JSONArray bindings = requestToJsonBindings(new URL(rootUrl + "/sparql/investigation_by_factors?factorValues="+sb.toString()), null);
+    List<TimestampedUrl> results = new ArrayList<TimestampedUrl>();
+    for (int i = 0; i < bindings.length(); i++) {
+      JSONObject binding = bindings.getJSONObject(i);
+      JSONObject invObj = binding.optJSONObject("inv");
+      if (invObj != null) {
+        String invUrl = invObj.optString("value", null);
+        if (invUrl != null) {
+          results.add(new TimestampedUrl(new URL(invUrl), 0l));
+        }
+      }
+    }
+    return results;
+  }
+
+  /**
+   * Gets the list of investigation urls that match the given gene identifiers
+   * @param rootUrl the root url of the investigation service
+   * @param geneIdentifiers the list of gene identifiers to search by
+   * @param value optional minimum value of the given type
+   * @param valueType the type of value to search by
+   * @return the list of investigation entries
+   */
+  public List<TimestampedUrl> findByGeneIdentifiers(URL rootUrl, List<String> geneIdentifiers, Float value, ValueType valueType) throws Exception {
+    StringBuilder sb = new StringBuilder();
+    for (String gene : geneIdentifiers) {
+      String geneValue = URLEncoder.encode(gene, "UTF-8");
+      if (sb.length() > 0) {
+        sb.append(",");
+      }
+      sb.append(geneValue);      
+    }
+
+    String valueTypeName;
+    switch(valueType) {
+    case foldChange:
+      valueTypeName = "FC"; break;
+    case qValue:
+      valueTypeName = "qvalue"; break;
+    case pValue:
+      valueTypeName = "pvalue"; break;
+    default: 
+      throw new RuntimeException("Unsupported value type: " + valueType);
+    }
+    
+    String url;
+    if (value != null && !value.isNaN()) {
+      String valueString = valueTypeName + ":" + String.valueOf(value);
+      valueString = URLEncoder.encode(valueString, "UTF-8");
+      url = rootUrl + "/sparql/investigation_by_gene_and_value?geneIdentifiers="+sb.toString() + 
+          "&value=" + valueString;
+    }
+    else {
+      url = rootUrl + "/sparql/investigation_by_genes?geneIdentifiers="+sb.toString();
+    }
+    
+    JSONArray bindings = requestToJsonBindings(new URL(url), null);    
+    List<TimestampedUrl> results = new ArrayList<TimestampedUrl>();
+    for (int i = 0; i < bindings.length(); i++) {
+      JSONObject binding = bindings.getJSONObject(i);
+      JSONObject invObj = binding.optJSONObject("investigation");
+      if (invObj != null) {
+        String invUrl = invObj.optString("value", null);
+        if (invUrl != null) {
+          results.add(new TimestampedUrl(new URL(invUrl), 0l));
+        }
+      }
+    }
+    return results;
+  }
+
   /**
    * Runs the given sparql query, which is assumed to have a subject variable ?s, a
    * predicate variable ?p and an object variable ?o. The results are then loaded into
@@ -465,7 +687,7 @@ public class InvestigationClient {
           sb.append(line);
           sb.append("\n");
         }
-        // System.out.println(sb.toString());
+        System.out.println(sb.toString());
         JSONObject obj = new JSONObject(sb.toString());
         return obj;
       } else if (response.getStatusLine().getStatusCode()== HttpStatus.SC_NOT_FOUND) {   
