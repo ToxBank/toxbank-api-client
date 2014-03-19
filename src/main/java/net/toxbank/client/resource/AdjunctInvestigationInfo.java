@@ -40,6 +40,9 @@ public class AdjunctInvestigationInfo {
     if (!characteristics.contains(characteristic)) {
       characteristics.add(characteristic);
     }
+    if (InvestigationBioSample.isCellCharacteristic(characteristic)) {
+      bioSamples.addNonFactorBioSample(characteristic.getValue());
+    }    
   }
   
   public List<AdjunctInvestigationDatum> getCharacteristics() {

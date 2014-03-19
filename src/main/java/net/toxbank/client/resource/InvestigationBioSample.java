@@ -5,6 +5,7 @@
 package net.toxbank.client.resource;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import java.util.Map;
  * Represents a series of investigation samples for a specific bio sample
  */
 public class InvestigationBioSample {
+  public static List<String> cellNames = Arrays.asList("cell", "organ", "tissue", "cell line");
   private InvestigationBioSamples allBioSamples;
   private String uri;
   private String organism;
@@ -41,9 +43,18 @@ public class InvestigationBioSample {
     }
     compoundSample.addSample(sampleUri, doseValue, doseUnits, timeValue, timeUnits);
   }
-    
+  
+  public static boolean isCellCharacteristic(AdjunctInvestigationDatum c) {
+    for (String name : cellNames) {
+      if (name.equalsIgnoreCase(c.getName())) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
   public void addCharacteristic(AdjunctInvestigationDatum c) {
-    if ("cell".equalsIgnoreCase(c.getName())) {
+    if (isCellCharacteristic(c)) {
       cell = c.getValue();
     }
     else if ("organism".equalsIgnoreCase(c.getName())) {

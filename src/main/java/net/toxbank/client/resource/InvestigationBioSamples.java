@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * The list of all bio samples tested in an investigation
@@ -16,9 +18,14 @@ public class InvestigationBioSamples {
   private AdjunctInvestigationInfo info;
   private Map<String, InvestigationBioSample> bioSamplesByUri = new HashMap<String, InvestigationBioSample>();
   private List<InvestigationBioSample> bioSamples = new ArrayList<InvestigationBioSample>();
+  private SortedSet<String> nonFactorBioSamples = new TreeSet<String>();
   
   public InvestigationBioSamples(AdjunctInvestigationInfo info) {
     this.info = info;
+  }
+  
+  public void addNonFactorBioSample(String bioSample) {
+    nonFactorBioSamples.add(bioSample);
   }
   
   public void addFactor(
@@ -49,6 +56,10 @@ public class InvestigationBioSamples {
   public List<InvestigationBioSample> getBioSamples() {
     return bioSamples;
   }  
+  
+  public SortedSet<String> getNonFactorBioSamples() {
+    return nonFactorBioSamples;
+  }
   
   public List<InvestigationSample> getInvestigationSamples() {
     List<InvestigationSample> samples = new ArrayList<InvestigationSample>();
