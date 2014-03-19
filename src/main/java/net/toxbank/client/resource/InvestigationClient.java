@@ -687,7 +687,7 @@ public class InvestigationClient {
           sb.append(line);
           sb.append("\n");
         }
-        System.out.println(sb.toString());
+        // System.out.println(sb.toString());
         JSONObject obj = new JSONObject(sb.toString());
         return obj;
       } else if (response.getStatusLine().getStatusCode()== HttpStatus.SC_NOT_FOUND) {   
