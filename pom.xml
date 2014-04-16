@@ -4,7 +4,7 @@
   <groupId>net.toxbank</groupId>
   <artifactId>toxbank-client-java</artifactId>
   <name>ToxBank Java Client</name>
-  <version>0.0.4</version>
+  <version>0.0.5-SNAPSHOT</version>
   <description>The Java ToxBank API client software.</description>
   <url>http://toxbank.net</url>
   <issueManagement>
