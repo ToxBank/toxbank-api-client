@@ -1,0 +1,18 @@
+#Investigation service query
+#Retrieves all characteristics by sample URI
+#e.g. use as an argument ?biosample from factorvalues_by_investigation.sparql
+#could be edited to query for multiple samples 
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX isa:   <http://onto.toxbank.net/isa/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX tb:    <http://onto.toxbank.net/api/>
+
+SELECT DISTINCT ?propname ?value ?ontouri WHERE {
+ <%{sample_uri}> isa:hasCharacteristicValue ?propValue.
+ OPTIONAL {?propValue isa:hasOntologyTerm ?ontouri . }
+ ?propValue isa:hasValue  ?value.
+ ?propValue isa:hasProperty ?property. 
+ ?property dcterms:title ?propname.
+} 

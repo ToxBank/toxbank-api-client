@@ -1,0 +1,2582 @@
+@prefix :      <https://services.toxbank.net/investigation/6c81b6f9-1684-41e6-ae02-e1b45ef60741/> .
+@prefix dc:    <http://purl.org/dc/elements/1.1/> .
+@prefix kw:    <http://www.owl-ontologies.com/toxbank.owl/> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix tb:    <http://onto.toxbank.net/api/> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix isa:   <http://onto.toxbank.net/isa/> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+:FV7    a              isa:FactorValue ;
+        isa:hasFactor  :F1 ;
+        isa:hasUnit    <http://purl.obolibrary.org/obo/UO_0000032> ;
+        isa:hasValue   "24"^^xsd:int .
+
+:MN55   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN258 ;
+        isa:hasOutputNode  :MN254 ;
+        isa:hasStudy       :S149 .
+
+:MN249  a                isa:MaterialNode ;
+        isa:hasMaterial  :labelled_extract351 ;
+        isa:hasStudy     :S149 .
+
+:extract350  a               isa:Material ;
+        isa:hasAccessionID   "003016016017" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/extract> .
+
+:MN123  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN161 ;
+        isa:hasOutputNode  :MN287 ;
+        isa:hasStudy       :S149 .
+
+:source342  a                       isa:Material ;
+        isa:hasAccessionID          "003016016012" ;
+        isa:hasCharacteristicValue  :CV6 , :CV5 , :CV20 , :CV3 , :CV19 , :CV1 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/source> .
+
+:MN219  a                isa:MaterialNode ;
+        isa:hasMaterial  :sample390 ;
+        isa:hasStudy     :S149 .
+
+:D318   a                    isa:AssayResult , isa:Data ;
+        isa:hasAccessionID   "003016016005.CEL" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/data_types/microarray_raw_data> .
+
+:CV71   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C4 ;
+        isa:hasUnit      <http://purl.obolibrary.org/obo/UO_0000187> ;
+        isa:hasValue     "100.2"^^xsd:double .
+
+:MN195  a                isa:MaterialNode ;
+        isa:hasMaterial  :source334 ;
+        isa:hasStudy     :S149 .
+
+<http://onto.toxbank.net/isa/bii/roles/hybridization>
+        a       isa:OntologyTerm .
+
+isa:hasSampleField  a  owl:FunctionalProperty , owl:DatatypeProperty ;
+        rdfs:domain  isa:Node .
+
+:MN250  a                isa:MaterialNode ;
+        isa:hasMaterial  :source419 ;
+        isa:hasStudy     :S149 .
+
+dcterms:created  a  owl:AnnotationProperty .
+
+:MN97   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN183 ;
+        isa:hasOutputNode  :MN261 ;
+        isa:hasStudy       :S149 .
+
+:MN165  a                isa:MaterialNode ;
+        isa:hasMaterial  :extract399 ;
+        isa:hasStudy     :S149 .
+
+:CV41   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C10 ;
+        isa:hasValue     "High" .
+
+:hybridization302  a         isa:Material ;
+        isa:hasAccessionID   "APAPControl-24 hr" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/hybridization> .
+
+:MN220  a                isa:MaterialNode ;
+        isa:hasMaterial  :source332 ;
+        isa:hasStudy     :S149 .
+
+:MN67   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN164 ;
+        isa:hasOutputNode  :MN246 ;
+        isa:hasStudy       :S149 .
+
+:MN135  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN282 ;
+        isa:hasOutputNode  :MN182 ;
+        isa:hasStudy       :S149 .
+
+:CV11   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C11 ;
+        isa:hasValue     "04-1" .
+
+:DAN36  a                  isa:DataAcquisition ;
+        isa:hasInputNode   :MN169 ;
+        isa:hasOutputNode  :DN174 ;
+        isa:hasStudy       :S149 .
+
+:sample373  a                       isa:Material ;
+        isa:hasAccessionID          "003016016009" ;
+        isa:hasCharacteristicValue  :CV25 , :CV24 , :CV7 , :CV40 , :CV12 , :CV8 ;
+        isa:hasFactorValue          :FV6 , :FV5 , :FV3 , :FV4 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/sample> .
+
+:MN105  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN158 ;
+        isa:hasOutputNode  :MN206 ;
+        isa:hasStudy       :S149 .
+
+isa:PropertyValue  rdfs:subClassOf  isa:FreeTextTerm .
+
+isa:appliesProtocol  a  owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:domain  isa:ProtocolApplication ;
+        rdfs:range   isa:Protocol .
+
+<http://bioportal.bioontology.org/ontologies/49736>
+        a                    isa:ReferenceSources ;
+        rdfs:seeAlso         "http://bioportal.bioontology.org/ontologies/49736" ;
+        dcterms:description  "Chemical entities of biological interest" ;
+        dcterms:hasVersion   "49736" ;
+        dcterms:title        "CHEBI" .
+
+:sample343  a                       isa:Material ;
+        isa:hasAccessionID          "003016016012" ;
+        isa:hasCharacteristicValue  :CV10 , :CV9 , :CV7 , :CV12 , :CV8 , :CV21 ;
+        isa:hasFactorValue          :FV4 , :FV3 , :FV2 , :FV5 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/sample> .
+
+:MN262  a                isa:MaterialNode ;
+        isa:hasMaterial  :labelled_extract416 ;
+        isa:hasStudy     :S149 .
+
+:CV53   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C11 ;
+        isa:hasValue     "07-2" .
+
+:MN177  a                isa:MaterialNode ;
+        isa:hasMaterial  :sample394 ;
+        isa:hasStudy     :S149 .
+
+:MN147  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN239 ;
+        isa:hasOutputNode  :MN205 ;
+        isa:hasStudy       :S149 .
+
+:MN232  a                isa:MaterialNode ;
+        isa:hasMaterial  :sample388 ;
+        isa:hasStudy     :S149 .
+
+dcterms:description  a  owl:AnnotationProperty .
+
+:MN79   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN225 ;
+        isa:hasOutputNode  :MN207 ;
+        isa:hasStudy       :S149 .
+
+:D331   a                    isa:AssayResult , isa:Data ;
+        isa:hasAccessionID   "003016016011.CEL" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/data_types/microarray_raw_data> .
+
+:DN245  a             isa:DataNode ;
+        isa:hasData   :D316 ;
+        isa:hasStudy  :S149 .
+
+:CV23   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C4 ;
+        isa:hasUnit      <http://purl.obolibrary.org/obo/UO_0000187> ;
+        isa:hasValue     "100.1"^^xsd:double .
+
+:source366  a                       isa:Material ;
+        isa:hasAccessionID          "003016016018" ;
+        isa:hasCharacteristicValue  :CV6 , :CV5 , :CV31 , :CV3 , :CV30 , :CV1 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/source> .
+
+isa:Accessible  rdfs:subClassOf  isa:Annotatable .
+
+:DAN48  a                  isa:DataAcquisition ;
+        isa:hasInputNode   :MN208 ;
+        isa:hasOutputNode  :DN209 ;
+        isa:hasStudy       :S149 .
+
+<http://bioportal.bioontology.org/ontologies/49778>
+        a                    isa:ReferenceSources ;
+        rdfs:seeAlso         "http://bioportal.bioontology.org/ontologies/49778" ;
+        dcterms:description  "Units of measurement" ;
+        dcterms:hasVersion   "49778" ;
+        dcterms:title        "UO" .
+
+:source421  a                       isa:Material ;
+        isa:hasAccessionID          "003016016007" ;
+        isa:hasCharacteristicValue  :CV6 , :CV5 , :CV69 , :CV3 , :CV68 , :CV1 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/source> .
+
+:extract344  a               isa:Material ;
+        isa:hasAccessionID   "003016016004" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/extract> .
+
+:MN117  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN241 ;
+        isa:hasOutputNode  :MN226 ;
+        isa:hasStudy       :S149 .
+
+:C6     a              isa:Property ;
+        dcterms:title  "Sex" .
+
+:DN191  a             isa:DataNode ;
+        isa:hasData   :D310 ;
+        isa:hasStudy  :S149 .
+
+:MN80   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN266 ;
+        isa:hasOutputNode  :MN272 ;
+        isa:hasStudy       :S149 .
+
+:MN274  a                isa:MaterialNode ;
+        isa:hasMaterial  :labelled_extract345 ;
+        isa:hasStudy     :S149 .
+
+:MN189  a                isa:MaterialNode ;
+        isa:hasMaterial  :source420 ;
+        isa:hasStudy     :S149 .
+
+:CV65   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C4 ;
+        isa:hasUnit      <http://purl.obolibrary.org/obo/UO_0000187> ;
+        isa:hasValue     "99.8"^^xsd:double .
+
+isa:hasParameter  a  owl:ObjectProperty ;
+        rdfs:domain  isa:ParameterValue ;
+        rdfs:range   isa:Parameter .
+
+:MN244  a                isa:MaterialNode ;
+        isa:hasMaterial  :sample382 ;
+        isa:hasStudy     :S149 .
+
+:FV2    a              isa:FactorValue ;
+        isa:hasFactor  :F2 ;
+        isa:hasUnit    <http://purl.obolibrary.org/obo/UO_0000064> ;
+        isa:hasValue   "200"^^xsd:int .
+
+:DN257  a             isa:DataNode ;
+        isa:hasData   :D320 ;
+        isa:hasStudy  :S149 .
+
+:CV35   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C11 ;
+        isa:hasValue     "03-1" .
+
+:CV6    a                isa:CharacteristicValue ;
+        isa:hasProperty  :C6 ;
+        isa:hasValue     "Female" .
+
+:labelled_extract415  a             isa:Material ;
+        isa:hasAccessionID          "003016016006" ;
+        isa:hasCharacteristicValue  :CV15 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/labelled_extract> .
+
+:MN214  a                isa:MaterialNode ;
+        isa:hasMaterial  :hybridization301 ;
+        isa:hasStudy     :S149 .
+
+:D313   a                    isa:AssayResult , isa:Data ;
+        isa:hasAccessionID   "003016016022.CEL" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/data_types/microarray_raw_data> .
+
+:extract356  a               isa:Material ;
+        isa:hasAccessionID   "003016016002" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/extract> .
+
+:MN129  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN181 ;
+        isa:hasOutputNode  :MN169 ;
+        isa:hasStudy       :S149 .
+
+:MN190  a                isa:MaterialNode ;
+        isa:hasMaterial  :source422 ;
+        isa:hasStudy     :S149 .
+
+isa:GraphElement  rdfs:subClassOf  isa:Accessible .
+
+:CV77   a                 isa:CharacteristicValue ;
+        isa:hasProperty   :C2 ;
+        isa:hasUnitValue  "percent"^^xsd:string ;
+        isa:hasValue      "100.3"^^xsd:double .
+
+:source403  a                       isa:Material ;
+        isa:hasAccessionID          "003016016015" ;
+        isa:hasCharacteristicValue  :CV6 , :CV5 , :CV58 , :CV3 , :CV16 , :CV1 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/source> .
+
+isa:Material  rdfs:subClassOf  isa:Accessible .
+
+:MN92   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN231 ;
+        isa:hasOutputNode  :MN279 ;
+        isa:hasStudy       :S149 .
+
+:sample367  a                       isa:Material ;
+        isa:hasAccessionID          "003016016018" ;
+        isa:hasCharacteristicValue  :CV12 , :CV24 , :CV32 , :CV8 , :CV25 , :CV7 ;
+        isa:hasFactorValue          :FV4 , :FV7 , :FV6 , :FV3 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/sample> .
+
+:MN286  a                isa:MaterialNode ;
+        isa:hasMaterial  :labelled_extract411 ;
+        isa:hasStudy     :S149 .
+
+:labelled_extract361  a             isa:Material ;
+        isa:hasAccessionID          "003016016001" ;
+        isa:hasCharacteristicValue  :CV15 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/labelled_extract> .
+
+:MN160  a                isa:MaterialNode ;
+        isa:hasMaterial  :sample384 ;
+        isa:hasStudy     :S149 .
+
+<http://purl.obolibrary.org/obo/UO_0000032>
+        a                   isa:OntologyTerm ;
+        rdfs:label          "hour" ;
+        isa:hasAccessionID  "0000032" .
+
+:DN173  a             isa:DataNode ;
+        isa:hasData   :D328 ;
+        isa:hasStudy  :S149 .
+
+isa:MaterialNode  rdfs:subClassOf  isa:Node .
+
+:MN130  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN163 ;
+        isa:hasOutputNode  :MN231 ;
+        isa:hasStudy       :S149 .
+
+isa:HASREFERENCES  rdfs:subClassOf  isa:Accessible .
+
+:MN256  a                isa:MaterialNode ;
+        isa:hasMaterial  :sample376 ;
+        isa:hasStudy     :S149 .
+
+<http://purl.obolibrary.org/chebi/15956>
+        a                   isa:OntologyTerm ;
+        rdfs:label          "biotin" ;
+        isa:hasAccessionID  "15956" .
+
+:D355   a                    isa:AssayResult , isa:Data ;
+        isa:hasAccessionID   "003016016020.CEL" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/data_types/microarray_raw_data> .
+
+:CV47   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C11 ;
+        isa:hasValue     "09-2" .
+
+:hybridization308  a         isa:Material ;
+        isa:hasAccessionID   "APAPHigh-8 hr" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/hybridization> .
+
+:DAN31  a                  isa:DataAcquisition ;
+        isa:hasInputNode   :MN236 ;
+        isa:hasOutputNode  :DN281 ;
+        isa:hasStudy       :S149 .
+
+:labelled_extract427  a             isa:Material ;
+        isa:hasAccessionID          "003016016023" ;
+        isa:hasCharacteristicValue  :CV15 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/labelled_extract> .
+
+:MN226  a                isa:MaterialNode ;
+        isa:hasMaterial  :sample396 ;
+        isa:hasStudy     :S149 .
+
+:MN100  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN201 ;
+        isa:hasOutputNode  :MN256 ;
+        isa:hasStudy       :S149 .
+
+:D325   a                    isa:AssayResult , isa:Data ;
+        isa:hasAccessionID   "003016016018.CEL" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/data_types/microarray_raw_data> .
+
+:CV17   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C4 ;
+        isa:hasUnit      <http://purl.obolibrary.org/obo/UO_0000187> ;
+        isa:hasValue     "100.3"^^xsd:double .
+
+<http://purl.obolibrary.org/chebi/46195>
+        a                   isa:OntologyTerm ;
+        rdfs:label          "paracetamol" ;
+        isa:hasAccessionID  "46195" .
+
+:DN209  a             isa:DataNode ;
+        isa:hasData   :D329 ;
+        isa:hasStudy  :S149 .
+
+<http://onto.toxbank.net/isa/bii/roles/labelled_extract>
+        a       isa:OntologyTerm .
+
+<http://purl.obolibrary.org/obo/xon_63221>
+        a                   isa:OntologyTerm ;
+        rdfs:label          "Homo sapiens neanderthalensis" ;
+        isa:hasAccessionID  "xon_63221" .
+
+:MN74   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN249 ;
+        isa:hasOutputNode  :MN207 ;
+        isa:hasStudy       :S149 .
+
+:MN268  a                isa:MaterialNode ;
+        isa:hasMaterial  :sample374 ;
+        isa:hasStudy     :S149 .
+
+:DN240  a             isa:DataNode ;
+        isa:hasData   :D327 ;
+        isa:hasStudy  :S149 .
+
+:MN142  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN252 ;
+        isa:hasOutputNode  :MN158 ;
+        isa:hasStudy       :S149 .
+
+:CV59   a                 isa:CharacteristicValue ;
+        isa:hasProperty   :C2 ;
+        isa:hasUnitValue  "percent"^^xsd:string ;
+        isa:hasValue      "94.4"^^xsd:double .
+
+:F1     a              isa:Factor ;
+        dcterms:title  "SampleTimePoint" .
+
+:DAN43  a                  isa:DataAcquisition ;
+        isa:hasInputNode   :MN214 ;
+        isa:hasOutputNode  :DN199 ;
+        isa:hasStudy       :S149 .
+
+:MN238  a                isa:MaterialNode ;
+        isa:hasMaterial  :sample400 ;
+        isa:hasStudy     :S149 .
+
+:sample380  a                       isa:Material ;
+        isa:hasAccessionID          "003016016024" ;
+        isa:hasCharacteristicValue  :CV7 , :CV45 , :CV8 , :CV12 , :CV9 , :CV41 ;
+        isa:hasFactorValue          :FV4 , :FV3 , :FV7 , :FV8 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/sample> .
+
+:MN112  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN228 ;
+        isa:hasOutputNode  :MN216 ;
+        isa:hasStudy       :S149 .
+
+:CV29   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C11 ;
+        isa:hasValue     "01-1" .
+
+:C1     a              isa:Property ;
+        dcterms:title  "organism" .
+
+:ISA_4  a                   isa:Assay ;
+        rdfs:seeAlso        "a_transcription_micro_1.txt" ;
+        isa:hasEndpoint     <http://purl.org/obo/owl/OBI#424> ;
+        isa:uses            :hybridization305 , :hybridization309 , :hybridization299 , :hybridization300 , :hybridization306 , :hybridization303 , :hybridization307 , :hybridization301 , :hybridization304 , :hybridization308 , :hybridization298 , :hybridization302 ;
+        isa:usesTechnology  <http://purl.org/obo/owl/OBI#400148> .
+
+:labelled_extract409  a             isa:Material ;
+        isa:hasAccessionID          "003016016021" ;
+        isa:hasCharacteristicValue  :CV15 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/labelled_extract> .
+
+:MN208  a                isa:MaterialNode ;
+        isa:hasMaterial  :hybridization304 ;
+        isa:hasStudy     :S149 .
+
+:CV60   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C4 ;
+        isa:hasUnit      <http://purl.obolibrary.org/obo/UO_0000187> ;
+        isa:hasValue     "108.3"^^xsd:double .
+
+:MN184  a                isa:MaterialNode ;
+        isa:hasMaterial  :hybridization306 ;
+        isa:hasStudy     :S149 .
+
+isa:CharacteristicValue
+        rdfs:subClassOf  isa:PropertyValue .
+
+isa:Factor  rdfs:subClassOf  isa:Property .
+
+:MN86   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN230 ;
+        isa:hasOutputNode  :MN214 ;
+        isa:hasStudy       :S149 .
+
+isa:FactorValue  rdfs:subClassOf  isa:PropertyValue .
+
+:extract381  a               isa:Material ;
+        isa:hasAccessionID   "003016016024" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/extract> .
+
+:CV30   a                 isa:CharacteristicValue ;
+        isa:hasProperty   :C2 ;
+        isa:hasUnitValue  "percent"^^xsd:string ;
+        isa:hasValue      "99.8"^^xsd:double .
+
+isa:MaterialProcessing
+        rdfs:subClassOf  isa:Processing .
+
+:CV1    a                    isa:CharacteristicValue ;
+        isa:hasOntologyTerm  <http://purl.obolibrary.org/obo/xon_63221> ;
+        isa:hasProperty      :C1 ;
+        isa:hasValue         "Homo sapiens neanderthalensis" .
+
+:labelled_extract410  a             isa:Material ;
+        isa:hasAccessionID          "003016016015" ;
+        isa:hasCharacteristicValue  :CV15 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/labelled_extract> .
+
+:MN56   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN248 ;
+        isa:hasOutputNode  :MN166 ;
+        isa:hasStudy       :S149 .
+
+:FV8    a              isa:FactorValue ;
+        isa:hasFactor  :F2 ;
+        isa:hasUnit    <http://purl.obolibrary.org/obo/UO_0000064> ;
+        isa:hasValue   "5000"^^xsd:int .
+
+:sample392  a                       isa:Material ;
+        isa:hasAccessionID          "003016016007" ;
+        isa:hasCharacteristicValue  :CV52 , :CV8 , :CV9 , :CV41 , :CV12 , :CV7 ;
+        isa:hasFactorValue          :FV8 , :FV4 , :FV1 , :FV3 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/sample> .
+
+:MN124  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN223 ;
+        isa:hasOutputNode  :MN217 ;
+        isa:hasStudy       :S149 .
+
+isa:hasParameterValue
+        a            owl:ObjectProperty ;
+        rdfs:domain  isa:ProtocolApplication ;
+        rdfs:range   isa:ParameterValue .
+
+isa:hasProtocolApplication
+        a            owl:ObjectProperty ;
+        rdfs:domain  isa:Processing ;
+        rdfs:range   isa:ProtocolApplication .
+
+:D319   a                    isa:AssayResult , isa:Data ;
+        isa:hasAccessionID   "003016016016.CEL" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/data_types/microarray_raw_data> .
+
+:CV72   a                 isa:CharacteristicValue ;
+        isa:hasProperty   :C2 ;
+        isa:hasUnitValue  "percent"^^xsd:string ;
+        isa:hasValue      "95.3"^^xsd:double .
+
+:MN196  a                isa:MaterialNode ;
+        isa:hasMaterial  :extract346 ;
+        isa:hasStudy     :S149 .
+
+<http://bioportal.bioontology.org/ontologies/47638>
+        a                    isa:ReferenceSources ;
+        rdfs:seeAlso         "http://bioportal.bioontology.org/ontologies/47638" ;
+        dcterms:description  "NCI Thesaurus" ;
+        dcterms:hasVersion   "47638" ;
+        dcterms:title        "NCIt" .
+
+:MN98   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN175 ;
+        isa:hasOutputNode  :MN268 ;
+        isa:hasStudy       :S149 .
+
+:MN251  a                isa:MaterialNode ;
+        isa:hasMaterial  :labelled_extract357 ;
+        isa:hasStudy     :S149 .
+
+:extract393  a               isa:Material ;
+        isa:hasAccessionID   "003016016007" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/extract> .
+
+:CV42   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C11 ;
+        isa:hasValue     "11-1" .
+
+:MN166  a                isa:MaterialNode ;
+        isa:hasMaterial  :sample343 ;
+        isa:hasStudy     :S149 .
+
+:hybridization303  a         isa:Material ;
+        isa:hasAccessionID   "APAPMiddle-2 hr" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/hybridization> .
+
+isa:DataAcquisition  rdfs:subClassOf  isa:Processing .
+
+:MN136  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN276 ;
+        isa:hasOutputNode  :MN186 ;
+        isa:hasStudy       :S149 .
+
+:MN68   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN233 ;
+        isa:hasOutputNode  :MN222 ;
+        isa:hasStudy       :S149 .
+
+isa:Unit  rdfs:subClassOf  isa:FreeTextTerm .
+
+:labelled_extract337  a             isa:Material ;
+        isa:hasAccessionID          "003016016012" ;
+        isa:hasCharacteristicValue  :CV15 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/labelled_extract> .
+
+:MN221  a                isa:MaterialNode ;
+        isa:hasMaterial  :sample335 ;
+        isa:hasStudy     :S149 .
+
+:DN234  a             isa:DataNode ;
+        isa:hasData   :D355 ;
+        isa:hasStudy  :S149 .
+
+:D320   a                    isa:AssayResult , isa:Data ;
+        isa:hasAccessionID   "003016016002.CEL" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/data_types/microarray_raw_data> .
+
+:CV12   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C12 ;
+        isa:hasValue     "not specified" .
+
+:ISA_430  a               foaf:Person , isa:Contact ;
+        foaf:family_name  "Uehara"^^xsd:string ;
+        foaf:givenname    "T"^^xsd:string .
+
+:DAN37  a                  isa:DataAcquisition ;
+        isa:hasInputNode   :MN169 ;
+        isa:hasOutputNode  :DN168 ;
+        isa:hasStudy       :S149 .
+
+:sample374  a                       isa:Material ;
+        isa:hasAccessionID          "003016016015" ;
+        isa:hasCharacteristicValue  :CV7 , :CV42 , :CV41 , :CV9 , :CV12 , :CV8 ;
+        isa:hasFactorValue          :FV8 , :FV3 , :FV5 , :FV4 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/sample> .
+
+:DN204  a             isa:DataNode ;
+        isa:hasData   :D330 ;
+        isa:hasStudy  :S149 .
+
+:MN106  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN221 ;
+        isa:hasOutputNode  :MN265 ;
+        isa:hasStudy       :S149 .
+
+<https://services.toxbank.net/toxbank/project/>
+        a                    isa:ReferenceSources ;
+        rdfs:seeAlso         "https://services.toxbank.net/toxbank/project/" ;
+        dcterms:description  "Toxbank Consortiums" ;
+        dcterms:title        "TBC" .
+
+:MN263  a                isa:MaterialNode ;
+        isa:hasMaterial  :sample373 ;
+        isa:hasStudy     :S149 .
+
+:CV54   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C11 ;
+        isa:hasValue     "07-1" .
+
+:MN178  a                isa:MaterialNode ;
+        isa:hasMaterial  :labelled_extract353 ;
+        isa:hasStudy     :S149 .
+
+:MN148  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN197 ;
+        isa:hasOutputNode  :MN205 ;
+        isa:hasStudy       :S149 .
+
+:MN233  a                isa:MaterialNode ;
+        isa:hasMaterial  :source364 ;
+        isa:hasStudy     :S149 .
+
+:extract375  a               isa:Material ;
+        isa:hasAccessionID   "003016016015" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/extract> .
+
+:labelled_extract349  a             isa:Material ;
+        isa:hasAccessionID          "003016016018" ;
+        isa:hasCharacteristicValue  :CV15 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/labelled_extract> .
+
+:CV24   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C9 ;
+        isa:hasValue     "yes" .
+
+:DAN49  a                  isa:DataAcquisition ;
+        isa:hasInputNode   :MN272 ;
+        isa:hasOutputNode  :DN204 ;
+        isa:hasStudy       :S149 .
+
+:MN203  a                isa:MaterialNode ;
+        isa:hasMaterial  :labelled_extract407 ;
+        isa:hasStudy     :S149 .
+
+:source422  a                       isa:Material ;
+        isa:hasAccessionID          "003016016022" ;
+        isa:hasCharacteristicValue  :CV6 , :CV5 , :CV71 , :CV3 , :CV70 , :CV1 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/source> .
+
+:sample386  a                       isa:Material ;
+        isa:hasAccessionID          "003016016014" ;
+        isa:hasCharacteristicValue  :CV9 , :CV46 , :CV8 , :CV49 , :CV12 , :CV7 ;
+        isa:hasFactorValue          :FV3 , :FV5 , :FV4 , :FV9 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/sample> .
+
+:MN118  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN222 ;
+        isa:hasOutputNode  :MN188 ;
+        isa:hasStudy       :S149 .
+
+:C7     a              isa:Property ;
+        dcterms:title  "Strain" .
+
+isa:hasAccessionID  a  owl:FunctionalProperty , owl:DatatypeProperty ;
+        rdfs:domain  isa:Accessible .
+
+dcterms:title  a  owl:AnnotationProperty .
+
+isa:UnitValue  rdfs:subClassOf  isa:FreeTextTerm .
+
+:MN81   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN268 ;
+        isa:hasOutputNode  :MN252 ;
+        isa:hasStudy       :S149 .
+
+:MN275  a                isa:MaterialNode ;
+        isa:hasMaterial  :labelled_extract412 ;
+        isa:hasStudy     :S149 .
+
+:CV66   a                 isa:CharacteristicValue ;
+        isa:hasProperty   :C2 ;
+        isa:hasUnitValue  "percent"^^xsd:string ;
+        isa:hasValue      "96.1"^^xsd:double .
+
+:DAN50  a                  isa:DataAcquisition ;
+        isa:hasInputNode   :MN208 ;
+        isa:hasOutputNode  :DN267 ;
+        isa:hasStudy       :S149 .
+
+:MN51   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN220 ;
+        isa:hasOutputNode  :MN176 ;
+        isa:hasStudy       :S149 .
+
+:FV3    a                    isa:FactorValue ;
+        isa:hasFactor        :F3 ;
+        isa:hasOntologyTerm  <http://purl.obolibrary.org/chebi/46195> ;
+        isa:hasValue         "paracetamol" .
+
+:extract387  a               isa:Material ;
+        isa:hasAccessionID   "003016016014" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/extract> .
+
+:CV36   a                 isa:CharacteristicValue ;
+        isa:hasProperty   :C2 ;
+        isa:hasUnitValue  "percent"^^xsd:string ;
+        isa:hasValue      "102.9"^^xsd:double .
+
+:labelled_extract416  a             isa:Material ;
+        isa:hasAccessionID          "003016016005" ;
+        isa:hasCharacteristicValue  :CV15 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/labelled_extract> .
+
+:CV7    a                isa:CharacteristicValue ;
+        isa:hasProperty  :C7 ;
+        isa:hasValue     "not specified" .
+
+:sample398  a                       isa:Material ;
+        isa:hasAccessionID          "003016016020" ;
+        isa:hasCharacteristicValue  :CV55 , :CV10 , :CV9 , :CV8 , :CV7 , :CV12 ;
+        isa:hasFactorValue          :FV7 , :FV3 , :FV2 , :FV4 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/sample> .
+
+:MN215  a                isa:MaterialNode ;
+        isa:hasMaterial  :extract379 ;
+        isa:hasStudy     :S149 .
+
+isa:hasProbe  a      owl:ObjectProperty ;
+        rdfs:domain  <http://www.opentox.org/api/1.1#DataEntry> .
+
+:D314   a                    isa:AssayResult , isa:Data ;
+        isa:hasAccessionID   "003016016021.CEL" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/data_types/microarray_raw_data> .
+
+<http://keywords.toxbank.net#>
+        a                    isa:ReferenceSources ;
+        rdfs:seeAlso         "http://keywords.toxbank.net#" ;
+        dcterms:description  "Toxbank keywords" ;
+        dcterms:title        "TBK" .
+
+isa:hasAssayFields  a  owl:DatatypeProperty ;
+        rdfs:domain  isa:Node .
+
+:source404  a                       isa:Material ;
+        isa:hasAccessionID          "003016016024" ;
+        isa:hasCharacteristicValue  :CV6 , :CV5 , :CV60 , :CV3 , :CV59 , :CV1 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/source> .
+
+:MN93   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN177 ;
+        isa:hasOutputNode  :MN273 ;
+        isa:hasStudy       :S149 .
+
+:MN287  a                isa:MaterialNode ;
+        isa:hasMaterial  :extract350 ;
+        isa:hasStudy     :S149 .
+
+:MN161  a                isa:MaterialNode ;
+        isa:hasMaterial  :sample369 ;
+        isa:hasStudy     :S149 .
+
+:DN174  a             isa:DataNode ;
+        isa:hasData   :D317 ;
+        isa:hasStudy  :S149 .
+
+:DAN62  a                  isa:DataAcquisition ;
+        isa:hasInputNode   :MN200 ;
+        isa:hasOutputNode  :DN194 ;
+        isa:hasStudy       :S149 .
+
+:MN131  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN275 ;
+        isa:hasOutputNode  :MN200 ;
+        isa:hasStudy       :S149 .
+
+:extract399  a               isa:Material ;
+        isa:hasAccessionID   "003016016020" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/extract> .
+
+:CV48   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C11 ;
+        isa:hasValue     "09-1" .
+
+:hybridization309  a         isa:Material ;
+        isa:hasAccessionID   "APAPLow-2 hr" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/hybridization> .
+
+isa:hasOwner  a     owl:AnnotationProperty ;
+        rdfs:range  isa:Contact .
+
+:DAN32  a                  isa:DataAcquisition ;
+        isa:hasInputNode   :MN182 ;
+        isa:hasOutputNode  :DN280 ;
+        isa:hasStudy       :S149 .
+
+:labelled_extract428  a             isa:Material ;
+        isa:hasAccessionID          "003016016016" ;
+        isa:hasCharacteristicValue  :CV15 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/labelled_extract> .
+
+:MN227  a                isa:MaterialNode ;
+        isa:hasMaterial  :source370 ;
+        isa:hasStudy     :S149 .
+
+:MN101  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN167 ;
+        isa:hasOutputNode  :MN255 ;
+        isa:hasStudy       :S149 .
+
+:D326   a                    isa:AssayResult , isa:Data ;
+        isa:hasAccessionID   "003016016003.CEL" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/data_types/microarray_raw_data> .
+
+:CV18   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C11 ;
+        isa:hasValue     "05-1" .
+
+:I2     a                     isa:Investigation ;
+        tb:hasAuthor          <https://services.toxbank.net/toxbank/user/U39> ;
+        tb:hasKeyword         "http://www.owl-ontologies.com/toxbank.owl/K7"^^xsd:string ;
+        tb:hasOrganisation    <https://services.toxbank.net/toxbank/organisation/G20> ;
+        tb:hasOwner           <https://services.toxbank.net/toxbank/user/U39> ;
+        tb:hasProject         <https://services.toxbank.net/toxbank/project/G17> ;
+        isa:hasOrderedAuthor  [ tb:hasAuthor  <https://services.toxbank.net/toxbank/user/U39> ;
+                                isa:hasOrder  "1"^^xsd:int
+                              ] ;
+        isa:hasOwner          :ISA_430 , :ISA_431 , :ISA_432 , :ISA_150 , :ISA_433 ;
+        isa:hasStudy          :S149 ;
+        dcterms:abstract      "TG-GATES acetaminophen liver" ;
+        dcterms:created       "1 Mar 2014 22:00:00 GMT" ;
+        dcterms:issued        "11 May 2011 21:00:00 GMT" ;
+        dcterms:title         "TG-GATES acetaminophen liver" .
+
+:MN75   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN251 ;
+        isa:hasOutputNode  :MN214 ;
+        isa:hasStudy       :S149 .
+
+:MN269  a                isa:MaterialNode ;
+        isa:hasMaterial  :labelled_extract359 ;
+        isa:hasStudy     :S149 .
+
+:MN143  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN156 ;
+        isa:hasOutputNode  :MN239 ;
+        isa:hasStudy       :S149 .
+
+:source362  a                       isa:Material ;
+        isa:hasAccessionID          "003016016002" ;
+        isa:hasCharacteristicValue  :CV6 , :CV5 , :CV23 , :CV3 , :CV22 , :CV1 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/source> .
+
+:F2     a              isa:Factor ;
+        dcterms:title  "Dose" .
+
+:DAN44  a                  isa:DataAcquisition ;
+        isa:hasInputNode   :MN207 ;
+        isa:hasOutputNode  :DN213 ;
+        isa:hasStudy       :S149 .
+
+:MN239  a                isa:MaterialNode ;
+        isa:hasMaterial  :labelled_extract427 ;
+        isa:hasStudy     :S149 .
+
+:extract340  a               isa:Material ;
+        isa:hasAccessionID   "003016016011" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/extract> .
+
+:DN211  a             isa:DataNode ;
+        isa:hasData   :D319 ;
+        isa:hasStudy  :S149 .
+
+:MN113  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN253 ;
+        isa:hasOutputNode  :MN157 ;
+        isa:hasStudy       :S149 .
+
+:source332  a                       isa:Material ;
+        isa:hasAccessionID          "003016016003" ;
+        isa:hasCharacteristicValue  :CV6 , :CV5 , :CV4 , :CV3 , :CV2 , :CV1 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/source> .
+
+rdfs:isDefinedBy  a  owl:AnnotationProperty .
+
+:C2     a              isa:Property ;
+        dcterms:title  "DNA" .
+
+:MN270  a                isa:MaterialNode ;
+        isa:hasMaterial  :sample398 ;
+        isa:hasStudy     :S149 .
+
+:CV61   a                 isa:CharacteristicValue ;
+        isa:hasProperty   :C2 ;
+        isa:hasUnitValue  "percent"^^xsd:string ;
+        isa:hasValue      "89.9"^^xsd:double .
+
+:MN185  a                isa:MaterialNode ;
+        isa:hasMaterial  :labelled_extract337 ;
+        isa:hasStudy     :S149 .
+
+:MN87   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN244 ;
+        isa:hasOutputNode  :MN187 ;
+        isa:hasStudy       :S149 .
+
+isa:FreeTextTerm  rdfs:subClassOf  isa:Annotatable .
+
+isa:hasInputNode  a  owl:ObjectProperty ;
+        rdfs:domain  isa:Processing ;
+        rdfs:range   isa:Node .
+
+:CV31   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C4 ;
+        isa:hasUnit      <http://purl.obolibrary.org/obo/UO_0000187> ;
+        isa:hasValue     "100.7"^^xsd:double .
+
+:DN168  a             isa:DataNode ;
+        isa:hasData   :D318 ;
+        isa:hasStudy  :S149 .
+
+:CV2    a                 isa:CharacteristicValue ;
+        isa:hasProperty   :C2 ;
+        isa:hasUnitValue  "percent"^^xsd:string ;
+        isa:hasValue      "97.8"^^xsd:double .
+
+:MN210  a                isa:MaterialNode ;
+        isa:hasMaterial  :labelled_extract428 ;
+        isa:hasStudy     :S149 .
+
+:labelled_extract411  a             isa:Material ;
+        isa:hasAccessionID          "003016016020" ;
+        isa:hasCharacteristicValue  :CV15 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/labelled_extract> .
+
+:MN57   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN265 ;
+        isa:hasOutputNode  :MN274 ;
+        isa:hasStudy       :S149 .
+
+:FV9    a              isa:FactorValue ;
+        isa:hasFactor  :F2 ;
+        isa:hasUnit    <http://purl.obolibrary.org/obo/UO_0000064> ;
+        isa:hasValue   "1000"^^xsd:int .
+
+:extract352  a               isa:Material ;
+        isa:hasAccessionID   "003016016010" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/extract> .
+
+:MN125  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN263 ;
+        isa:hasOutputNode  :MN264 ;
+        isa:hasStudy       :S149 .
+
+:MN282  a                isa:MaterialNode ;
+        isa:hasMaterial  :labelled_extract409 ;
+        isa:hasStudy     :S149 .
+
+:sample363  a                       isa:Material ;
+        isa:hasAccessionID          "003016016002" ;
+        isa:hasCharacteristicValue  :CV26 , :CV25 , :CV24 , :CV7 , :CV8 , :CV12 ;
+        isa:hasFactorValue          :FV3 , :FV1 , :FV4 , :FV6 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/sample> .
+
+<http://onto.toxbank.net/isa/bii/roles/source>
+        a       isa:OntologyTerm .
+
+isa:ReferenceSources  rdfs:subClassOf  isa:Accessible .
+
+:MN197  a                isa:MaterialNode ;
+        isa:hasMaterial  :labelled_extract429 ;
+        isa:hasStudy     :S149 .
+
+:CV73   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C4 ;
+        isa:hasUnit      <http://purl.obolibrary.org/obo/UO_0000187> ;
+        isa:hasValue     "100.9"^^xsd:double .
+
+:MN99   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN283 ;
+        isa:hasOutputNode  :MN247 ;
+        isa:hasStudy       :S149 .
+
+:sample333  a                       isa:Material ;
+        isa:hasAccessionID          "003016016003" ;
+        isa:hasCharacteristicValue  :CV10 , :CV8 , :CV12 , :CV11 , :CV7 , :CV9 ;
+        isa:hasFactorValue          :FV3 , :FV4 , :FV2 , :FV1 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/sample> .
+
+:MN252  a                isa:MaterialNode ;
+        isa:hasMaterial  :extract375 ;
+        isa:hasStudy     :S149 .
+
+:MN167  a                isa:MaterialNode ;
+        isa:hasMaterial  :extract391 ;
+        isa:hasStudy     :S149 .
+
+:CV43   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C11 ;
+        isa:hasValue     "12-1" .
+
+:hybridization304  a         isa:Material ;
+        isa:hasAccessionID   "APAPLow-8 hr" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/hybridization> .
+
+isa:usesPlatform  a  owl:ObjectProperty ;
+        rdfs:domain  isa:Assay ;
+        rdfs:range   isa:OntologyTerm .
+
+:MN69   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN242 ;
+        isa:hasOutputNode  :MN235 ;
+        isa:hasStudy       :S149 .
+
+:MN222  a                isa:MaterialNode ;
+        isa:hasMaterial  :sample365 ;
+        isa:hasStudy     :S149 .
+
+:MN137  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN193 ;
+        isa:hasOutputNode  :MN182 ;
+        isa:hasStudy       :S149 .
+
+:D321   a                    isa:AssayResult , isa:Data ;
+        isa:hasAccessionID   "003016016023.CEL" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/data_types/microarray_raw_data> .
+
+:CV13   a                 isa:CharacteristicValue ;
+        isa:hasProperty   :C2 ;
+        isa:hasUnitValue  "percent"^^xsd:string ;
+        isa:hasValue      "105.7"^^xsd:double .
+
+:ISA_431  a               foaf:Person , isa:Contact ;
+        foaf:family_name  "Maruyama"^^xsd:string ;
+        foaf:givenname    "T"^^xsd:string .
+
+isa:usesTechnology  a  owl:ObjectProperty ;
+        rdfs:domain  isa:Assay ;
+        rdfs:range   isa:OntologyTerm .
+
+isa:hasUnitValue  a  owl:DatatypeProperty ;
+        rdfs:domain  isa:PropertyValue .
+
+:DAN38  a                  isa:DataAcquisition ;
+        isa:hasInputNode   :MN206 ;
+        isa:hasOutputNode  :DN211 ;
+        isa:hasStudy       :S149 .
+
+:MN107  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN165 ;
+        isa:hasOutputNode  :MN286 ;
+        isa:hasStudy       :S149 .
+
+isa:Data  rdfs:subClassOf  isa:Accessible .
+
+:MN70   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN229 ;
+        isa:hasOutputNode  :MN161 ;
+        isa:hasStudy       :S149 .
+
+:MN264  a                isa:MaterialNode ;
+        isa:hasMaterial  :extract358 ;
+        isa:hasStudy     :S149 .
+
+:MN179  a                isa:MaterialNode ;
+        isa:hasMaterial  :source425 ;
+        isa:hasStudy     :S149 .
+
+:CV55   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C11 ;
+        isa:hasValue     "06-2" .
+
+:sample400  a                       isa:Material ;
+        isa:hasAccessionID          "003016016019" ;
+        isa:hasCharacteristicValue  :CV56 , :CV9 , :CV7 , :CV12 , :CV10 , :CV8 ;
+        isa:hasFactorValue          :FV4 , :FV3 , :FV7 , :FV2 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/sample> .
+
+isa:Property  rdfs:subClassOf  isa:FreeTextTerm .
+
+:CV25   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C10 ;
+        isa:hasValue     "Control" .
+
+<https://services.toxbank.net/toxbank/project/G17>
+        a       tb:Project .
+
+:source368  a                       isa:Material ;
+        isa:hasAccessionID          "003016016017" ;
+        isa:hasCharacteristicValue  :CV6 , :CV5 , :CV34 , :CV3 , :CV33 , :CV1 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/source> .
+
+:source423  a                       isa:Material ;
+        isa:hasAccessionID          "003016016021" ;
+        isa:hasCharacteristicValue  :CV6 , :CV5 , :CV73 , :CV3 , :CV72 , :CV1 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/source> .
+
+:extract346  a               isa:Material ;
+        isa:hasAccessionID   "003016016003" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/extract> .
+
+:MN119  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN170 ;
+        isa:hasOutputNode  :MN270 ;
+        isa:hasStudy       :S149 .
+
+:MN180  a                isa:MaterialNode ;
+        isa:hasMaterial  :hybridization298 ;
+        isa:hasStudy     :S149 .
+
+:source338  a                       isa:Material ;
+        isa:hasAccessionID          "003016016011" ;
+        isa:hasCharacteristicValue  :CV6 , :CV5 , :CV17 , :CV3 , :CV16 , :CV1 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/source> .
+
+:C8     a              isa:Property ;
+        dcterms:title  "StdInChIKey" .
+
+:extract401  a               isa:Material ;
+        isa:hasAccessionID   "003016016019" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/extract> .
+
+:C10    a              isa:Property ;
+        dcterms:title  "TreatmentGroup" .
+
+:MN82   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN185 ;
+        isa:hasOutputNode  :MN208 ;
+        isa:hasStudy       :S149 .
+
+:MN276  a                isa:MaterialNode ;
+        isa:hasMaterial  :source424 ;
+        isa:hasStudy     :S149 .
+
+:labelled_extract351  a             isa:Material ;
+        isa:hasAccessionID          "003016016017" ;
+        isa:hasCharacteristicValue  :CV15 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/labelled_extract> .
+
+:CV67   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C4 ;
+        isa:hasUnit      <http://purl.obolibrary.org/obo/UO_0000187> ;
+        isa:hasValue     "103.3"^^xsd:double .
+
+:FV4    a              isa:FactorValue ;
+        isa:hasFactor  :F4 ;
+        isa:hasUnit    <http://purl.obolibrary.org/obo/UO_0000034> ;
+        isa:hasValue   "NA" .
+
+:MN52   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN195 ;
+        isa:hasOutputNode  :MN221 ;
+        isa:hasStudy       :S149 .
+
+:MN246  a                isa:MaterialNode ;
+        isa:hasMaterial  :sample363 ;
+        isa:hasStudy     :S149 .
+
+:MN120  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN203 ;
+        isa:hasOutputNode  :MN236 ;
+        isa:hasStudy       :S149 .
+
+:CV37   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C4 ;
+        isa:hasUnit      <http://purl.obolibrary.org/obo/UO_0000187> ;
+        isa:hasValue     "100"^^xsd:int .
+
+isa:hasFactor  a     owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:domain  isa:FactorValue ;
+        rdfs:range   isa:Factor .
+
+:CV8    a                isa:CharacteristicValue ;
+        isa:hasProperty  :C8 ;
+        isa:hasValue     "RZVAJINKPMORJF-UHFFFAOYSA-N" .
+
+:MN216  a                isa:MaterialNode ;
+        isa:hasMaterial  :labelled_extract413 ;
+        isa:hasStudy     :S149 .
+
+isa:Protocol  rdfs:subClassOf  isa:Accessible .
+
+:D315   a                    isa:AssayResult , isa:Data ;
+        isa:hasAccessionID   "003016016014.CEL" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/data_types/microarray_raw_data> .
+
+:extract358  a               isa:Material ;
+        isa:hasAccessionID   "003016016009" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/extract> .
+
+:MN192  a                isa:MaterialNode ;
+        isa:hasMaterial  :source423 ;
+        isa:hasStudy     :S149 .
+
+<http://purl.obolibrary.org/obo/UO_0000064>
+        a                   isa:OntologyTerm ;
+        rdfs:label          "micromolar" ;
+        isa:hasAccessionID  "0000064" .
+
+<http://bioportal.bioontology.org/ontologies/47845>
+        a                    isa:ReferenceSources ;
+        rdfs:seeAlso         "http://bioportal.bioontology.org/ontologies/47845" ;
+        dcterms:description  "NCBI organismal classification" ;
+        dcterms:hasVersion   "47845" ;
+        dcterms:title        "NCBITaxon" .
+
+:source405  a                       isa:Material ;
+        isa:hasAccessionID          "003016016023" ;
+        isa:hasCharacteristicValue  :CV6 , :CV5 , :CV62 , :CV3 , :CV61 , :CV1 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/source> .
+
+:MN94   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN226 ;
+        isa:hasOutputNode  :MN162 ;
+        isa:hasStudy       :S149 .
+
+:sample369  a                       isa:Material ;
+        isa:hasAccessionID          "003016016017" ;
+        isa:hasCharacteristicValue  :CV12 , :CV24 , :CV35 , :CV8 , :CV25 , :CV7 ;
+        isa:hasFactorValue          :FV7 , :FV4 , :FV6 , :FV3 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/sample> .
+
+:DN260  a             isa:DataNode ;
+        isa:hasData   :D326 ;
+        isa:hasStudy  :S149 .
+
+:MN162  a                isa:MaterialNode ;
+        isa:hasMaterial  :extract397 ;
+        isa:hasStudy     :S149 .
+
+<http://purl.obolibrary.org/obo/UO_0000034>
+        a                   isa:OntologyTerm ;
+        rdfs:label          "week" ;
+        isa:hasAccessionID  "0000034" .
+
+:sample339  a                       isa:Material ;
+        isa:hasAccessionID          "003016016011" ;
+        isa:hasCharacteristicValue  :CV9 , :CV8 , :CV10 , :CV7 , :CV12 , :CV18 ;
+        isa:hasFactorValue          :FV3 , :FV5 , :FV2 , :FV4 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/sample> .
+
+:DAN63  a                  isa:DataAcquisition ;
+        isa:hasInputNode   :MN200 ;
+        isa:hasOutputNode  :DN234 ;
+        isa:hasStudy       :S149 .
+
+:MN64   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN284 ;
+        isa:hasOutputNode  :MN251 ;
+        isa:hasStudy       :S149 .
+
+:MN258  a                isa:MaterialNode ;
+        isa:hasMaterial  :extract340 ;
+        isa:hasStudy     :S149 .
+
+:MN132  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN190 ;
+        isa:hasOutputNode  :MN244 ;
+        isa:hasStudy       :S149 .
+
+:CV49   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C11 ;
+        isa:hasValue     "08-2" .
+
+:DAN33  a                  isa:DataAcquisition ;
+        isa:hasInputNode   :MN182 ;
+        isa:hasOutputNode  :DN202 ;
+        isa:hasStudy       :S149 .
+
+:labelled_extract429  a             isa:Material ;
+        isa:hasAccessionID          "003016016024" ;
+        isa:hasCharacteristicValue  :CV15 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/labelled_extract> .
+
+:MN228  a                isa:MaterialNode ;
+        isa:hasMaterial  :extract387 ;
+        isa:hasStudy     :S149 .
+
+:MN102  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN279 ;
+        isa:hasOutputNode  :MN203 ;
+        isa:hasStudy       :S149 .
+
+:D327   a                    isa:AssayResult , isa:Data ;
+        isa:hasAccessionID   "003016016010.CEL" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/data_types/microarray_raw_data> .
+
+:CV19   a                 isa:CharacteristicValue ;
+        isa:hasProperty   :C2 ;
+        isa:hasUnitValue  "percent"^^xsd:string ;
+        isa:hasValue      "103.2"^^xsd:double .
+
+<https://services.toxbank.net/toxbank/protocol/SEURAT-Protocol-22-1>
+        a                    tb:Protocol , isa:Protocol ;
+        rdfs:seeAlso         "https://services.toxbank.net/toxbank/protocol/SEURAT-Protocol-22-1" ;
+        dcterms:description  "test protocol" .
+
+isa:hasMaterial  a   owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:domain  isa:MaterialNode ;
+        rdfs:range   isa:Material .
+
+:source417  a                       isa:Material ;
+        isa:hasAccessionID          "003016016005" ;
+        isa:hasCharacteristicValue  :CV6 , :CV5 , :CV31 , :CV3 , :CV63 , :CV1 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/source> .
+
+:CV50   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C11 ;
+        isa:hasValue     "08-1" .
+
+isa:Assay  rdfs:subClassOf  isa:HASREFERENCES .
+
+:MN76   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN269 ;
+        isa:hasOutputNode  :MN184 ;
+        isa:hasStudy       :S149 .
+
+:MN144  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN215 ;
+        isa:hasOutputNode  :MN210 ;
+        isa:hasStudy       :S149 .
+
+:labelled_extract345  a             isa:Material ;
+        isa:hasAccessionID          "003016016004" ;
+        isa:hasCharacteristicValue  :CV15 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/labelled_extract> .
+
+:CV20   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C4 ;
+        isa:hasUnit      <http://purl.obolibrary.org/obo/UO_0000187> ;
+        isa:hasValue     "100.5"^^xsd:double .
+
+:F3     a              isa:Factor ;
+        dcterms:title  "Compound" .
+
+:hybridization298  a         isa:Material ;
+        isa:hasAccessionID   "APAPMiddle-8 hr" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/hybridization> .
+
+:DAN45  a                  isa:DataAcquisition ;
+        isa:hasInputNode   :MN272 ;
+        isa:hasOutputNode  :DN260 ;
+        isa:hasStudy       :S149 .
+
+:sample382  a                       isa:Material ;
+        isa:hasAccessionID          "003016016022" ;
+        isa:hasCharacteristicValue  :CV9 , :CV46 , :CV7 , :CV47 , :CV8 , :CV12 ;
+        isa:hasFactorValue          :FV9 , :FV4 , :FV3 , :FV7 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/sample> .
+
+:DN212  a             isa:DataNode ;
+        isa:hasData   :D311 ;
+        isa:hasStudy  :S149 .
+
+:MN114  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN166 ;
+        isa:hasOutputNode  :MN224 ;
+        isa:hasStudy       :S149 .
+
+:C3     a              isa:Property ;
+        dcterms:title  "Bio Rep" .
+
+:MN271  a                isa:MaterialNode ;
+        isa:hasMaterial  :extract348 ;
+        isa:hasStudy     :S149 .
+
+isa:Annotatable  rdfs:subClassOf  isa:Identifiable .
+
+:CV62   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C4 ;
+        isa:hasUnit      <http://purl.obolibrary.org/obo/UO_0000187> ;
+        isa:hasValue     "108.5"^^xsd:double .
+
+:MN186  a                isa:MaterialNode ;
+        isa:hasMaterial  :sample386 ;
+        isa:hasStudy     :S149 .
+
+isa:hasAssay  a      owl:ObjectProperty ;
+        rdfs:domain  isa:Study ;
+        rdfs:range   isa:Assay .
+
+:DN199  a             isa:DataNode ;
+        isa:hasData   :D324 ;
+        isa:hasStudy  :S149 .
+
+:MN241  a                isa:MaterialNode ;
+        isa:hasMaterial  :source417 ;
+        isa:hasStudy     :S149 .
+
+:MN88   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN160 ;
+        isa:hasOutputNode  :MN277 ;
+        isa:hasStudy       :S149 .
+
+:extract383  a               isa:Material ;
+        isa:hasAccessionID   "003016016022" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/extract> .
+
+:MN156  a                isa:MaterialNode ;
+        isa:hasMaterial  :extract377 ;
+        isa:hasStudy     :S149 .
+
+:labelled_extract357  a             isa:Material ;
+        isa:hasAccessionID          "003016016002" ;
+        isa:hasCharacteristicValue  :CV15 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/labelled_extract> .
+
+:CV32   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C11 ;
+        isa:hasValue     "03-2" .
+
+:CV3    a                isa:CharacteristicValue ;
+        isa:hasProperty  :C3 ;
+        isa:hasValue     "NA" .
+
+:labelled_extract412  a             isa:Material ;
+        isa:hasAccessionID          "003016016019" ;
+        isa:hasCharacteristicValue  :CV15 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/labelled_extract> .
+
+:MN58   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN196 ;
+        isa:hasOutputNode  :MN266 ;
+        isa:hasStudy       :S149 .
+
+:sample394  a                       isa:Material ;
+        isa:hasAccessionID          "003016016006" ;
+        isa:hasCharacteristicValue  :CV53 , :CV46 , :CV7 , :CV8 , :CV12 , :CV9 ;
+        isa:hasFactorValue          :FV1 , :FV9 , :FV4 , :FV3 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/sample> .
+
+:D310   a                    isa:AssayResult , isa:Data ;
+        isa:hasAccessionID   "003016016024.CEL" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/data_types/microarray_raw_data> .
+
+:MN126  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN246 ;
+        isa:hasOutputNode  :MN284 ;
+        isa:hasStudy       :S149 .
+
+:S149   a                    isa:Study ;
+        isa:hasAssay         :ISA_4 ;
+        isa:hasProtocol      <https://services.toxbank.net/toxbank/protocol/SEURAT-Protocol-22-1> ;
+        dcterms:created      "31 Dec 2006 22:00:00 GMT" ;
+        dcterms:description  "Gene expression profiling of Acetaminophen in Human frozen hepatocytes. Part of the Japanese Toxicogenomics Project" ;
+        dcterms:title        "TG_GATES Acetaminophen Human in-vitro Liver" .
+
+:MN283  a                isa:MaterialNode ;
+        isa:hasMaterial  :source404 ;
+        isa:hasStudy     :S149 .
+
+:CV74   a                 isa:CharacteristicValue ;
+        isa:hasProperty   :C2 ;
+        isa:hasUnitValue  "percent"^^xsd:string ;
+        isa:hasValue      "99.7"^^xsd:double .
+
+isa:hasCharacteristicValue
+        a            owl:ObjectProperty ;
+        rdfs:domain  isa:Material ;
+        rdfs:range   isa:CharacteristicValue .
+
+:MN198  a                isa:MaterialNode ;
+        isa:hasMaterial  :sample339 ;
+        isa:hasStudy     :S149 .
+
+:MN253  a                isa:MaterialNode ;
+        isa:hasMaterial  :extract389 ;
+        isa:hasStudy     :S149 .
+
+:extract395  a               isa:Material ;
+        isa:hasAccessionID   "003016016006" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/extract> .
+
+:CV44   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C11 ;
+        isa:hasValue     "11-2" .
+
+:hybridization305  a         isa:Material ;
+        isa:hasAccessionID   "APAPHigh-24 hr" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/hybridization> .
+
+:MN223  a                isa:MaterialNode ;
+        isa:hasMaterial  :sample371 ;
+        isa:hasStudy     :S149 .
+
+:MN138  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN179 ;
+        isa:hasOutputNode  :MN232 ;
+        isa:hasStudy       :S149 .
+
+:D322   a                    isa:AssayResult , isa:Data ;
+        isa:hasAccessionID   "003016016009.CEL" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/data_types/microarray_raw_data> .
+
+:CV14   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C11 ;
+        isa:hasValue     "04-2" .
+
+<https://services.toxbank.net/toxbank/organisation/>
+        a                    isa:ReferenceSources ;
+        rdfs:seeAlso         "https://services.toxbank.net/toxbank/organisation/" ;
+        dcterms:description  "Toxbank Organisations" ;
+        dcterms:title        "TBO" .
+
+:ISA_432  a               foaf:Person , isa:Contact ;
+        foaf:family_name  "Kato"^^xsd:string ;
+        foaf:givenname    "I"^^xsd:string .
+
+:DAN39  a                  isa:DataAcquisition ;
+        isa:hasInputNode   :MN214 ;
+        isa:hasOutputNode  :DN257 ;
+        isa:hasStudy       :S149 .
+
+:sample376  a                       isa:Material ;
+        isa:hasAccessionID          "003016016023" ;
+        isa:hasCharacteristicValue  :CV8 , :CV12 , :CV43 , :CV7 , :CV41 , :CV9 ;
+        isa:hasFactorValue          :FV4 , :FV8 , :FV3 , :FV7 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/sample> .
+
+:MN108  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN198 ;
+        isa:hasOutputNode  :MN258 ;
+        isa:hasStudy       :S149 .
+
+:MN71   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN227 ;
+        isa:hasOutputNode  :MN223 ;
+        isa:hasStudy       :S149 .
+
+:MN265  a                isa:MaterialNode ;
+        isa:hasMaterial  :extract344 ;
+        isa:hasStudy     :S149 .
+
+:CV56   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C11 ;
+        isa:hasValue     "06-1" .
+
+:DAN40  a                  isa:DataAcquisition ;
+        isa:hasInputNode   :MN205 ;
+        isa:hasOutputNode  :DN171 ;
+        isa:hasStudy       :S149 .
+
+:MN235  a                isa:MaterialNode ;
+        isa:hasMaterial  :sample367 ;
+        isa:hasStudy     :S149 .
+
+:extract377  a               isa:Material ;
+        isa:hasAccessionID   "003016016023" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/extract> .
+
+:CV26   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C11 ;
+        isa:hasValue     "01-2" .
+
+:labelled_extract406  a             isa:Material ;
+        isa:hasAccessionID          "003016016008" ;
+        isa:hasCharacteristicValue  :CV15 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/labelled_extract> .
+
+:MN205  a                isa:MaterialNode ;
+        isa:hasMaterial  :hybridization305 ;
+        isa:hasStudy     :S149 .
+
+:source424  a                       isa:Material ;
+        isa:hasAccessionID          "003016016014" ;
+        isa:hasCharacteristicValue  :CV6 , :CV5 , :CV20 , :CV3 , :CV74 , :CV1 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/source> .
+
+:sample388  a                       isa:Material ;
+        isa:hasAccessionID          "003016016013" ;
+        isa:hasCharacteristicValue  :CV8 , :CV46 , :CV9 , :CV50 , :CV12 , :CV7 ;
+        isa:hasFactorValue          :FV5 , :FV3 , :FV4 , :FV9 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/sample> .
+
+:MN181  a                isa:MaterialNode ;
+        isa:hasMaterial  :labelled_extract415 ;
+        isa:hasStudy     :S149 .
+
+:C9     a              isa:Property ;
+        dcterms:title  "Control" .
+
+:DN194  a             isa:DataNode ;
+        isa:hasData   :D354 ;
+        isa:hasStudy  :S149 .
+
+isa:Investigation  rdfs:subClassOf  isa:HASREFERENCES .
+
+:C11    a              isa:Property ;
+        dcterms:title  "SubjectID" .
+
+:MN83   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN256 ;
+        isa:hasOutputNode  :MN156 ;
+        isa:hasStudy       :S149 .
+
+:MN277  a                isa:MaterialNode ;
+        isa:hasMaterial  :extract385 ;
+        isa:hasStudy     :S149 .
+
+:CV68   a                 isa:CharacteristicValue ;
+        isa:hasProperty   :C2 ;
+        isa:hasUnitValue  "percent"^^xsd:string ;
+        isa:hasValue      "98.2"^^xsd:double .
+
+:source370  a                       isa:Material ;
+        isa:hasAccessionID          "003016016010" ;
+        isa:hasCharacteristicValue  :CV6 , :CV5 , :CV37 , :CV3 , :CV36 , :CV1 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/source> .
+
+:MN247  a                isa:MaterialNode ;
+        isa:hasMaterial  :sample380 ;
+        isa:hasStudy     :S149 .
+
+:MN53   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN224 ;
+        isa:hasOutputNode  :MN185 ;
+        isa:hasStudy       :S149 .
+
+:FV5    a              isa:FactorValue ;
+        isa:hasFactor  :F1 ;
+        isa:hasUnit    <http://purl.obolibrary.org/obo/UO_0000032> ;
+        isa:hasValue   "8"^^xsd:int .
+
+:MN121  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN250 ;
+        isa:hasOutputNode  :MN238 ;
+        isa:hasStudy       :S149 .
+
+:extract389  a               isa:Material ;
+        isa:hasAccessionID   "003016016013" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/extract> .
+
+:CV38   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C11 ;
+        isa:hasValue     "02-2" .
+
+isa:Study  rdfs:subClassOf  isa:HASREFERENCES .
+
+:CV9    a                isa:CharacteristicValue ;
+        isa:hasProperty  :C9 ;
+        isa:hasValue     "no" .
+
+:MN217  a                isa:MaterialNode ;
+        isa:hasMaterial  :extract352 ;
+        isa:hasStudy     :S149 .
+
+:D316   a                    isa:AssayResult , isa:Data ;
+        isa:hasAccessionID   "003016016013.CEL" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/data_types/microarray_raw_data> .
+
+:MN193  a                isa:MaterialNode ;
+        isa:hasMaterial  :labelled_extract408 ;
+        isa:hasStudy     :S149 .
+
+<https://services.toxbank.net/toxbank/user/U39>
+        a           tb:User , foaf:Person ;
+        owl:sameAs  :ISA_150 .
+
+isa:hasValue  a      owl:DatatypeProperty ;
+        rdfs:domain  isa:PropertyValue .
+
+:MN95   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN270 ;
+        isa:hasOutputNode  :MN165 ;
+        isa:hasStudy       :S149 .
+
+:MN163  a                isa:MaterialNode ;
+        isa:hasMaterial  :source421 ;
+        isa:hasStudy     :S149 .
+
+dcterms:abstract  a  owl:AnnotationProperty .
+
+:hybridization300  a         isa:Material ;
+        isa:hasAccessionID   "APAPHigh-2 hr" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/hybridization> .
+
+<http://onto.toxbank.net/isa/bii/roles/sample>
+        a       isa:OntologyTerm .
+
+:MN133  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN286 ;
+        isa:hasOutputNode  :MN200 ;
+        isa:hasStudy       :S149 .
+
+:MN65   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN264 ;
+        isa:hasOutputNode  :MN269 ;
+        isa:hasStudy       :S149 .
+
+:MN259  a                isa:MaterialNode ;
+        isa:hasMaterial  :source338 ;
+        isa:hasStudy     :S149 .
+
+:extract360  a               isa:Material ;
+        isa:hasAccessionID   "003016016001" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/extract> .
+
+isa:hasStudy  a      owl:ObjectProperty ;
+        rdfs:domain  isa:Investigation ;
+        rdfs:range   isa:Study .
+
+:DAN34  a                  isa:DataAcquisition ;
+        isa:hasInputNode   :MN180 ;
+        isa:hasOutputNode  :DN159 ;
+        isa:hasStudy       :S149 .
+
+:MN103  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN187 ;
+        isa:hasOutputNode  :MN193 ;
+        isa:hasStudy       :S149 .
+
+:MN229  a                isa:MaterialNode ;
+        isa:hasMaterial  :source368 ;
+        isa:hasStudy     :S149 .
+
+:sample371  a                       isa:Material ;
+        isa:hasAccessionID          "003016016010" ;
+        isa:hasCharacteristicValue  :CV38 , :CV8 , :CV7 , :CV24 , :CV25 , :CV12 ;
+        isa:hasFactorValue          :FV5 , :FV6 , :FV4 , :FV3 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/sample> .
+
+:D328   a                    isa:AssayResult , isa:Data ;
+        isa:hasAccessionID   "003016016017.CEL" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/data_types/microarray_raw_data> .
+
+:source418  a                       isa:Material ;
+        isa:hasAccessionID          "003016016020" ;
+        isa:hasCharacteristicValue  :CV6 , :CV5 , :CV65 , :CV3 , :CV64 , :CV1 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/source> .
+
+:MN175  a                isa:MaterialNode ;
+        isa:hasMaterial  :source403 ;
+        isa:hasStudy     :S149 .
+
+:CV51   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C11 ;
+        isa:hasValue     "10-2" .
+
+:MN77   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN274 ;
+        isa:hasOutputNode  :MN272 ;
+        isa:hasStudy       :S149 .
+
+:MN230  a                isa:MaterialNode ;
+        isa:hasMaterial  :labelled_extract361 ;
+        isa:hasStudy     :S149 .
+
+:MN145  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN278 ;
+        isa:hasOutputNode  :MN197 ;
+        isa:hasStudy       :S149 .
+
+:DN243  a             isa:DataNode ;
+        isa:hasData   :D323 ;
+        isa:hasStudy  :S149 .
+
+:CV21   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C11 ;
+        isa:hasValue     "05-2" .
+
+:source364  a                       isa:Material ;
+        isa:hasAccessionID          "003016016001" ;
+        isa:hasCharacteristicValue  :CV6 , :CV5 , :CV28 , :CV3 , :CV27 , :CV1 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/source> .
+
+:F4     a              isa:Factor ;
+        dcterms:title  "Age" .
+
+:hybridization299  a         isa:Material ;
+        isa:hasAccessionID   "APAPLow-24 hr" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/hybridization> .
+
+:DAN46  a                  isa:DataAcquisition ;
+        isa:hasInputNode   :MN184 ;
+        isa:hasOutputNode  :DN240 ;
+        isa:hasStudy       :S149 .
+
+:MN200  a                isa:MaterialNode ;
+        isa:hasMaterial  :hybridization299 ;
+        isa:hasStudy     :S149 .
+
+:MN115  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN273 ;
+        isa:hasOutputNode  :MN181 ;
+        isa:hasStudy       :S149 .
+
+:DN213  a             isa:DataNode ;
+        isa:hasData   :D325 ;
+        isa:hasStudy  :S149 .
+
+<https://services.toxbank.net/toxbank/user/>
+        a                    isa:ReferenceSources ;
+        rdfs:seeAlso         "https://services.toxbank.net/toxbank/user/" ;
+        dcterms:description  "Toxbank Users" ;
+        dcterms:title        "TBU" .
+
+:source334  a                       isa:Material ;
+        isa:hasAccessionID          "003016016004" ;
+        isa:hasCharacteristicValue  :CV6 , :CV5 , :CV4 , :CV3 , :CV13 , :CV1 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/source> .
+
+:C4     a              isa:Property ;
+        dcterms:title  "LDH" .
+
+:MN272  a                isa:MaterialNode ;
+        isa:hasMaterial  :hybridization309 ;
+        isa:hasStudy     :S149 .
+
+:CV63   a                 isa:CharacteristicValue ;
+        isa:hasProperty   :C2 ;
+        isa:hasUnitValue  "percent"^^xsd:string ;
+        isa:hasValue      "100.9"^^xsd:double .
+
+:MN187  a                isa:MaterialNode ;
+        isa:hasMaterial  :extract383 ;
+        isa:hasStudy     :S149 .
+
+:MN89   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN186 ;
+        isa:hasOutputNode  :MN228 ;
+        isa:hasStudy       :S149 .
+
+:MN242  a                isa:MaterialNode ;
+        isa:hasMaterial  :source366 ;
+        isa:hasStudy     :S149 .
+
+:MN157  a                isa:MaterialNode ;
+        isa:hasMaterial  :labelled_extract414 ;
+        isa:hasStudy     :S149 .
+
+:CV33   a                 isa:CharacteristicValue ;
+        isa:hasProperty   :C2 ;
+        isa:hasUnitValue  "percent"^^xsd:string ;
+        isa:hasValue      "100.2"^^xsd:double .
+
+:CV4    a                isa:CharacteristicValue ;
+        isa:hasProperty  :C4 ;
+        isa:hasUnit      <http://purl.obolibrary.org/obo/UO_0000187> ;
+        isa:hasValue     "100.4"^^xsd:double .
+
+isa:hasUnit  a       owl:ObjectProperty ;
+        rdfs:domain  isa:PropertyValue ;
+        rdfs:range   isa:OntologyTerm .
+
+:labelled_extract413  a             isa:Material ;
+        isa:hasAccessionID          "003016016014" ;
+        isa:hasCharacteristicValue  :CV15 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/labelled_extract> .
+
+:MN59   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN271 ;
+        isa:hasOutputNode  :MN225 ;
+        isa:hasStudy       :S149 .
+
+:D311   a                    isa:AssayResult , isa:Data ;
+        isa:hasAccessionID   "003016016008.CEL" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/data_types/microarray_raw_data> .
+
+:MN127  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN262 ;
+        isa:hasOutputNode  :MN169 ;
+        isa:hasStudy       :S149 .
+
+:MN90   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN232 ;
+        isa:hasOutputNode  :MN253 ;
+        isa:hasStudy       :S149 .
+
+:sample365  a                       isa:Material ;
+        isa:hasAccessionID          "003016016001" ;
+        isa:hasCharacteristicValue  :CV25 , :CV24 , :CV7 , :CV29 , :CV8 , :CV12 ;
+        isa:hasFactorValue          :FV6 , :FV3 , :FV1 , :FV4 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/sample> .
+
+:MN284  a                isa:MaterialNode ;
+        isa:hasMaterial  :extract356 ;
+        isa:hasStudy     :S149 .
+
+:CV75   a                 isa:CharacteristicValue ;
+        isa:hasProperty   :C2 ;
+        isa:hasUnitValue  "percent"^^xsd:string ;
+        isa:hasValue      "97.4"^^xsd:double .
+
+:DN171  a             isa:DataNode ;
+        isa:hasData   :D321 ;
+        isa:hasStudy  :S149 .
+
+:CV45   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C11 ;
+        isa:hasValue     "12-2" .
+
+:MN60   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN287 ;
+        isa:hasOutputNode  :MN249 ;
+        isa:hasStudy       :S149 .
+
+:sample335  a                       isa:Material ;
+        isa:hasAccessionID          "003016016004" ;
+        isa:hasCharacteristicValue  :CV14 , :CV10 , :CV8 , :CV9 , :CV12 , :CV7 ;
+        isa:hasFactorValue          :FV3 , :FV4 , :FV1 , :FV2 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/sample> .
+
+:MN254  a                isa:MaterialNode ;
+        isa:hasMaterial  :labelled_extract341 ;
+        isa:hasStudy     :S149 .
+
+isa:Node  rdfs:subClassOf  isa:GraphElement .
+
+:DN267  a             isa:DataNode ;
+        isa:hasData   :D331 ;
+        isa:hasStudy  :S149 .
+
+:MN169  a                isa:MaterialNode ;
+        isa:hasMaterial  :hybridization303 ;
+        isa:hasStudy     :S149 .
+
+:hybridization306  a         isa:Material ;
+        isa:hasAccessionID   "APAPControl-8 hr" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/hybridization> .
+
+:MN139  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN157 ;
+        isa:hasOutputNode  :MN180 ;
+        isa:hasStudy       :S149 .
+
+:MN224  a                isa:MaterialNode ;
+        isa:hasMaterial  :extract336 ;
+        isa:hasStudy     :S149 .
+
+:RSOBI  a                    isa:ReferenceSources ;
+        dcterms:description  "Ontology for Biomedical Investigations" ;
+        dcterms:title        "OBI" .
+
+:D323   a                    isa:AssayResult , isa:Data ;
+        isa:hasAccessionID   "003016016015.CEL" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/data_types/microarray_raw_data> .
+
+:CV15   a                    isa:CharacteristicValue ;
+        isa:hasOntologyTerm  <http://purl.obolibrary.org/chebi/15956> ;
+        isa:hasProperty      :C13 ;
+        isa:hasValue         "biotin" .
+
+:ISA_433  a               foaf:Person , isa:Contact ;
+        foaf:family_name  "Yamada"^^xsd:string ;
+        foaf:givenname    "H"^^xsd:string .
+
+:extract336  a               isa:Material ;
+        isa:hasAccessionID   "003016016012" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/extract> .
+
+:MN109  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN237 ;
+        isa:hasOutputNode  :MN275 ;
+        isa:hasStudy       :S149 .
+
+<http://onto.toxbank.net/isa/bii/data_types/microarray_raw_data>
+        a       isa:OntologyTerm .
+
+:MN170  a                isa:MaterialNode ;
+        isa:hasMaterial  :source418 ;
+        isa:hasStudy     :S149 .
+
+:MN72   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN285 ;
+        isa:hasOutputNode  :MN263 ;
+        isa:hasStudy       :S149 .
+
+<https://services.toxbank.net/toxbank/protocol/>
+        a                    isa:ReferenceSources ;
+        rdfs:seeAlso         "https://services.toxbank.net/toxbank/protocol/" ;
+        dcterms:description  "Toxbank Protocols" ;
+        dcterms:title        "TBP" .
+
+:MN266  a                isa:MaterialNode ;
+        isa:hasMaterial  :labelled_extract347 ;
+        isa:hasStudy     :S149 .
+
+:labelled_extract341  a             isa:Material ;
+        isa:hasAccessionID          "003016016011" ;
+        isa:hasCharacteristicValue  :CV15 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/labelled_extract> .
+
+:MN140  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN218 ;
+        isa:hasOutputNode  :MN177 ;
+        isa:hasStudy       :S149 .
+
+:CV57   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C4 ;
+        isa:hasUnit      <http://purl.obolibrary.org/obo/UO_0000187> ;
+        isa:hasValue     "103.4"^^xsd:double .
+
+:DAN41  a                  isa:DataAcquisition ;
+        isa:hasInputNode   :MN184 ;
+        isa:hasOutputNode  :DN172 ;
+        isa:hasStudy       :S149 .
+
+:MN236  a                isa:MaterialNode ;
+        isa:hasMaterial  :hybridization300 ;
+        isa:hasStudy     :S149 .
+
+:MN110  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN235 ;
+        isa:hasOutputNode  :MN271 ;
+        isa:hasStudy       :S149 .
+
+:CV27   a                 isa:CharacteristicValue ;
+        isa:hasProperty   :C2 ;
+        isa:hasUnitValue  "percent"^^xsd:string ;
+        isa:hasValue      "98.3"^^xsd:double .
+
+isa:ProtocolApplication
+        rdfs:subClassOf  isa:Accessible .
+
+:labelled_extract407  a             isa:Material ;
+        isa:hasAccessionID          "003016016007" ;
+        isa:hasCharacteristicValue  :CV15 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/labelled_extract> .
+
+:MN206  a                isa:MaterialNode ;
+        isa:hasMaterial  :hybridization308 ;
+        isa:hasStudy     :S149 .
+
+:source425  a                       isa:Material ;
+        isa:hasAccessionID          "003016016013" ;
+        isa:hasCharacteristicValue  :CV6 , :CV5 , :CV76 , :CV3 , :CV75 , :CV1 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/source> .
+
+:extract348  a               isa:Material ;
+        isa:hasAccessionID   "003016016018" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/extract> .
+
+:DN280  a             isa:DataNode ;
+        isa:hasData   :D313 ;
+        isa:hasStudy  :S149 .
+
+:MN182  a                isa:MaterialNode ;
+        isa:hasMaterial  :hybridization307 ;
+        isa:hasStudy     :S149 .
+
+isa:hasEndpoint  a   owl:ObjectProperty ;
+        rdfs:domain  isa:Assay ;
+        rdfs:range   isa:OntologyTerm .
+
+:C12    a              isa:Property ;
+        dcterms:title  "Route" .
+
+:MN84   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN261 ;
+        isa:hasOutputNode  :MN215 ;
+        isa:hasStudy       :S149 .
+
+:MN278  a                isa:MaterialNode ;
+        isa:hasMaterial  :extract381 ;
+        isa:hasStudy     :S149 .
+
+:labelled_extract353  a             isa:Material ;
+        isa:hasAccessionID          "003016016010" ;
+        isa:hasCharacteristicValue  :CV15 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/labelled_extract> .
+
+:CV69   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C4 ;
+        isa:hasUnit      <http://purl.obolibrary.org/obo/UO_0000187> ;
+        isa:hasValue     "103.6"^^xsd:double .
+
+isa:hasProperty  a   owl:ObjectProperty ;
+        rdfs:domain  isa:PropertyValue ;
+        rdfs:range   isa:Property .
+
+:ISA_150  a               foaf:Person , isa:Contact ;
+        foaf:family_name  "Kohonen"^^xsd:string ;
+        foaf:givenname    "Pekka"^^xsd:string .
+
+:FV6    a              isa:FactorValue ;
+        isa:hasFactor  :F2 ;
+        isa:hasUnit    <http://purl.obolibrary.org/obo/UO_0000064> ;
+        isa:hasValue   "0"^^xsd:int .
+
+:MN54   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN259 ;
+        isa:hasOutputNode  :MN198 ;
+        isa:hasStudy       :S149 .
+
+:MN248  a                isa:MaterialNode ;
+        isa:hasMaterial  :source342 ;
+        isa:hasStudy     :S149 .
+
+:sample390  a                       isa:Material ;
+        isa:hasAccessionID          "003016016008" ;
+        isa:hasCharacteristicValue  :CV9 , :CV51 , :CV41 , :CV12 , :CV8 , :CV7 ;
+        isa:hasFactorValue          :FV8 , :FV3 , :FV4 , :FV1 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/sample> .
+
+:MN122  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN255 ;
+        isa:hasOutputNode  :MN236 ;
+        isa:hasStudy       :S149 .
+
+:CV39   a                 isa:CharacteristicValue ;
+        isa:hasProperty   :C2 ;
+        isa:hasUnitValue  "percent"^^xsd:string ;
+        isa:hasValue      "97.1"^^xsd:double .
+
+:MN218  a                isa:MaterialNode ;
+        isa:hasMaterial  :source426 ;
+        isa:hasStudy     :S149 .
+
+:D317   a                    isa:AssayResult , isa:Data ;
+        isa:hasAccessionID   "003016016006.CEL" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/data_types/microarray_raw_data> .
+
+:CV70   a                 isa:CharacteristicValue ;
+        isa:hasProperty   :C2 ;
+        isa:hasUnitValue  "percent"^^xsd:string ;
+        isa:hasValue      "99"^^xsd:int .
+
+:MN96   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN238 ;
+        isa:hasOutputNode  :MN237 ;
+        isa:hasStudy       :S149 .
+
+:extract391  a               isa:Material ;
+        isa:hasAccessionID   "003016016008" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/extract> .
+
+:CV40   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C11 ;
+        isa:hasValue     "02-1" .
+
+:MN164  a                isa:MaterialNode ;
+        isa:hasMaterial  :source362 ;
+        isa:hasStudy     :S149 .
+
+:hybridization301  a         isa:Material ;
+        isa:hasAccessionID   "APAPControl-2 hr" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/hybridization> .
+
+isa:DataNode  rdfs:subClassOf  isa:Node .
+
+:MN66   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN188 ;
+        isa:hasOutputNode  :MN230 ;
+        isa:hasStudy       :S149 .
+
+:MN134  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN192 ;
+        isa:hasOutputNode  :MN160 ;
+        isa:hasStudy       :S149 .
+
+:CV10   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C10 ;
+        isa:hasValue     "Low" .
+
+isa:Contact  rdfs:subClassOf  isa:Annotatable .
+
+:DAN35  a                  isa:DataAcquisition ;
+        isa:hasInputNode   :MN180 ;
+        isa:hasOutputNode  :DN245 ;
+        isa:hasStudy       :S149 .
+
+isa:hasProtocol  a   owl:ObjectProperty ;
+        rdfs:domain  isa:Study ;
+        rdfs:range   isa:Protocol .
+
+:MN104  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN277 ;
+        isa:hasOutputNode  :MN282 ;
+        isa:hasStudy       :S149 .
+
+:DN202  a             isa:DataNode ;
+        isa:hasData   :D314 ;
+        isa:hasStudy  :S149 .
+
+:D329   a                    isa:AssayResult , isa:Data ;
+        isa:hasAccessionID   "003016016012.CEL" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/data_types/microarray_raw_data> .
+
+:source419  a                       isa:Material ;
+        isa:hasAccessionID          "003016016019" ;
+        isa:hasCharacteristicValue  :CV6 , :CV5 , :CV20 , :CV3 , :CV66 , :CV1 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/source> .
+
+:MN261  a                isa:MaterialNode ;
+        isa:hasMaterial  :sample378 ;
+        isa:hasStudy     :S149 .
+
+:CV52   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C11 ;
+        isa:hasValue     "10-1" .
+
+:MN176  a                isa:MaterialNode ;
+        isa:hasMaterial  :sample333 ;
+        isa:hasStudy     :S149 .
+
+:MN146  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN210 ;
+        isa:hasOutputNode  :MN206 ;
+        isa:hasStudy       :S149 .
+
+:MN231  a                isa:MaterialNode ;
+        isa:hasMaterial  :sample392 ;
+        isa:hasStudy     :S149 .
+
+:MN78   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN254 ;
+        isa:hasOutputNode  :MN208 ;
+        isa:hasStudy       :S149 .
+
+:D330   a                    isa:AssayResult , isa:Data ;
+        isa:hasAccessionID   "003016016004.CEL" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/data_types/microarray_raw_data> .
+
+<http://purl.org/obo/owl/OBI#424>
+        a                   isa:OntologyTerm ;
+        rdfs:label          "transcription profiling" ;
+        isa:hasAccessionID  "424" .
+
+:labelled_extract347  a             isa:Material ;
+        isa:hasAccessionID          "003016016003" ;
+        isa:hasCharacteristicValue  :CV15 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/labelled_extract> .
+
+:CV22   a                 isa:CharacteristicValue ;
+        isa:hasProperty   :C2 ;
+        isa:hasUnitValue  "percent"^^xsd:string ;
+        isa:hasValue      "101.7"^^xsd:double .
+
+:DN159  a             isa:DataNode ;
+        isa:hasData   :D315 ;
+        isa:hasStudy  :S149 .
+
+:DAN47  a                  isa:DataAcquisition ;
+        isa:hasInputNode   :MN207 ;
+        isa:hasOutputNode  :DN173 ;
+        isa:hasStudy       :S149 .
+
+:MN201  a                isa:MaterialNode ;
+        isa:hasMaterial  :source405 ;
+        isa:hasStudy     :S149 .
+
+:source420  a                       isa:Material ;
+        isa:hasAccessionID          "003016016008" ;
+        isa:hasCharacteristicValue  :CV6 , :CV5 , :CV67 , :CV3 , :CV22 , :CV1 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/source> .
+
+:sample384  a                       isa:Material ;
+        isa:hasAccessionID          "003016016021" ;
+        isa:hasCharacteristicValue  :CV9 , :CV8 , :CV46 , :CV12 , :CV48 , :CV7 ;
+        isa:hasFactorValue          :FV4 , :FV7 , :FV9 , :FV3 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/sample> .
+
+:MN116  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN162 ;
+        isa:hasOutputNode  :MN262 ;
+        isa:hasStudy       :S149 .
+
+:C5     a              isa:Property ;
+        dcterms:title  "AssayType" .
+
+<http://purl.org/obo/owl/OBI#400148>
+        a                   isa:OntologyTerm ;
+        rdfs:label          "DNA microarray" ;
+        isa:hasAccessionID  "400148" .
+
+:MN273  a                isa:MaterialNode ;
+        isa:hasMaterial  :extract395 ;
+        isa:hasStudy     :S149 .
+
+:CV64   a                 isa:CharacteristicValue ;
+        isa:hasProperty   :C2 ;
+        isa:hasUnitValue  "percent"^^xsd:string ;
+        isa:hasValue      "102"^^xsd:int .
+
+:MN188  a                isa:MaterialNode ;
+        isa:hasMaterial  :extract360 ;
+        isa:hasStudy     :S149 .
+
+:MN158  a                isa:MaterialNode ;
+        isa:hasMaterial  :labelled_extract410 ;
+        isa:hasStudy     :S149 .
+
+:FV1    a              isa:FactorValue ;
+        isa:hasFactor  :F1 ;
+        isa:hasUnit    <http://purl.obolibrary.org/obo/UO_0000032> ;
+        isa:hasValue   "2"^^xsd:int .
+
+:extract385  a               isa:Material ;
+        isa:hasAccessionID   "003016016021" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/extract> .
+
+:labelled_extract359  a             isa:Material ;
+        isa:hasAccessionID          "003016016009" ;
+        isa:hasCharacteristicValue  :CV15 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/labelled_extract> .
+
+:CV34   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C4 ;
+        isa:hasUnit      <http://purl.obolibrary.org/obo/UO_0000187> ;
+        isa:hasValue     "99.3"^^xsd:double .
+
+:CV5    a                isa:CharacteristicValue ;
+        isa:hasProperty  :C5 ;
+        isa:hasValue     "in vitro" .
+
+:labelled_extract414  a             isa:Material ;
+        isa:hasAccessionID          "003016016013" ;
+        isa:hasCharacteristicValue  :CV15 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/labelled_extract> .
+
+:sample396  a                       isa:Material ;
+        isa:hasAccessionID          "003016016005" ;
+        isa:hasCharacteristicValue  :CV9 , :CV8 , :CV46 , :CV54 , :CV7 , :CV12 ;
+        isa:hasFactorValue          :FV9 , :FV3 , :FV1 , :FV4 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/sample> .
+
+:D312   a                    isa:AssayResult , isa:Data ;
+        isa:hasAccessionID   "003016016007.CEL" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/data_types/microarray_raw_data> .
+
+:MN128  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN189 ;
+        isa:hasOutputNode  :MN219 ;
+        isa:hasStudy       :S149 .
+
+<http://purl.obolibrary.org/obo/UO_0000187>
+        a                   isa:OntologyTerm ;
+        rdfs:label          "percent" ;
+        isa:hasAccessionID  "0000187" .
+
+:DAN29  a                  isa:DataAcquisition ;
+        isa:hasInputNode   :MN205 ;
+        isa:hasOutputNode  :DN191 ;
+        isa:hasStudy       :S149 .
+
+:source402  a                       isa:Material ;
+        isa:hasAccessionID          "003016016016" ;
+        isa:hasCharacteristicValue  :CV6 , :CV5 , :CV57 , :CV3 , :CV30 , :CV1 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/source> .
+
+:MN91   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN219 ;
+        isa:hasOutputNode  :MN167 ;
+        isa:hasStudy       :S149 .
+
+:MN285  a                isa:MaterialNode ;
+        isa:hasMaterial  :source372 ;
+        isa:hasStudy     :S149 .
+
+<https://services.toxbank.net/toxbank/organisation/G20>
+        a       tb:Organization .
+
+:CV76   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C4 ;
+        isa:hasUnit      <http://purl.obolibrary.org/obo/UO_0000187> ;
+        isa:hasValue     "100.8"^^xsd:double .
+
+:DN172  a             isa:DataNode ;
+        isa:hasData   :D322 ;
+        isa:hasStudy  :S149 .
+
+:MN255  a                isa:MaterialNode ;
+        isa:hasMaterial  :labelled_extract406 ;
+        isa:hasStudy     :S149 .
+
+:extract397  a               isa:Material ;
+        isa:hasAccessionID   "003016016005" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/extract> .
+
+:CV46   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C10 ;
+        isa:hasValue     "Middle" .
+
+isa:hasData  a       owl:FunctionalProperty , owl:ObjectProperty ;
+        rdfs:domain  isa:DataNode ;
+        rdfs:range   isa:Data .
+
+isa:hasFactorValue  a  owl:ObjectProperty ;
+        rdfs:domain  isa:Data ;
+        rdfs:range   isa:FactorValue .
+
+:MN61   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN217 ;
+        isa:hasOutputNode  :MN178 ;
+        isa:hasStudy       :S149 .
+
+isa:Processing  rdfs:subClassOf  isa:GraphElement .
+
+isa:DataProcessing  rdfs:subClassOf  isa:Processing .
+
+:D354   a                    isa:AssayResult , isa:Data ;
+        isa:hasAccessionID   "003016016019.CEL" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/data_types/microarray_raw_data> .
+
+isa:Parameter  rdfs:subClassOf  isa:Property .
+
+:hybridization307  a         isa:Material ;
+        isa:hasAccessionID   "APAPMiddle-24 hr" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/hybridization> .
+
+:DAN30  a                  isa:DataAcquisition ;
+        isa:hasInputNode   :MN236 ;
+        isa:hasOutputNode  :DN212 ;
+        isa:hasStudy       :S149 .
+
+:MN225  a                isa:MaterialNode ;
+        isa:hasMaterial  :labelled_extract349 ;
+        isa:hasStudy     :S149 .
+
+isa:Design  rdfs:subClassOf  isa:FreeTextTerm .
+
+:D324   a                    isa:AssayResult , isa:Data ;
+        isa:hasAccessionID   "003016016001.CEL" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/data_types/microarray_raw_data> .
+
+:CV16   a                 isa:CharacteristicValue ;
+        isa:hasProperty   :C2 ;
+        isa:hasUnitValue  "percent"^^xsd:string ;
+        isa:hasValue      "96.2"^^xsd:double .
+
+:sample378  a                       isa:Material ;
+        isa:hasAccessionID          "003016016016" ;
+        isa:hasCharacteristicValue  :CV44 , :CV12 , :CV7 , :CV41 , :CV8 , :CV9 ;
+        isa:hasFactorValue          :FV3 , :FV8 , :FV4 , :FV5 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/sample> .
+
+:MN73   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN178 ;
+        isa:hasOutputNode  :MN184 ;
+        isa:hasStudy       :S149 .
+
+:MN141  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN216 ;
+        isa:hasOutputNode  :MN180 ;
+        isa:hasStudy       :S149 .
+
+:CV58   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C4 ;
+        isa:hasUnit      <http://purl.obolibrary.org/obo/UO_0000187> ;
+        isa:hasValue     "104.4"^^xsd:double .
+
+:DAN42  a                  isa:DataAcquisition ;
+        isa:hasInputNode   :MN206 ;
+        isa:hasOutputNode  :DN243 ;
+        isa:hasStudy       :S149 .
+
+:MN111  a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN176 ;
+        isa:hasOutputNode  :MN196 ;
+        isa:hasStudy       :S149 .
+
+:MN237  a                isa:MaterialNode ;
+        isa:hasMaterial  :extract401 ;
+        isa:hasStudy     :S149 .
+
+isa:ParameterValue  rdfs:subClassOf  isa:PropertyValue .
+
+:extract379  a               isa:Material ;
+        isa:hasAccessionID   "003016016016" ;
+        isa:hasOntologyTerm  <http://onto.toxbank.net/isa/bii/roles/extract> .
+
+:CV28   a                isa:CharacteristicValue ;
+        isa:hasProperty  :C4 ;
+        isa:hasUnit      <http://purl.obolibrary.org/obo/UO_0000187> ;
+        isa:hasValue     "99.9"^^xsd:double .
+
+:labelled_extract408  a             isa:Material ;
+        isa:hasAccessionID          "003016016022" ;
+        isa:hasCharacteristicValue  :CV15 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/labelled_extract> .
+
+:MN207  a                isa:MaterialNode ;
+        isa:hasMaterial  :hybridization302 ;
+        isa:hasStudy     :S149 .
+
+isa:OntologyTerm  rdfs:subClassOf  isa:Annotatable .
+
+:source426  a                       isa:Material ;
+        isa:hasAccessionID          "003016016006" ;
+        isa:hasCharacteristicValue  :CV6 , :CV5 , :CV4 , :CV3 , :CV77 , :CV1 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/source> .
+
+<http://onto.toxbank.net/isa/bii/roles/extract>
+        a       isa:OntologyTerm .
+
+:DN281  a             isa:DataNode ;
+        isa:hasData   :D312 ;
+        isa:hasStudy  :S149 .
+
+:MN183  a                isa:MaterialNode ;
+        isa:hasMaterial  :source402 ;
+        isa:hasStudy     :S149 .
+
+isa:hasOutputNode  a  owl:ObjectProperty ;
+        rdfs:domain  isa:Processing ;
+        rdfs:range   isa:Node .
+
+:C13    a              isa:Property ;
+        dcterms:title  "Label" .
+
+:MN85   a                  isa:MaterialProcessing ;
+        isa:hasInputNode   :MN247 ;
+        isa:hasOutputNode  :MN278 ;
+        isa:hasStudy       :S149 .
+
+:MN279  a                isa:MaterialNode ;
+        isa:hasMaterial  :extract393 ;
+        isa:hasStudy     :S149 .
+
+isa:hasOntologyTerm  a  owl:ObjectProperty ;
+        rdfs:domain  isa:FreeTextTerm ;
+        rdfs:range   isa:OntologyTerm .
+
+dcterms:hasVersion  a  owl:AnnotationProperty .
+
+:source372  a                       isa:Material ;
+        isa:hasAccessionID          "003016016009" ;
+        isa:hasCharacteristicValue  :CV6 , :CV5 , :CV37 , :CV3 , :CV39 , :CV1 ;
+        isa:hasOntologyTerm         <http://onto.toxbank.net/isa/bii/roles/source> .
+
+isa:Characteristic  rdfs:subClassOf  isa:Property .

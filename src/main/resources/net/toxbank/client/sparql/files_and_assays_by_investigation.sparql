@@ -1,0 +1,69 @@
+#Investigation service query
+#Retrieves all available factor combinations given an investigation URI
+#
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX isa: <http://onto.toxbank.net/isa/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+
+SELECT DISTINCT ?study ?assay ?assayFile ?endpoint ?endpointLabel ?technology ?techLabel ?platform ?file ?term WHERE {
+  {
+  <%{investigation_uri}> isa:hasStudy ?study.
+  ?assay isa:uses ?material;
+  isa:usesTechnology ?technology;
+  rdfs:seeAlso ?assayFile;
+  isa:hasEndpoint ?endpoint.
+  ?x isa:hasMaterial ?material.
+  ?dp isa:hasInputNode ?x.
+  ?dp isa:hasOutputNode ?node.
+  ?node isa:hasData ?data;
+  isa:hasStudy ?study.
+  ?data rdfs:seeAlso ?file.
+  ?data isa:hasOntologyTerm ?term.
+  OPTIONAL {?endpoint rdfs:label ?endpointLabel.}
+  OPTIONAL {?assay isa:usesPlatform ?platform.}
+  OPTIONAL {?technology rdfs:label ?techLabel.}
+  }
+  UNION
+  {
+  <%{investigation_uri}> isa:hasStudy ?study.
+  ?assay isa:uses ?material;
+  isa:usesTechnology ?technology;
+  rdfs:seeAlso ?assayFile;
+  isa:hasEndpoint ?endpoint.
+  ?x isa:hasMaterial ?material.
+  ?dp1 isa:hasInputNode ?x.
+  ?dp1 isa:hasOutputNode ?y.
+  ?dp2 isa:hasInputNode ?y.
+  ?dp2 isa:hasOutputNode ?node.
+  ?node isa:hasData ?data;
+  isa:hasStudy ?study.
+  ?data rdfs:seeAlso ?file.
+  ?data isa:hasOntologyTerm ?term.
+  OPTIONAL {?endpoint rdfs:label ?endpointLabel.}
+  OPTIONAL {?assay isa:usesPlatform ?platform.}
+  OPTIONAL {?technology rdfs:label ?techLabel.}
+  }
+  UNION
+  {
+  <%{investigation_uri}> isa:hasStudy ?study.
+  ?assay isa:uses ?material;
+  isa:usesTechnology ?technology;
+  rdfs:seeAlso ?assayFile;
+  isa:hasEndpoint ?endpoint.
+  ?x isa:hasMaterial ?material.
+  ?dp1 isa:hasInputNode ?x;
+  isa:hasOutputNode ?y1.
+  ?dp2 isa:hasInputNode ?y1;
+  isa:hasOutputNode ?y2.
+  ?dp3 isa:hasInputNode ?y2;
+  isa:hasOutputNode ?node.
+  ?node isa:hasData ?data;
+  isa:hasStudy ?study.
+  ?data rdfs:seeAlso ?file.
+  ?data isa:hasOntologyTerm ?term.
+  OPTIONAL {?endpoint rdfs:label ?endpointLabel.}
+  OPTIONAL {?assay isa:usesPlatform ?platform.}
+  OPTIONAL {?technology rdfs:label ?techLabel.}
+  }
+} ORDER BY ?assay ?endpoint ?technology ?file 

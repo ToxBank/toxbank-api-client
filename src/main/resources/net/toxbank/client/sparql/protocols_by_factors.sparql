@@ -1,16 +1,17 @@
 #Investigation service query
 #Retrieves protocol URI containing any of the factor value URI (e.g. two compound URIs)
 #
-
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-prefix isa:   <http://onto.toxbank.net/isa/>
-prefix dcterms: <http://purl.org/dc/terms/>
-prefix tb:    <http://onto.toxbank.net/api/> 
+PREFIX isa:   <http://onto.toxbank.net/isa/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX tb:    <http://onto.toxbank.net/api/> 
 
-SELECT distinct ?protocol ?label ?factorname ?value WHERE {
- ?inv rdf:type isa:Investigation.
- ?inv isa:hasStudy ?study.
+SELECT DISTINCT ?protocol ?label ?factorname ?value WHERE {
+ ?investigation rdf:type isa:Investigation.
+ ?investigation isa:hasStudy ?study.
+ ?investigation tb:isPublished "true"^^<http://www.w3.org/2001/XMLSchema#boolean>.
+ ?investigation tb:isSummarySearchable "true"^^<http://www.w3.org/2001/XMLSchema#boolean>.
  ?study isa:hasProtocol ?protocol.
  OPTIONAL {
  ?protocol rdfs:label ?label.
@@ -20,13 +21,9 @@ SELECT distinct ?protocol ?label ?factorname ?value WHERE {
  ?node isa:hasMaterial ?sample.
  ?sample isa:hasFactorValue ?factorValue.
  {
-  { ?factorValue isa:hasOntologyTerm  <http://purl.obolibrary.org/chebi/CHEBI:39867> } 
- UNION
-  {?factorValue isa:hasOntologyTerm  
-<http://toxbanktest2.toxbank.net:8080/ambit2/compound/GJPICJJJRGTNOD-UHFFFAOYSA-N>
-  }
+   %{Values}
  }.
  ?factorValue isa:hasValue  ?value.
  ?factorValue isa:hasFactor ?factor. 
  ?factor dcterms:title ?factorname.
-} order by ?factorValue 
+} ORDER BY ?factorValue

@@ -1,21 +1,20 @@
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-prefix isa:   <http://onto.toxbank.net/isa/>
-prefix dcterms: <http://purl.org/dc/terms/>
+PREFIX isa:   <http://onto.toxbank.net/isa/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
 
-SELECT ?study ?protocol ?assay ?endpoint ?endpointLabel ?technology ?technologyLabel WHERE {
- <https://services.toxbank.net/investigation/fe3fc233-c810-4f9f-b7d3-1e6bdc051e01/> isa:hasStudy ?study.
+SELECT DISTINCT ?study ?protocol ?assay ?endpoint ?endpointLabel ?technology ?technologyLabel WHERE {
+ <%{investigation_uri}> isa:hasStudy ?study.
  ?study rdf:type isa:Study;
       dcterms:title ?studytitle;
       isa:hasProtocol ?protocol;
       isa:hasAssay ?assay.
-OPTIONAL {
+  OPTIONAL {
      ?assay isa:hasEndpoint ?endpoint.
      ?endpoint rdfs:label ?endpointLabel.
-}.
-OPTIONAL {
+  }.
+  OPTIONAL {
      ?assay isa:usesTechnology ?technology.
      ?technology rdfs:label ?technologyLabel.
-}.
-     
+  }.   
 } 
