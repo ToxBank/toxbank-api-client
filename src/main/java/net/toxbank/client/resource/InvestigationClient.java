@@ -60,6 +60,14 @@ public class InvestigationClient {
   protected static final String file_param = "file";
   protected static final String published_param = "published";
   protected static final String searchable_param = "summarySearchable";
+  protected static final String ftp_file_param = "ftpFile";
+  protected static final String title_param = "title";
+  protected static final String abstract_param = "abstract";
+  protected static final String owning_org_param = "owningOrg";
+  protected static final String authors_param = "authors";
+  protected static final String keywords_param = "keywords";
+  protected static final String data_type_param = "type";
+  protected static final String projects_param = "projects";
   
   private static List<String> doseFactorNames = Arrays.asList("dose", "concentration");
   private static List<String> timeFactorNames = Arrays.asList("sample timepoint", "duration of exposure");
@@ -807,17 +815,64 @@ public class InvestigationClient {
    * Posts the investigation as a new version
    * @param zipFile the investigation zip file
    * @param rootUrl the root url of the service
+   * @param accessRights the access rights to assign
+   * @param ftpFilename name of the file on the ftp server - optional used with ftpData type
    * @return the remote task created
    */
-  public RemoteTask postInvestigation(File zipFile, URL rootUrl, List<PolicyRule> accessRights, boolean searchable) throws Exception {
+  public RemoteTask postInvestigation(File zipFile, URL rootUrl, List<PolicyRule> accessRights, Investigation investigation,
+      String ftpFilename) throws Exception {
     MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, null, utf8);
-    entity.addPart(file_param, new FileBody(zipFile, zipFile.getName(), "application/zip", null));
-    entity.addPart(searchable_param, new StringBody(String.valueOf(searchable)));
+    if (investigation.getDataType() != Investigation.DataType.noData) {
+      entity.addPart(file_param, new FileBody(zipFile, zipFile.getName(), "application/zip", null));
+    }
+    if (investigation.getDataType() != Investigation.DataType.isaTabData) {
+      addMetaData(entity, investigation);
+    }
+    if (investigation.getDataType() == Investigation.DataType.ftpData) {
+      entity.addPart(ftp_file_param, new StringBody(ftpFilename));
+    }
+    entity.addPart(searchable_param, new StringBody(String.valueOf(investigation.isSearchable())));
     AbstractClient.addPolicyRules(entity, accessRights);
     RemoteTask task = new RemoteTask(getHttpClient(), rootUrl, "text/uri-list", entity, HttpPost.METHOD_NAME);
     return task;
   }
   
+  /**
+   * Updates an investigation at the given url
+   * @param zipFile the new investigation zip file - null indicates that the zip file should remain unchanged
+   * @param investigation the investigation object to update
+   * @param accessRights the access rights to assign
+   * @param ftpFilename name of the file on the ftp server - optional used with ftpData type
+   * @return the remote task created
+   */
+  public RemoteTask updateInvestigation(File zipFile, Investigation investigation, List<PolicyRule> accessRights,
+      String ftpFilename) throws Exception {
+    if (investigation.getResourceURL() == null) {
+      throw new IllegalArgumentException("investigation has not been assigned a resource url");
+    }
+    MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, null, utf8);
+    if (zipFile != null) {
+      entity.addPart(file_param, new FileBody(zipFile, zipFile.getName(), "application/zip", null));
+    }
+    if (investigation.getDataType() != Investigation.DataType.isaTabData) {
+      addMetaData(entity, investigation);
+    }
+    if (investigation.getDataType() == Investigation.DataType.ftpData) {
+      entity.addPart(ftp_file_param, new StringBody(ftpFilename));
+    }
+        
+    addPolicyRules(entity, accessRights);
+
+    if (investigation.isPublished() != null) {
+      entity.addPart(published_param, new StringBody(investigation.isPublished().toString()));
+    }
+    if (investigation.isSearchable() != null) {
+      entity.addPart(searchable_param, new StringBody(investigation.isSearchable().toString()));
+    }
+    RemoteTask task = new RemoteTask(getHttpClient(), investigation.getResourceURL(), "text/uri-list", entity, HttpPut.METHOD_NAME);
+    return task;
+  }
+
   /**
    * Sets the published status for an investigation
    * @param investigation the investigation to update - only url is used
@@ -832,32 +887,37 @@ public class InvestigationClient {
     RemoteTask task = new RemoteTask(getHttpClient(), investigation.getResourceURL(), "text/uri-list", entity, HttpPut.METHOD_NAME);
     return task;
   }
-
-  /**
-   * Updates an investigation at the given url
-   * @param zipFile the new investigation zip file - null indicates that the zip file should remain unchanged
-   * @param investigation the investigation object to update
-   * @return the remote task created
-   */
-  public RemoteTask updateInvestigation(File zipFile, Investigation investigation, List<PolicyRule> accessRights) throws Exception {
-    if (investigation.getResourceURL() == null) {
-      throw new IllegalArgumentException("investigation has not been assigned a resource url");
-    }
-    MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, null, utf8);
-    if (zipFile != null) {
-      entity.addPart(file_param, new FileBody(zipFile, zipFile.getName(), "application/zip", null));
-    }
     
-    addPolicyRules(entity, accessRights);
-
-    if (investigation.isPublished() != null) {
-      entity.addPart(published_param, new StringBody(investigation.isPublished().toString()));
+  public void addMetaData(MultipartEntity entity, Investigation investigation) throws Exception {
+    entity.addPart(data_type_param, new StringBody(investigation.getDataType().name()));
+    entity.addPart(title_param, new StringBody(investigation.getTitle()));
+    entity.addPart(abstract_param, new StringBody(investigation.getAbstract()));
+    entity.addPart(owning_org_param, new StringBody(investigation.getOrganisation().getResourceURL().toString()));
+    entity.addPart(authors_param, joinUrls(investigation.getAuthors()));
+    entity.addPart(projects_param, joinUrls(investigation.getProjects()));
+    entity.addPart(keywords_param, joinStrings(investigation.getKeywords()));
+  }
+  
+  private static StringBody joinStrings(List<String> values) throws Exception {
+    StringBuilder sb = new StringBuilder();
+    for (String value : values) {
+      if (sb.length() > 0) {
+        sb.append(",");
+      }
+      sb.append(value);
     }
-    if (investigation.isSearchable() != null) {
-      entity.addPart(searchable_param, new StringBody(investigation.isSearchable().toString()));
+    return new StringBody(sb.toString());
+  }
+  
+  private static StringBody joinUrls(List<? extends AbstractToxBankResource> rsrcs) throws Exception {
+    StringBuilder sb = new StringBuilder();
+    for (AbstractToxBankResource rsrc : rsrcs) {
+      if (sb.length() > 0) {
+        sb.append(",");
+      }
+      sb.append(rsrc.getResourceURL().toString());
     }
-    RemoteTask task = new RemoteTask(getHttpClient(), investigation.getResourceURL(), "text/uri-list", entity, HttpPut.METHOD_NAME);
-    return task;
+    return new StringBody(sb.toString());
   }
   
   public void addPolicyRules(MultipartEntity entity, List<PolicyRule> accessRights) throws Exception {
@@ -903,6 +963,6 @@ public class InvestigationClient {
    * @return the remote task created
    */
   public RemoteTask updateInvestigation(Investigation investigation, List<PolicyRule> accessRights) throws Exception {
-    return updateInvestigation(null, investigation, accessRights);
+    return updateInvestigation(null, investigation, accessRights, null);
   }
 }

@@ -141,7 +141,10 @@ public class InvestigationClientTest {
   @Test
   public void testPostAndDelete() throws Throwable {
     URL fileUrl = getClass().getClassLoader().getResource("net/toxbank/client/test/BII-I-1.zip");
-    RemoteTask task = getToxBankClient().postInvestigation(new File(fileUrl.toURI()), new URL(INVESTIGATION_ROOT), new ArrayList<PolicyRule>(0), false);
+    Investigation newInvestigation = new Investigation();
+    newInvestigation.setSearchable(false);
+    RemoteTask task = getToxBankClient().postInvestigation(
+        new File(fileUrl.toURI()), new URL(INVESTIGATION_ROOT), new ArrayList<PolicyRule>(0), newInvestigation, null);
     task.waitUntilCompleted(1000);
     URL postedURL = task.getResult();
     System.out.println("Posted new investigation: " + postedURL);
@@ -173,8 +176,10 @@ public class InvestigationClientTest {
   @Test
   public void testPostAndDeleteWithPermissions() throws Throwable {
     URL fileUrl = getClass().getClassLoader().getResource("net/toxbank/client/test/BII-I-1.zip");    
-    List<PolicyRule> accessRights = createPolicyRules();        
-    RemoteTask task = getToxBankClient().postInvestigation(new File(fileUrl.toURI()), new URL(INVESTIGATION_ROOT), accessRights, false);
+    List<PolicyRule> accessRights = createPolicyRules();     
+    Investigation newInvestigation = new Investigation();
+    newInvestigation.setSearchable(false);
+    RemoteTask task = getToxBankClient().postInvestigation(new File(fileUrl.toURI()), new URL(INVESTIGATION_ROOT), accessRights, newInvestigation, null);
     task.waitUntilCompleted(1000);
     URL postedURL = task.getResult();
     
@@ -209,7 +214,9 @@ public class InvestigationClientTest {
   @Test
   public void testPostPublishAndDelete() throws Throwable {
     URL fileUrl = getClass().getClassLoader().getResource("net/toxbank/client/test/BII-I-1.zip");
-    RemoteTask task = getToxBankClient().postInvestigation(new File(fileUrl.toURI()), new URL(INVESTIGATION_ROOT), new ArrayList<PolicyRule>(0), false);
+    Investigation newInvestigation = new Investigation();
+    newInvestigation.setSearchable(false);
+    RemoteTask task = getToxBankClient().postInvestigation(new File(fileUrl.toURI()), new URL(INVESTIGATION_ROOT), new ArrayList<PolicyRule>(0), newInvestigation, null);
     task.waitUntilCompleted(1000);
     URL postedURL = task.getResult();
     System.out.println("Posted new investigation: " + postedURL);
@@ -234,7 +241,9 @@ public class InvestigationClientTest {
   @Test
   public void testPostAndUpdate() throws Throwable {
     URL fileUrl = getClass().getClassLoader().getResource("net/toxbank/client/test/BII-I-1.zip");
-    RemoteTask task = getToxBankClient().postInvestigation(new File(fileUrl.toURI()), new URL(INVESTIGATION_ROOT), new ArrayList<PolicyRule>(0), false);
+    Investigation newInvestigation = new Investigation();
+    newInvestigation.setSearchable(false);
+    RemoteTask task = getToxBankClient().postInvestigation(new File(fileUrl.toURI()), new URL(INVESTIGATION_ROOT), new ArrayList<PolicyRule>(0), newInvestigation, null);
     task.waitUntilCompleted(1000);
     URL postedURL = task.getResult();
     System.out.println("Posted new investigation: " + postedURL);
@@ -242,7 +251,7 @@ public class InvestigationClientTest {
     verifyBiiInvestigation(investigation, false);
     
     URL newFileUrl = getClass().getClassLoader().getResource("net/toxbank/client/test/BII-I-1-smiller.zip");
-    RemoteTask newTask = getToxBankClient().updateInvestigation(new File(newFileUrl.toURI()), investigation, new ArrayList<PolicyRule>(0));
+    RemoteTask newTask = getToxBankClient().updateInvestigation(new File(newFileUrl.toURI()), investigation, new ArrayList<PolicyRule>(0), null);
     newTask.waitUntilCompleted(1000);
     URL postedUpdateURL = task.getResult();
     Assert.assertEquals("Should have same update url as original posted url", postedURL, postedUpdateURL);
@@ -264,7 +273,9 @@ public class InvestigationClientTest {
   public void testPostAndUpdateRemovingPermissions() throws Throwable {
     URL fileUrl = getClass().getClassLoader().getResource("net/toxbank/client/test/BII-I-1.zip");
     List<PolicyRule> accessRights = createPolicyRules();
-    RemoteTask task = getToxBankClient().postInvestigation(new File(fileUrl.toURI()), new URL(INVESTIGATION_ROOT), accessRights, false);
+    Investigation newInvestigation = new Investigation();
+    newInvestigation.setSearchable(false);
+    RemoteTask task = getToxBankClient().postInvestigation(new File(fileUrl.toURI()), new URL(INVESTIGATION_ROOT), accessRights, newInvestigation, null);
     task.waitUntilCompleted(1000);
     URL postedURL = task.getResult();
     System.out.println("Posted new investigation: " + postedURL);
@@ -414,7 +425,7 @@ public class InvestigationClientTest {
     TestCase.assertEquals("Background Cell growth underlies many key cellular and developmental processes, yet a limited number of studies have been carried out on cell-growth regulation. Comprehensive studies at the transcriptional, proteomic and metabolic levels under defined controlled conditions are currently lacking. Results Metabolic control analysis is being exploited in a systems biology study of the eukaryotic cell. Using chemostat culture, we have measured the impact of changes in flux (growth rate) on the transcriptome, proteome, endometabolome and exometabolome of the yeast Saccharomyces cerevisiae. Each functional genomic level shows clear growth-rate-associated trends and discriminates between carbon-sufficient and carbon-limited conditions. Genes consistently and significantly upregulated with increasing growth rate are frequently essential and encode evolutionarily conserved proteins of known function that participate in many protein-protein interactions. In contrast, more unknown, and fewer essential, genes are downregulated with increasing growth rate; their protein products rarely interact with one another. A large proportion of yeast genes under positive growth-rate control share orthologs with other eukaryotes, including humans. Significantly, transcription of genes encoding components of the TOR complex (a major controller of eukaryotic cell growth) is not subject to growth-rate regulation. Moreover, integrative studies reveal the extent and importance of post-transcriptional control, patterns of control of metabolic fluxes at the level of enzyme synthesis, and the relevance of specific enzymatic reactions in the control of metabolic fluxes during cell growth. Conclusion This work constitutes a first comprehensive systems biology study on growth-rate control in the eukaryotic cell. The results have direct implications for advanced studies on cell growth, in vivo regulation of metabolic fluxes for comprehensive metabolic engineering, and for the design of genome-scale systems biology models of the eukaryotic cell.",
         i.getAbstract());
     TestCase.assertNotNull("Should have organisation", i.getOrganisation());
-    TestCase.assertNotNull("Should have project", i.getProject());
+    TestCase.assertEquals("Should have project", 1, i.getProjects().size());
     if (!allowMissingKeywords) {
       TestCase.assertEquals("Should have 3 keywords", 3, i.getKeywords().size());
       TestCase.assertTrue("Should contain the cell migrations keyword", 
