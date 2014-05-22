@@ -67,7 +67,7 @@ public class InvestigationClient {
   protected static final String authors_param = "authors";
   protected static final String keywords_param = "keywords";
   protected static final String data_type_param = "type";
-  protected static final String projects_param = "projects";
+  protected static final String projects_param = "owningPro";
   
   private static List<String> doseFactorNames = Arrays.asList("dose", "concentration");
   private static List<String> timeFactorNames = Arrays.asList("sample timepoint", "duration of exposure");
@@ -133,6 +133,28 @@ public class InvestigationClient {
     }            
     
     return urls;
+  }
+  
+  /**
+   * Lists the ftp files that a user has available
+   * @param  rootUrl the url of the investigation service
+   */
+  public List<String> listFtpFilenames(URL rootUrl) throws Exception {
+    URL requestUrl = new URL(rootUrl + "/ftpfiles"); 
+    List<String> filenames = new ArrayList<String>();
+    JSONObject obj = requestToJson(requestUrl, null);
+    if (obj != null) {
+      JSONObject results = obj.getJSONObject("results");
+      if (results != null) {
+        JSONArray fileArray = results.getJSONArray("bindings");
+        for (int i = 0; i < fileArray.length(); i++) {
+          JSONObject fileObj = fileArray.getJSONObject(i);
+          JSONObject filenameObj = fileObj.getJSONObject("filename");
+          filenames.add(filenameObj.getString("value"));
+        }
+      }
+    }
+    return filenames;
   }
   
   /**
@@ -822,7 +844,8 @@ public class InvestigationClient {
   public RemoteTask postInvestigation(File zipFile, URL rootUrl, List<PolicyRule> accessRights, Investigation investigation,
       String ftpFilename) throws Exception {
     MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE, null, utf8);
-    if (investigation.getDataType() != Investigation.DataType.noData) {
+    if (investigation.getDataType() == Investigation.DataType.isaTabData ||
+        investigation.getDataType() == Investigation.DataType.unformattedData) {
       entity.addPart(file_param, new FileBody(zipFile, zipFile.getName(), "application/zip", null));
     }
     if (investigation.getDataType() != Investigation.DataType.isaTabData) {
