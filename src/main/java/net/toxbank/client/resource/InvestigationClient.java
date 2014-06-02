@@ -70,7 +70,7 @@ public class InvestigationClient {
   protected static final String projects_param = "owningPro";
   
   private static List<String> doseFactorNames = Arrays.asList("dose", "concentration");
-  private static List<String> timeFactorNames = Arrays.asList("sample timepoint", "duration of exposure");
+  private static List<String> timeFactorNames = Arrays.asList("sample timepoint", "duration of exposure", "time of measurement");
   
   private Writer queryDebuggingWriter;
   
@@ -480,8 +480,22 @@ public class InvestigationClient {
         String downloadUri = null;
         JSONObject downloadUriObj = binding.optJSONObject("downloaduri");
         if (downloadUriObj != null) {
-          downloadUri = downloadUriObj.optString("value", null);        }
-        entries.add(new InvestigationIsaTabFile(typeUri, filename, downloadUri));
+          downloadUri = downloadUriObj.optString("value", null);        
+        }
+        
+        String endpointLabel = null;
+        JSONObject endpointObj = binding.optJSONObject("endpointLabel"); 
+        if (endpointObj != null) {
+          endpointLabel = endpointObj.optString("value");
+        }
+        
+        String techLabel = null;
+        JSONObject techObj = binding.optJSONObject("techLabel"); 
+        if (techObj != null) {
+          techLabel = techObj.optString("value");
+        }
+        
+        entries.add(new InvestigationIsaTabFile(typeUri, filename, downloadUri, endpointLabel, techLabel));
       }
     }
     return entries;

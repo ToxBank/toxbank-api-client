@@ -12,11 +12,20 @@ public class InvestigationIsaTabFile {
   private String type;
   private String filename;
   private String downloadUri;
+  private String endpointLabel;
+  private String techLabel;
 
-  public InvestigationIsaTabFile(String typeUri, String filename, String downloadUri) {
+  public InvestigationIsaTabFile(
+      String typeUri, 
+      String filename, 
+      String downloadUri, 
+      String endpointLabel, 
+      String techLabel) {
     this.typeUri = typeUri;
     this.filename = filename;
     this.downloadUri = downloadUri;
+    this.endpointLabel = endpointLabel;
+    this.techLabel = techLabel;
     
     type = typeUri.substring(typeUri.lastIndexOf('/')+1);
     String[] typeTerms = type.split("_");
@@ -47,6 +56,14 @@ public class InvestigationIsaTabFile {
 
   public String getDownloadUri() {
     return downloadUri;
+  }
+  
+  public String getEndpointLabel() {
+    return endpointLabel;
+  }
+  
+  public String getTechLabel() {
+    return techLabel;
   }
   
   private String mapTypeTerm(String s) {
