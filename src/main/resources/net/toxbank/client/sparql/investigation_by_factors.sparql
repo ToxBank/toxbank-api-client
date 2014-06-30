@@ -1,3 +1,5 @@
+# @markup ruby
+# @title
 #Investigation service query
 #Retrieves investigation URI containing any of the factor value URI (e.g. two compound URIs)
 #
@@ -7,11 +9,10 @@ PREFIX isa:   <http://onto.toxbank.net/isa/>
 PREFIX dcterms: <http://purl.org/dc/terms/>
 PREFIX tb:    <http://onto.toxbank.net/api/>
 
-SELECT DISTINCT ?inv ?factorname ?value WHERE {
- ?inv rdf:type isa:Investigation.
- ?inv isa:hasStudy ?study.
+SELECT DISTINCT ?investigation ?factorname ?value WHERE {
+ ?investigation rdf:type isa:Investigation.
+ ?investigation isa:hasStudy ?study.
  ?investigation tb:isPublished "true"^^<http://www.w3.org/2001/XMLSchema#boolean>.
- ?investigation tb:isSummarySearchable "true"^^<http://www.w3.org/2001/XMLSchema#boolean>.
  ?node isa:hasStudy ?study.
  ?node rdf:type isa:MaterialNode.
  ?node isa:hasMaterial ?sample.
@@ -22,4 +23,4 @@ SELECT DISTINCT ?inv ?factorname ?value WHERE {
  ?factorValue isa:hasValue  ?value.
  ?factorValue isa:hasFactor ?factor.
  ?factor dcterms:title ?factorname.
-} ORDER BY ?inv
+} ORDER BY ?investigation
