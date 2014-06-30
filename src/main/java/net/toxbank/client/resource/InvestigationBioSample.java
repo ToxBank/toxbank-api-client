@@ -55,7 +55,14 @@ public class InvestigationBioSample {
   
   public void addCharacteristic(AdjunctInvestigationDatum c) {
     if (isCellCharacteristic(c)) {
-      cell = c.getValue();
+      if (c.getValue() != null) {
+        if (cell == null) {
+          cell = c.getValue();
+        }
+        else if (!cell.toLowerCase().contains(c.getValue().toLowerCase())) {
+          cell += " " + c.getValue();
+        }
+      }
     }
     else if ("organism".equalsIgnoreCase(c.getName())) {
       organism = c.getValue();
