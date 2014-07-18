@@ -285,7 +285,7 @@ public class ProtocolClient extends AbstractClient<Protocol> {
 	 */
 	public RemoteTask publishAsync(Protocol protocol, boolean isPublished) throws Exception {
 		if (protocol.getResourceURL()==null) throw new MalformedURLException("No protocol URI");
-		return sendAsync(protocol.getResourceURL(), createPublishFlagOnly(isPublished), HttpPut.METHOD_NAME);
+		return sendAsync(new URL(protocol.getResourceURL()+"/publication"), createPublishFlagOnly(isPublished), HttpPost.METHOD_NAME);
 	}
 	/**
 	 * Modifies all non-null fields. File is not modified.
