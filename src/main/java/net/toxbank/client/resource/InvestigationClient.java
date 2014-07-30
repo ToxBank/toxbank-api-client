@@ -20,8 +20,10 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.toxbank.client.error.RemoteError;
 import net.toxbank.client.io.rdf.IOClass;
 import net.toxbank.client.io.rdf.InvestigationIO;
+import net.toxbank.client.io.rdf.OPENTOX;
 import net.toxbank.client.policy.GroupPolicyRule;
 import net.toxbank.client.policy.PolicyRule;
 import net.toxbank.client.policy.UserPolicyRule;
@@ -46,6 +48,9 @@ import org.opentox.rest.RestException;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
+import com.hp.hpl.jena.rdf.model.ResIterator;
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 /**
  * A client for accessing investigation resources. This does not inherit from AbstractClient as
@@ -189,7 +194,8 @@ public class InvestigationClient {
         return Collections.emptyList();
       }
       else {
-        throw new RestException(response.getStatusLine().getStatusCode(),response.getStatusLine().getReasonPhrase());
+        handleError(in, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase());
+        throw new RuntimeException("handleError should have thrown exception");
       }
     }
     finally {
@@ -669,7 +675,7 @@ public class InvestigationClient {
         model.read(new StringReader(result), rootUrl.toString(), "RDF/XML");
       }
       else {
-        throw new RestException(response.getStatusLine().getStatusCode(),response.getStatusLine().getReasonPhrase());
+        handleError(in, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase());
       }
     }
     finally {
@@ -737,7 +743,8 @@ public class InvestigationClient {
       } else if (response.getStatusLine().getStatusCode()== HttpStatus.SC_NOT_FOUND) {   
         return null;       
       } else {
-        throw new RestException(response.getStatusLine().getStatusCode(),response.getStatusLine().getReasonPhrase());
+        handleError(in, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase());
+        throw new RuntimeException("handleError should have thrown exception");
       }
 
     } finally {
@@ -806,7 +813,7 @@ public class InvestigationClient {
         model.read(new StringReader(result), url.toString(), "RDF/XML");
       }
       else {
-        throw new RestException(response.getStatusLine().getStatusCode(),response.getStatusLine().getReasonPhrase());
+        handleError(in, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase());
       }
     }
     finally {
@@ -837,7 +844,7 @@ public class InvestigationClient {
         }
       }
       else {
-        throw new RestException(response.getStatusLine().getStatusCode(),response.getStatusLine().getReasonPhrase());
+        handleError(in, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase());
       }
     }
     finally {
@@ -1001,5 +1008,39 @@ public class InvestigationClient {
    */
   public RemoteTask updateInvestigation(Investigation investigation, List<PolicyRule> accessRights) throws Exception {
     return updateInvestigation(null, investigation, accessRights, null);
+  }
+  
+  /**
+   * Tries to parse an opentox error from the response and throws a rest exception with
+   * an appropriate message
+   * @param is the input stream - assumed already opened and will be closed outside of this scope
+   * @param statusCode the status code of the response
+   * @param defaultMessage a default message if an error can't be parsed
+   * @throws Exception
+   */
+  private static void handleError(InputStream in, int statusCode, String defaultMessage) throws Exception {
+    String message = defaultMessage;
+    try {
+      StringBuilder sb = new StringBuilder();
+      BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+      for (String line = br.readLine(); line != null; line = br.readLine()) {
+        sb.append(line);
+        sb.append("\n");
+      }
+      String result = sb.toString();
+      Model model = ModelFactory.createDefaultModel();
+      model.read(new StringReader(result), null, "TURTLE");
+      
+      ResIterator resIter = model.listResourcesWithProperty(OPENTOX.message);
+      while (resIter.hasNext()) {
+        Resource res = resIter.next();
+        if (res.getProperty(OPENTOX.message) != null) {
+          message = res.getProperty(OPENTOX.message).getString();
+        }
+      }
+    }
+    catch (Throwable t) { }
+
+    throw new RestException(statusCode, message);  
   }
 }
