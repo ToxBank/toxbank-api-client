@@ -17,10 +17,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.toxbank.client.error.RemoteError;
 import net.toxbank.client.io.rdf.IOClass;
 import net.toxbank.client.io.rdf.InvestigationIO;
 import net.toxbank.client.io.rdf.OPENTOX;
@@ -50,7 +50,6 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.ResIterator;
 import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.rdf.model.StmtIterator;
 
 /**
  * A client for accessing investigation resources. This does not inherit from AbstractClient as
@@ -476,6 +475,13 @@ public class InvestigationClient {
    */
   public List<InvestigationIsaTabFile> getIsaTabEntries(String investigationUrl) throws Exception {
     List<InvestigationIsaTabFile> entries = new ArrayList<InvestigationIsaTabFile>();
+    List<URL> fileUrlList = listInvestigationFileUrls(investigationUrl);
+    Set<String> fileUrls = new HashSet<String>();
+    for (URL fileUrl : fileUrlList) {
+      fileUrls.add(fileUrl.toString());
+    }
+    Set<String> filenamesWithUrl = new HashSet<String>();
+    
     JSONArray bindings = requestToJsonBindings(new URL(investigationUrl + "/sparql/files_by_investigation"), null);
     for (int i = 0; i < bindings.length(); i++) {
       JSONObject binding = bindings.getJSONObject(i);
@@ -487,6 +493,13 @@ public class InvestigationClient {
         JSONObject downloadUriObj = binding.optJSONObject("downloaduri");
         if (downloadUriObj != null) {
           downloadUri = downloadUriObj.optString("value", null);        
+        }
+        
+        if (downloadUri == null && !filename.startsWith("ftp://")) {
+          String isaTabDownloadUrl = investigationUrl + "/isatab/" + filename; 
+          if (fileUrls.contains(isaTabDownloadUrl)) {
+            downloadUri = isaTabDownloadUrl;
+          }
         }
         
         String endpointLabel = null;
@@ -501,12 +514,68 @@ public class InvestigationClient {
           techLabel = techObj.optString("value");
         }
         
-        entries.add(new InvestigationIsaTabFile(typeUri, filename, downloadUri, endpointLabel, techLabel));
+        InvestigationIsaTabFile isaTabFile =
+            new InvestigationIsaTabFile(typeUri, filename, downloadUri, endpointLabel, techLabel);
+        if (isaTabFile.getDownloadUri() != null) {
+          filenamesWithUrl.add(filename);
+        }
+        entries.add(isaTabFile);
       }
     }
-    return entries;
+    
+    List<InvestigationIsaTabFile> filteredEntries = new ArrayList<InvestigationIsaTabFile>();
+    for (InvestigationIsaTabFile isaTabFile : entries) {
+      if (isaTabFile.getDownloadUri() != null 
+          || !filenamesWithUrl.contains(isaTabFile.getFilename())) {
+        filteredEntries.add(isaTabFile);
+      }
+    }
+    return filteredEntries;
   }
   
+  /**
+   * Lists the urls of the files contained in an investigation
+   * @param url url of the investigation
+   * @return the list of available investigation file urls
+   * @throws Exception
+   */
+  public List<URL> listInvestigationFileUrls(String investigationUrl) throws Exception {
+    HttpGet httpGet = new HttpGet(investigationUrl);
+    httpGet.addHeader("Accept", "text/uri-list");
+    httpGet.addHeader("Accept-Charset", "utf-8");
+    
+    InputStream in = null;
+    try {
+      HttpResponse response = getHttpClient().execute(httpGet);
+      HttpEntity entity  = response.getEntity();
+      in = entity.getContent();
+      if (response.getStatusLine().getStatusCode()== HttpStatus.SC_OK) {
+        List<URL> investigationUrls = new ArrayList<URL>();
+        BufferedReader br = new BufferedReader(new InputStreamReader(in));
+        for (String line = br.readLine(); line != null; line = br.readLine()) {
+          line = line.trim();
+          if (line.length() > 0) {
+            URL url = new URL(line);
+            investigationUrls.add(url);
+          }
+        }
+        return investigationUrls;
+      }
+      else if (response.getStatusLine().getStatusCode()== HttpStatus.SC_NOT_FOUND) {
+        return Collections.emptyList();
+      }
+      else {
+        handleError(in, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase());
+        throw new RuntimeException("handleError should have thrown exception");
+      }
+    }
+    finally {
+      if (in != null) {
+        try { in.close(); } catch (Exception e) { }
+      }
+    }
+  }
+
   /**
    * Gets the list of investigation urls that match the given characteristic values
    * @param rootUrl the root url of the investigation service
