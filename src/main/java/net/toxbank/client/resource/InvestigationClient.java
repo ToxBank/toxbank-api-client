@@ -619,7 +619,7 @@ public class InvestigationClient {
     List<TimestampedUrl> results = new ArrayList<TimestampedUrl>();
     for (int i = 0; i < bindings.length(); i++) {
       JSONObject binding = bindings.getJSONObject(i);
-      JSONObject invObj = binding.optJSONObject("inv");
+      JSONObject invObj = binding.optJSONObject("investigation");
       if (invObj != null) {
         String invUrl = invObj.optString("value", null);
         if (invUrl != null) {
