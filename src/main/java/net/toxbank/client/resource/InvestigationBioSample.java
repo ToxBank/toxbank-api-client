@@ -18,6 +18,7 @@ public class InvestigationBioSample {
   private InvestigationBioSamples allBioSamples;
   private String uri;
   private String organism;
+  private String sex;
   private String cell;
   private Map<String, InvestigationCompoundSample> compoundSamplesByUri = new HashMap<String, InvestigationCompoundSample>();
   private List<InvestigationCompoundSample> compoundSamples = new ArrayList<InvestigationCompoundSample>();
@@ -67,6 +68,14 @@ public class InvestigationBioSample {
     else if ("organism".equalsIgnoreCase(c.getName())) {
       organism = c.getValue();
     }
+    else if ("sex".equalsIgnoreCase(c.getName())) {
+      if (sex == null) {
+        sex = c.getValue();
+      }
+      else if (!sex.toLowerCase().contains(c.getValue().toLowerCase())) {
+        sex += " " + c.getValue();
+      }
+    }
     else if ("sample timepointunit".equalsIgnoreCase(c.getName())) {
       for (InvestigationCompoundSample compoundSample : compoundSamples) {
         compoundSample.updateTimeUnits(c.getValue());
@@ -93,6 +102,10 @@ public class InvestigationBioSample {
     return organism;
   }
 
+  public String getSex() {
+    return sex;
+  }
+  
   public String getCell() {
     return cell;
   }
