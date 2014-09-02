@@ -256,20 +256,10 @@ public class InvestigationClient {
     
     AdjunctInvestigationInfo info = new AdjunctInvestigationInfo(urlString, investigationId);
     
-    URL factorsUrl = new URL(rootUrl + "/" + investigationId + "/sparql/factorvalues_by_investigation");
+    URL factorsUrl = new URL(rootUrl + "/" + investigationId + "/dashboard");
     JSONArray factorsJson = requestToJsonBindings(factorsUrl, null);
     addSamples(info.getBioSamples(), factorsJson);
-    
-    for (InvestigationBioSample bioSample : info.getBioSamples().getBioSamples()) {
-      URL characteristicsBySampleUrl = new URL(rootUrl + "/" + investigationId + "/sparql/characteristics_by_sample/" + bioSample.getId());
-      JSONArray characteristicsBySampleJson = requestToJsonBindings(characteristicsBySampleUrl, null);
-      for (int i = 0; i < characteristicsBySampleJson.length(); i++) {
-        JSONObject characteristicJson = characteristicsBySampleJson.getJSONObject(i);
-        AdjunctInvestigationDatum characteristic = characteristicFromJson(characteristicJson);
-        bioSample.addCharacteristic(characteristic);
-      }
-    }
-    
+        
     URL characteristicsUrl = new URL(rootUrl + "/" + investigationId + "/sparql/characteristics_by_investigation");
     JSONArray characteristicsJson = requestToJsonBindings(characteristicsUrl, null);
     for (int i = 0; i < characteristicsJson.length(); i++) {
@@ -324,15 +314,18 @@ public class InvestigationClient {
     String doseUnits = null;
     Float timeValue = null;
     String timeUnits = null;
+    JSONArray characteristicsBySampleJson = null;
     
     for (int i = 0; i < factorBindings.length(); i++) {
       JSONObject factorJson = factorBindings.getJSONObject(i);
-      AdjunctInvestigationDatum factor = factorFromJson(factorJson);
+      AdjunctInvestigationDatum factor = factorFromJson(factorJson);      
+      characteristicsBySampleJson = factorJson.getJSONArray("characteristics");
+      
       if (sampleUri == null) {
         sampleUri = factor.getSampleUri();
       }
       else if (!sampleUri.equals(factor.getSampleUri())) {
-        bioSamples.addFactor(
+        InvestigationBioSample bioSample = bioSamples.addFactor(
             bioSampleUri,
             compoundUri,
             compoundName,
@@ -341,8 +334,15 @@ public class InvestigationClient {
             doseUnits,
             timeValue,
             timeUnits);
+        if (characteristicsBySampleJson != null) {
+          for (int j = 0; j < characteristicsBySampleJson.length(); j++) {
+            JSONObject characteristicJson = characteristicsBySampleJson.getJSONObject(j);
+            AdjunctInvestigationDatum characteristic = characteristicFromJson(characteristicJson);
+            bioSample.addCharacteristic(characteristic);
+          }
+        }
       }
-      
+            
       bioSampleUri = factor.getBioSampleUri();
       if ("compound".equalsIgnoreCase(factor.getName())) {
         compoundName = factor.getValue();
@@ -363,7 +363,7 @@ public class InvestigationClient {
     }
     
     if (sampleUri != null) {
-      bioSamples.addFactor(
+      InvestigationBioSample bioSample = bioSamples.addFactor(
           bioSampleUri,
           compoundUri,
           compoundName,
@@ -372,8 +372,15 @@ public class InvestigationClient {
           doseUnits,
           timeValue,
           timeUnits);
+      
+      if (characteristicsBySampleJson != null) {
+        for (int j = 0; j < characteristicsBySampleJson.length(); j++) {
+          JSONObject characteristicJson = characteristicsBySampleJson.getJSONObject(j);
+          AdjunctInvestigationDatum characteristic = characteristicFromJson(characteristicJson);
+          bioSample.addCharacteristic(characteristic);
+        }
+      }
     }
-    
   }
   
   private AdjunctInvestigationDatum factorFromJson(JSONObject jsonObj) throws Exception {

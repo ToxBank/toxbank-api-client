@@ -28,7 +28,7 @@ public class InvestigationBioSamples {
     nonFactorBioSamples.add(bioSample);
   }
   
-  public void addFactor(
+  public InvestigationBioSample addFactor(
       String bioSampleUri,
       String compoundUri,
       String compoundName,
@@ -47,6 +47,8 @@ public class InvestigationBioSamples {
       bioSamples.add(bioSample);
     }
     bioSample.addSample(compoundUri, compoundName, sampleUri, doseValue, doseUnits, timeValue, timeUnits);
+    
+    return bioSample;
   }
   
   public AdjunctInvestigationInfo getInfo() {
