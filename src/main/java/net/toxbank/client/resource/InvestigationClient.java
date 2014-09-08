@@ -70,6 +70,7 @@ public class InvestigationClient {
   protected static final String owning_org_param = "owningOrg";
   protected static final String authors_param = "authors";
   protected static final String keywords_param = "keywords";
+  protected static final String license_param = "licenses";
   protected static final String data_type_param = "type";
   protected static final String projects_param = "owningPro";
   
@@ -1016,6 +1017,7 @@ public class InvestigationClient {
     entity.addPart(authors_param, joinUrls(investigation.getAuthors()));
     entity.addPart(projects_param, joinUrls(investigation.getProjects()));
     entity.addPart(keywords_param, joinStrings(investigation.getKeywords()));
+    entity.addPart(license_param, joinStrings(investigation.getLicenses())); 
   }
   
   private static StringBody joinStrings(List<String> values) throws Exception {
