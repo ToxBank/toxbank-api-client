@@ -326,6 +326,14 @@ public class InvestigationClient {
         sampleUri = factor.getSampleUri();
       }
       else if (!sampleUri.equals(factor.getSampleUri())) {
+        for (int j = 0; j < characteristicsBySampleJson.length(); j++) {
+          JSONObject characteristicJson = characteristicsBySampleJson.getJSONObject(j);
+          AdjunctInvestigationDatum characteristic = characteristicFromJson(characteristicJson);
+          if ("sample timepointunit".equalsIgnoreCase(characteristic.getName())) {
+            timeUnits = characteristic.getValue();
+          }
+        }
+        
         InvestigationBioSample bioSample = bioSamples.addFactor(
             bioSampleUri,
             compoundUri,
