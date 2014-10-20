@@ -322,18 +322,18 @@ public class InvestigationClient {
       AdjunctInvestigationDatum factor = factorFromJson(factorJson);      
       characteristicsBySampleJson = factorJson.getJSONArray("characteristics");
       
+      for (int j = 0; j < characteristicsBySampleJson.length(); j++) {
+        JSONObject characteristicJson = characteristicsBySampleJson.getJSONObject(j);
+        AdjunctInvestigationDatum characteristic = characteristicFromJson(characteristicJson);
+        if ("sample timepointunit".equalsIgnoreCase(characteristic.getName())) {
+          timeUnits = characteristic.getValue();
+        }
+      }
+      
       if (sampleUri == null) {
         sampleUri = factor.getSampleUri();
       }
-      else if (!sampleUri.equals(factor.getSampleUri())) {
-        for (int j = 0; j < characteristicsBySampleJson.length(); j++) {
-          JSONObject characteristicJson = characteristicsBySampleJson.getJSONObject(j);
-          AdjunctInvestigationDatum characteristic = characteristicFromJson(characteristicJson);
-          if ("sample timepointunit".equalsIgnoreCase(characteristic.getName())) {
-            timeUnits = characteristic.getValue();
-          }
-        }
-        
+      else if (!sampleUri.equals(factor.getSampleUri())) {        
         InvestigationBioSample bioSample = bioSamples.addFactor(
             bioSampleUri,
             compoundUri,
@@ -366,7 +366,9 @@ public class InvestigationClient {
       else if (isTimeFactor(factor)) {
         if (factor.getValue() != null) {
           timeValue = Float.parseFloat(factor.getValue());
-          timeUnits = factor.getUnits();
+          if (factor.getUnits() != null) {
+            timeUnits = factor.getUnits();
+          }
         }
       }
     }
