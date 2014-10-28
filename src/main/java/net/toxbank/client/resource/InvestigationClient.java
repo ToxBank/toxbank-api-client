@@ -319,14 +319,19 @@ public class InvestigationClient {
     
     for (int i = 0; i < factorBindings.length(); i++) {
       JSONObject factorJson = factorBindings.getJSONObject(i);
-      AdjunctInvestigationDatum factor = factorFromJson(factorJson);      
-      characteristicsBySampleJson = factorJson.getJSONArray("characteristics");
-      
-      for (int j = 0; j < characteristicsBySampleJson.length(); j++) {
-        JSONObject characteristicJson = characteristicsBySampleJson.getJSONObject(j);
-        AdjunctInvestigationDatum characteristic = characteristicFromJson(characteristicJson);
-        if ("sample timepointunit".equalsIgnoreCase(characteristic.getName())) {
-          timeUnits = characteristic.getValue();
+      AdjunctInvestigationDatum factor = factorFromJson(factorJson);
+      JSONArray nextCharacteristics = factorJson.getJSONArray("characteristics");
+      if (characteristicsBySampleJson == null && nextCharacteristics.length() > 0) {
+        characteristicsBySampleJson = nextCharacteristics;
+      }
+
+      if (characteristicsBySampleJson != null) {
+        for (int j = 0; j < characteristicsBySampleJson.length(); j++) {
+          JSONObject characteristicJson = characteristicsBySampleJson.getJSONObject(j);
+          AdjunctInvestigationDatum characteristic = characteristicFromJson(characteristicJson);
+          if ("sample timepointunit".equalsIgnoreCase(characteristic.getName())) {
+            timeUnits = characteristic.getValue();
+          }
         }
       }
       
@@ -349,6 +354,7 @@ public class InvestigationClient {
             AdjunctInvestigationDatum characteristic = characteristicFromJson(characteristicJson);
             bioSample.addCharacteristic(characteristic);
           }
+          characteristicsBySampleJson = null;
         }
       }
             
@@ -390,6 +396,7 @@ public class InvestigationClient {
           AdjunctInvestigationDatum characteristic = characteristicFromJson(characteristicJson);
           bioSample.addCharacteristic(characteristic);
         }
+        characteristicsBySampleJson = null;
       }
     }
   }
