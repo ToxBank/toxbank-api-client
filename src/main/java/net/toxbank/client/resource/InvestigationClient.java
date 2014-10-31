@@ -317,28 +317,24 @@ public class InvestigationClient {
     String timeUnits = null;
     JSONArray characteristicsBySampleJson = null;
     
+    Map<String, JSONArray> bioSampleCharacteristics = new HashMap<String, JSONArray>();
+    
     for (int i = 0; i < factorBindings.length(); i++) {
       JSONObject factorJson = factorBindings.getJSONObject(i);
       AdjunctInvestigationDatum factor = factorFromJson(factorJson);
-      JSONArray nextCharacteristics = factorJson.getJSONArray("characteristics");
-      if (characteristicsBySampleJson == null && nextCharacteristics.length() > 0) {
+      
+      JSONArray nextCharacteristics = factorJson.getJSONArray("sampleChar");
+      if (characteristicsBySampleJson == null && nextCharacteristics != null && nextCharacteristics.length() > 0) {
         characteristicsBySampleJson = nextCharacteristics;
-      }
-
-      if (characteristicsBySampleJson != null) {
-        for (int j = 0; j < characteristicsBySampleJson.length(); j++) {
-          JSONObject characteristicJson = characteristicsBySampleJson.getJSONObject(j);
-          AdjunctInvestigationDatum characteristic = characteristicFromJson(characteristicJson);
-          if ("sample timepointunit".equalsIgnoreCase(characteristic.getName())) {
-            timeUnits = characteristic.getValue();
-          }
-        }
       }
       
       if (sampleUri == null) {
         sampleUri = factor.getSampleUri();
       }
-      else if (!sampleUri.equals(factor.getSampleUri())) {        
+      else if (!sampleUri.equals(factor.getSampleUri())) {
+        JSONArray bioSampleChars = bioSampleCharacteristics.get(bioSampleUri);
+        timeUnits = getTimeUnits(timeUnits, bioSampleChars);
+        timeUnits = getTimeUnits(timeUnits, characteristicsBySampleJson);
         InvestigationBioSample bioSample = bioSamples.addFactor(
             bioSampleUri,
             compoundUri,
@@ -348,17 +344,17 @@ public class InvestigationClient {
             doseUnits,
             timeValue,
             timeUnits);
-        if (characteristicsBySampleJson != null) {
-          for (int j = 0; j < characteristicsBySampleJson.length(); j++) {
-            JSONObject characteristicJson = characteristicsBySampleJson.getJSONObject(j);
-            AdjunctInvestigationDatum characteristic = characteristicFromJson(characteristicJson);
-            bioSample.addCharacteristic(characteristic);
-          }
-          characteristicsBySampleJson = null;
-        }
+        addCharacteristics(bioSample, bioSampleChars);
+        addCharacteristics(bioSample, characteristicsBySampleJson);
+        characteristicsBySampleJson = null;
       }
             
       bioSampleUri = factor.getBioSampleUri();
+      JSONArray nextBioSampleCharacteristics = factorJson.getJSONArray("characteristics");
+      if (nextBioSampleCharacteristics != null && nextBioSampleCharacteristics.length() > 0) {
+        bioSampleCharacteristics.put(bioSampleUri, nextBioSampleCharacteristics);
+      }
+      
       if ("compound".equalsIgnoreCase(factor.getName())) {
         compoundName = factor.getValue();
         compoundUri = factor.getUri();
@@ -380,6 +376,9 @@ public class InvestigationClient {
     }
     
     if (sampleUri != null) {
+      JSONArray bioSampleChars = bioSampleCharacteristics.get(bioSampleUri);
+      timeUnits = getTimeUnits(timeUnits, characteristicsBySampleJson);
+      timeUnits = getTimeUnits(timeUnits, bioSampleChars);
       InvestigationBioSample bioSample = bioSamples.addFactor(
           bioSampleUri,
           compoundUri,
@@ -389,14 +388,31 @@ public class InvestigationClient {
           doseUnits,
           timeValue,
           timeUnits);
-      
-      if (characteristicsBySampleJson != null) {
-        for (int j = 0; j < characteristicsBySampleJson.length(); j++) {
-          JSONObject characteristicJson = characteristicsBySampleJson.getJSONObject(j);
-          AdjunctInvestigationDatum characteristic = characteristicFromJson(characteristicJson);
-          bioSample.addCharacteristic(characteristic);
+      addCharacteristics(bioSample, bioSampleChars);
+      addCharacteristics(bioSample, characteristicsBySampleJson);
+      characteristicsBySampleJson = null;
+    }
+  }
+  
+  private String getTimeUnits(String currentTimeUnits, JSONArray sampleChars) throws Exception {
+    if (sampleChars != null) {
+      for (int j = 0; j < sampleChars.length(); j++) {
+        JSONObject characteristicJson = sampleChars.getJSONObject(j);
+        AdjunctInvestigationDatum characteristic = characteristicFromJson(characteristicJson);
+        if ("sample timepointunit".equalsIgnoreCase(characteristic.getName())) {
+          return characteristic.getValue();
         }
-        characteristicsBySampleJson = null;
+      }
+    }
+    return currentTimeUnits;
+  }
+  
+  private void addCharacteristics(InvestigationBioSample bioSample, JSONArray sampleChars) throws Exception {
+    if (sampleChars != null) {
+      for (int j = 0; j < sampleChars.length(); j++) {
+        JSONObject characteristicJson = sampleChars.getJSONObject(j);
+        AdjunctInvestigationDatum characteristic = characteristicFromJson(characteristicJson);
+        bioSample.addCharacteristic(characteristic);
       }
     }
   }
