@@ -57,6 +57,7 @@ import com.hp.hpl.jena.rdf.model.Resource;
  */
 public class InvestigationClient {
   public static enum ValueType {foldChange, qValue, pValue};
+  public static enum ComparatorType {below, above};
   
   protected static final Charset utf8 = Charset.forName("UTF-8");
   protected static final String mime_rdfxml = "application/rdf+xml";  
@@ -677,9 +678,10 @@ public class InvestigationClient {
    * @param geneIdentifiers the list of gene identifiers to search by
    * @param value optional minimum value of the given type
    * @param valueType the type of value to search by
+   * @param comparator the comparator to use
    * @return the list of investigation entries
    */
-  public List<TimestampedUrl> findByGeneIdentifiers(URL rootUrl, List<String> geneIdentifiers, Float value, ValueType valueType) throws Exception {
+  public List<TimestampedUrl> findByGeneIdentifiers(URL rootUrl, List<String> geneIdentifiers, Float value, ValueType valueType, ComparatorType comparator) throws Exception {
     StringBuilder sb = new StringBuilder();
     for (String gene : geneIdentifiers) {
       String geneValue = URLEncoder.encode(gene, "UTF-8");
@@ -706,7 +708,7 @@ public class InvestigationClient {
       String valueString = valueTypeName + ":" + String.valueOf(value);
       valueString = URLEncoder.encode(valueString, "UTF-8");
       url = rootUrl + "/sparql/investigation_by_gene_and_value?geneIdentifiers="+sb.toString() + 
-          "&value=" + valueString;
+          "&value=" + valueString + "&relOperator=" + comparator;
     }
     else {
       url = rootUrl + "/sparql/investigation_by_genes?geneIdentifiers="+sb.toString();
@@ -817,8 +819,13 @@ public class InvestigationClient {
    */
   public JSONArray requestToJsonBindings(URL url, User user) throws Exception {
     JSONObject jsonObj = requestToJson(url, user);
-    JSONObject resultsJson = jsonObj.getJSONObject("results");
-    return resultsJson.getJSONArray("bindings");
+    if (jsonObj != null) {
+      JSONObject resultsJson = jsonObj.getJSONObject("results");
+      return resultsJson.getJSONArray("bindings");
+    }
+    else {
+      return new JSONArray();
+    }
   }
   
   /**
@@ -847,10 +854,16 @@ public class InvestigationClient {
           sb.append(line);
           sb.append("\n");
         }
-        // System.out.println(sb.toString());
+        if ("true".equalsIgnoreCase(System.getProperty("debug.investigation.client", "false"))) {
+          System.out.println(url.toString());
+          System.out.println(sb.toString());
+        }
         JSONObject obj = new JSONObject(sb.toString());
         return obj;
-      } else if (response.getStatusLine().getStatusCode()== HttpStatus.SC_NOT_FOUND) {   
+      } else if (response.getStatusLine().getStatusCode()== HttpStatus.SC_NOT_FOUND) {
+        if ("true".equalsIgnoreCase(System.getProperty("debug.investigation.client", "false"))) {
+          System.out.println(url.toString() + " NOT FOUND");
+        }
         return null;       
       } else {
         handleError(in, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase());
