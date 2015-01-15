@@ -347,7 +347,14 @@ public class InvestigationClient {
             timeUnits);
         addCharacteristics(bioSample, bioSampleChars);
         addCharacteristics(bioSample, characteristicsBySampleJson);
+        compoundUri = null;
+        compoundName = null;
+        doseValue = null;
+        doseUnits = null;
+        timeValue = null;
+        timeUnits = null;
         characteristicsBySampleJson = null;
+        sampleUri = factor.getSampleUri();
       }
             
       bioSampleUri = factor.getBioSampleUri();
@@ -391,7 +398,6 @@ public class InvestigationClient {
           timeUnits);
       addCharacteristics(bioSample, bioSampleChars);
       addCharacteristics(bioSample, characteristicsBySampleJson);
-      characteristicsBySampleJson = null;
     }
   }
   
