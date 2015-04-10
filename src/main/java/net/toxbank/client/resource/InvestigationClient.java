@@ -690,12 +690,12 @@ public class InvestigationClient {
   public List<TimestampedUrl> findByGeneIdentifiers(URL rootUrl, List<String> geneIdentifiers, Float value, ValueType valueType, ComparatorType comparator) throws Exception {
     StringBuilder sb = new StringBuilder();
     for (String gene : geneIdentifiers) {
-      String geneValue = URLEncoder.encode(gene, "UTF-8");
       if (sb.length() > 0) {
         sb.append(",");
       }
-      sb.append(geneValue);      
+      sb.append(gene);      
     }
+    String geneString = URLEncoder.encode(sb.toString(), "UTF-8");
 
     String valueTypeName;
     switch(valueType) {
@@ -713,11 +713,11 @@ public class InvestigationClient {
     if (value != null && !value.isNaN()) {
       String valueString = valueTypeName + ":" + String.valueOf(value);
       valueString = URLEncoder.encode(valueString, "UTF-8");
-      url = rootUrl + "/sparql/investigation_by_gene_and_value?geneIdentifiers="+sb.toString() + 
+      url = rootUrl + "/sparql/investigation_by_gene_and_value?geneIdentifiers="+geneString + 
           "&value=" + valueString + "&relOperator=" + comparator;
     }
     else {
-      url = rootUrl + "/sparql/investigation_by_genes?geneIdentifiers="+sb.toString();
+      url = rootUrl + "/sparql/investigation_by_genes?geneIdentifiers="+geneString;
     }
     
     JSONArray bindings = requestToJsonBindings(new URL(url), null);    
