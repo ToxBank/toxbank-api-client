@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableSet;
+import java.util.TreeSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -697,20 +699,22 @@ public class InvestigationClient {
     }
     String geneString = URLEncoder.encode(sb.toString(), "UTF-8");
 
-    String valueTypeName;
-    switch(valueType) {
-    case foldChange:
-      valueTypeName = "FC"; break;
-    case qValue:
-      valueTypeName = "qvalue"; break;
-    case pValue:
-      valueTypeName = "pvalue"; break;
-    default: 
-      throw new RuntimeException("Unsupported value type: " + valueType);
+    String valueTypeName = null;
+    if (valueType != null) {
+      switch(valueType) {
+      case foldChange:
+        valueTypeName = "FC"; break;
+      case qValue:
+        valueTypeName = "qvalue"; break;
+      case pValue:
+        valueTypeName = "pvalue"; break;
+      default: 
+        throw new RuntimeException("Unsupported value type: " + valueType);
+      }
     }
     
     String url;
-    if (value != null && !value.isNaN()) {
+    if (value != null && !value.isNaN() && valueTypeName != null) {
       String valueString = valueTypeName + ":" + String.valueOf(value);
       valueString = URLEncoder.encode(valueString, "UTF-8");
       url = rootUrl + "/sparql/investigation_by_gene_and_value?geneIdentifiers="+geneString + 
@@ -735,6 +739,182 @@ public class InvestigationClient {
     return results;
   }
 
+  /**
+   * Finds all currently available genes
+   * @param rootUrl the root url of the service
+   */
+  public Map<String, NavigableSet<String>> findAvailableGenes(URL rootUrl) throws Exception {
+    Map<String, NavigableSet<String>> genesMap = new HashMap<String, NavigableSet<String>>();
+    String url = rootUrl + "/sparql/genelist";
+    JSONArray bindings = requestToJsonBindings(new URL(url), null);
+    for (int i = 0; i < bindings.length(); i++) {
+      JSONObject binding = bindings.getJSONObject(i);
+      JSONObject genesObj = binding.optJSONObject("genes");
+      if (genesObj != null) {
+        String geneUrl = genesObj.optString("value", null);
+        if (geneUrl != null) {
+          int nameIdx = geneUrl.lastIndexOf('/');
+          if (nameIdx > 0) {
+            String prefix = mapGeneUri(geneUrl.substring(0, nameIdx+1));
+            NavigableSet<String> genes = genesMap.get(prefix);
+            if (genes == null) {
+              genes = new TreeSet<String>();
+              genesMap.put(prefix, genes);
+            }
+            genes.add(geneUrl.substring(nameIdx+1));
+          }
+        }
+      }
+    }
+    return genesMap;
+  }
+    
+  public static String mapGeneUri(String geneUri) {
+    if ("http://onto.toxbank.net/isa/Entrez/".equals(geneUri)) {
+      return "entrez";
+    }
+    if ("http://purl.uniprot.org/uniprot/".equals(geneUri)) {
+      return "uniprot";      
+    }
+    if ("http://onto.toxbank.net/isa/Symbol/".equals(geneUri)) {
+      return "genesymbol";
+    }
+    if ("http://onto.toxbank.net/isa/Unigene/".equals(geneUri)) {
+      return "unigene";
+    }
+    if ("http://onto.toxbank.net/isa/RefSeq/".equals(geneUri)) {
+      return "refseq";
+    }
+    return "unknown";
+  }
+  
+  /**
+   * Finds the dose responses for a given gene
+   * @param rootUrl the root url of the investigation service
+   * @param geneIdentifiers the gene identifiers to search by
+   */
+  public List<GeneDoseResponse> findGeneDoseResponse(URL rootUrl, List<String> geneIdentifiers) throws Exception {
+    StringBuilder sb = new StringBuilder();
+    for (String gene : geneIdentifiers) {
+      if (sb.length() > 0) {
+        sb.append(",");
+      }
+      sb.append(gene);      
+    }
+    String geneString = URLEncoder.encode(sb.toString(), "UTF-8");
+    
+    String url = rootUrl + "/sparql/biosearch?geneIdentifiers="+geneString;
+
+    Map<String, GeneDoseResponse> responseMap = new HashMap<String, GeneDoseResponse>();
+    
+    JSONArray bindings = requestToJsonBindings(new URL(url), null);
+    for (int j = 0; j < bindings.length(); j++) {
+      JSONObject binding = bindings.getJSONObject(j);
+      String gene = binding.optString("gene", null);
+      String investigationUrl = null;
+      String dataTransformName = null;      
+      JSONObject invObj = binding.optJSONObject("investigation");
+      if (invObj != null) {
+        investigationUrl = invObj.optString("value", null);
+      }
+      JSONObject dataTransformObj = binding.optJSONObject("dataTransformationName");
+      if (dataTransformObj != null) {
+        dataTransformName = dataTransformObj.optString("value", null);
+      }
+      if (gene == null || investigationUrl == null || dataTransformName == null) {
+        throw new RuntimeException("Missing one of gene investigation dataTransformationName");
+      }
+      
+      String responseKey = gene + investigationUrl + dataTransformName;
+      GeneDoseResponse response = responseMap.get(responseKey);
+      if (response == null) {
+        response = new GeneDoseResponse();
+        response.setGene(gene);
+        response.setInvestigationUri(investigationUrl);
+        response.setDataTransformationName(dataTransformName);
+        responseMap.put(responseKey, response);
+      }
+      
+      String sampleString = binding.optString("sample", null);
+      if (sampleString != null) {
+        response.setSampleName(sampleString);
+      }
+      
+      String cellString = binding.optString("cell", null);
+      if (cellString != null) {
+        response.setCell(cellString);
+      }
+        
+      JSONObject titleObj = binding.optJSONObject("invTitle");
+      if (titleObj != null) {
+        response.setInvestigationTitle(titleObj.optString("value", null));
+      }
+      
+      JSONArray factorValues = binding.optJSONArray("factorValues");
+      if (factorValues != null) {
+        for (int factorIdx = 0; factorIdx < factorValues.length(); factorIdx++) {
+          JSONObject factorObj = factorValues.getJSONObject(factorIdx);
+          String valueString = null;
+          String units = null;
+          JSONObject valueObj = factorObj.optJSONObject("value");
+          if (valueObj != null) {
+            valueString = valueObj.optString("value", null);
+          }
+          JSONObject unitsObj = factorObj.optJSONObject("unit");
+          if (unitsObj != null) {
+            units = unitsObj.optString("value", null);
+          }
+          JSONObject nameObj = factorObj.optJSONObject("factorname");
+          if (valueString != null) {
+            if (nameObj != null) {
+              String name = nameObj.optString("value", null);
+              if (name != null) {
+                if ("sample TimePoint".equals(name)) {
+                  response.setTimeUnits(units);
+                  response.setTimeValue(Double.parseDouble(valueString));
+                }
+                else if ("dose".equals(name)) {
+                  response.setDoseUnits(units);
+                  response.setDoseValue(Double.parseDouble(valueString));
+                }
+                else if ("compound".equals(name)) {
+                  response.setCompoundName(valueString);
+                }
+              }
+            }
+          }
+        }
+      }
+      
+      JSONObject featureTypeObj = binding.optJSONObject("featureType");
+      if (featureTypeObj != null) {
+        String featureTypeUri = featureTypeObj.optString("value", null);
+        if (featureTypeUri != null) {
+          JSONObject valueObj = binding.optJSONObject("value");
+          if (valueObj != null) {
+            String valueString = valueObj.optString("value", null);
+            if (valueString != null) {
+              double value = Double.parseDouble(valueString);
+              if ("http://onto.toxbank.net/isa/pvalue".equals(featureTypeUri)) {
+                response.setpValue(value);
+              }
+              else if ("http://onto.toxbank.net/isa/FC".equals(featureTypeUri)) {
+                response.setFoldChange(value);
+              }
+              else if ("http://onto.toxbank.net/isa/qvalue".equals(featureTypeUri)) {
+                response.setqValue(value);
+              }
+            }
+          }
+        }
+      }
+    }
+    
+    List<GeneDoseResponse> responses = new ArrayList<GeneDoseResponse>(responseMap.values());
+    
+    return responses;    
+  }
+  
   /**
    * Runs the given sparql query, which is assumed to have a subject variable ?s, a
    * predicate variable ?p and an object variable ?o. The results are then loaded into
@@ -866,6 +1046,53 @@ public class InvestigationClient {
         }
         JSONObject obj = new JSONObject(sb.toString());
         return obj;
+      } else if (response.getStatusLine().getStatusCode()== HttpStatus.SC_NOT_FOUND) {
+        if ("true".equalsIgnoreCase(System.getProperty("debug.investigation.client", "false"))) {
+          System.out.println(url.toString() + " NOT FOUND");
+        }
+        return null;       
+      } else {
+        handleError(in, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase());
+        throw new RuntimeException("handleError should have thrown exception");
+      }
+
+    } finally {
+      try {if (in !=null) in.close();} catch (Exception x) {}
+    }
+  }
+  
+  /**
+   * Runs the given request. The results are returned as a json object
+   * @param url the url where the query should be performed
+   * @param user an optional user parameter
+   * @return the json array with the results
+   */
+  public JSONArray requestToJsonArray(URL url, User user) throws Exception {
+    HttpGet httpGet = new HttpGet(url.toString());
+    if (user != null) {
+      httpGet.addHeader("user", user.getResourceURL().toString());
+    }
+    httpGet.addHeader("Accept", "application/json");
+    httpGet.addHeader("Accept-Charset", "utf-8");
+    
+    InputStream in = null;
+    try {
+      HttpResponse response = getHttpClient().execute(httpGet);
+      HttpEntity entity  = response.getEntity();
+      in = entity.getContent();
+      if (response.getStatusLine().getStatusCode()== HttpStatus.SC_OK) {
+        BufferedReader br = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+        StringBuilder sb = new StringBuilder();
+        for (String line = br.readLine(); line != null; line = br.readLine()) {
+          sb.append(line);
+          sb.append("\n");
+        }
+        if ("true".equalsIgnoreCase(System.getProperty("debug.investigation.client", "false"))) {
+          System.out.println(url.toString());
+          System.out.println(sb.toString());
+        }
+        JSONArray array = new JSONArray(sb.toString());
+        return array;
       } else if (response.getStatusLine().getStatusCode()== HttpStatus.SC_NOT_FOUND) {
         if ("true".equalsIgnoreCase(System.getProperty("debug.investigation.client", "false"))) {
           System.out.println(url.toString() + " NOT FOUND");
